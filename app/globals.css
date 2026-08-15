@@ -1,43 +1,60 @@
 @import "tailwindcss";
 
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+	--background: #ffffff;
+	--foreground: #171717;
 }
 
 @theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-sans-local);
-  --font-serif: var(--font-serif-local);
+	--color-background: var(--background);
+	--color-foreground: var(--foreground);
+	--font-sans: var(--font-sans-local);
+	--font-serif: var(--font-serif-local);
 }
 
 /* Fluid type scale — fluid between 375px and 1440px viewports, clamped outside. */
 @theme {
-  --text-heading-1: clamp(2rem, 1.6479rem + 1.5023vw, 3rem); /* 32 → 48 */
-  --text-heading-1--line-height: 1.1;
-  --text-heading-1--letter-spacing: -0.02em;
+	--text-heading-1: clamp(2rem, 1.6479rem + 1.5023vw, 3rem); /* 32 → 48 */
+	--text-heading-1--line-height: 1.1;
 
-  --text-heading-2: clamp(2.375rem, 1.8908rem + 2.0657vw, 3.75rem); /* 38 → 60 */
-  --text-heading-2--line-height: 1.05;
-  --text-heading-2--letter-spacing: -0.02em;
+	--text-heading-2: clamp(2.375rem, 1.8908rem + 2.0657vw, 3.75rem); /* 38 → 60 */
+	--text-heading-2--line-height: 1.05;
 
-  --text-heading-3: clamp(2.75rem, 1.9577rem + 3.3803vw, 5rem); /* 44 → 80 */
-  --text-heading-3--line-height: 1;
-  --text-heading-3--letter-spacing: -0.03em;
+	--text-heading-3: clamp(2.75rem, 1.9577rem + 3.3803vw, 5rem); /* 44 → 80 */
+	--text-heading-3--line-height: 1;
 
-  --text-body-1: clamp(0.875rem, 0.831rem + 0.1878vw, 1rem); /* 14 → 16 */
-  --text-body-1--line-height: 1.6;
+	--text-body-1: clamp(0.875rem, 0.831rem + 0.1878vw, 1rem); /* 14 → 16 */
+	--text-body-1--line-height: 1.6;
 
-  --text-body-2: clamp(1rem, 0.912rem + 0.3756vw, 1.25rem); /* 16 → 20 */
-  --text-body-2--line-height: 1.55;
+	--text-body-2: clamp(1rem, 0.912rem + 0.3756vw, 1.25rem); /* 16 → 20 */
+	--text-body-2--line-height: 1.55;
 
-  --text-body-3: clamp(1.125rem, 0.993rem + 0.5634vw, 1.5rem); /* 18 → 24 */
-  --text-body-3--line-height: 1.5;
+	--text-body-3: clamp(1.125rem, 0.993rem + 0.5634vw, 1.5rem); /* 18 → 24 */
+	--text-body-3--line-height: 1.5;
 }
 
 body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: var(--font-sans);
+	background: var(--background);
+	color: var(--foreground);
+	font-family: var(--font-sans);
+	font-weight: 450;
+	letter-spacing: -4%;
 }
+
+/* Links sit above body weight on the wght axis.
+   Layered as base so font-* utilities still win on individual elements. */
+@layer utilities {
+	a {
+		font-weight: 500;
+	}
+	.dimmer {
+		background: #000000;
+		background: linear-gradient(0deg,rgba(0, 0, 0, 1) 0%, rgba(0, 0, 0, 0) 100%);
+	}
+}
+
+body::selection {
+	background: var(--foreground);
+	color: var(--background);
+}
+
