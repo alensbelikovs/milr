@@ -7,9 +7,6 @@ import { useRef } from "react"
 const CLEAR = { opacity: 0, pointerEvents: "none" }
 const OPAQUE = { opacity: 1, pointerEvents: "auto" }
 
-const DURATION = 0.4
-const EASE = "power4.out"
-
 export default function TransitionOverlay() {
 	const overlayRef = useRef<HTMLDivElement>(null)
 
@@ -19,11 +16,11 @@ export default function TransitionOverlay() {
 	useGSAP(() => {
 		fadeInTweenRef.current = gsap.fromTo(overlayRef.current,
 			CLEAR,
-			{ ...OPAQUE, paused: true, immediateRender: false, duration: DURATION, ease: EASE }
+			{ ...OPAQUE, paused: true, immediateRender: false, duration: 0.4, ease: "power4.out" }
 		)
 		fadeOutTweenRef.current = gsap.fromTo(overlayRef.current,
 			OPAQUE,
-			{ ...CLEAR, paused: true, immediateRender: false, duration: DURATION, ease: EASE }
+			{ ...CLEAR, paused: true, immediateRender: false, duration: 0.4, ease: "power4.out" }
 		)
 	}, { scope: overlayRef })
 

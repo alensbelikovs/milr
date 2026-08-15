@@ -7,6 +7,7 @@ export const HERO_FADE_IN_FRAG = `
 	uniform float uFalloff;
 	uniform vec2 uOrigin;
 	uniform float uSkew;
+	uniform float uScale;
 
 	varying vec2 vUv;
 
@@ -25,7 +26,7 @@ export const HERO_FADE_IN_FRAG = `
 			? vec2(1.0, uImageAspect / uPlaneAspect)
 			: vec2(uPlaneAspect / uImageAspect, 1.0);
 
-		vec2 uv = (vUv - 0.5) * range + 0.5;
+		vec2 uv = (vUv - 0.5) * range / uScale + 0.5;
 
 		vec4 encoded = texture2D(uTexture, uv);
 

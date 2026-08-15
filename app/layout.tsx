@@ -1,8 +1,11 @@
 import type { Metadata } from "next"
 import localFont from "next/font/local"
+import { ReactLenis } from "lenis/react"
+import "lenis/dist/lenis.css"
 import "./globals.css"
 import Navbar from "@/components/navigation/Navbar"
 import TransitionControl from "@/components/transition/TransitionControl"
+
 
 const sans = localFont({
 	src: "../fonts/font-sans.woff2",
@@ -32,8 +35,13 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
 			className={`${sans.variable} ${serif.variable} h-full antialiased`}
 		>
 			<body className="min-h-screen">
-				<Navbar />
-				<TransitionControl>{children}</TransitionControl>
+				{/* root, so Lenis drives the document scroll instead of a wrapper element — in that mode
+				    it renders children straight through and adds no DOM of its own. Wrapping both, not
+				    just the page slot, so anything in the nav can reach the instance through useLenis. */}
+				<ReactLenis root>
+					<Navbar />
+					<TransitionControl>{children}</TransitionControl>
+				</ReactLenis>
 			</body>
 		</html>
 	)

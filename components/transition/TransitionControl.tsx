@@ -120,6 +120,10 @@ export default function TransitionControl({ children }: { children: React.ReactN
 				waitForScenesReady()
 			])
 
+			// Global chrome, so it enters ahead of the switch rather than inside every branch. Not
+			// awaited: it runs alongside whatever the branch below plays, not before it.
+			callParticipant('navbar', 'navIn')
+
 			// Run appropriate animations for each different transition type
 			switch (transitioningTo) {
 				case TransitionToType.HERO:
