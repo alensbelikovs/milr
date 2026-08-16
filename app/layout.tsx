@@ -38,10 +38,9 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
 				{/* root, so Lenis drives the document scroll instead of a wrapper element — in that mode
 				    it renders children straight through and adds no DOM of its own. Wrapping both, not
 				    just the page slot, so anything in the nav can reach the instance through useLenis. */}
-				<ReactLenis root>
+				<ReactLenis root/> 
 					<Navbar />
 					<TransitionControl>{children}</TransitionControl>
-				</ReactLenis>
 			</body>
 		</html>
 	)

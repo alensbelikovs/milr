@@ -25,12 +25,6 @@ export default function TransitionOverlay() {
 	}, { scope: overlayRef })
 
 	useTransitionParticipant("transitionOverlay", {
-		setClear: () => {
-			fadeInTweenRef.current?.pause()
-			fadeOutTweenRef.current?.pause()
-			gsap.set(overlayRef.current, CLEAR)
-		},
-
 		fadeIn: () => playTween(fadeInTweenRef.current, { counterpart: fadeOutTweenRef.current }),
 		fadeOut: () => playTween(fadeOutTweenRef.current, { counterpart: fadeInTweenRef.current }),
 	})

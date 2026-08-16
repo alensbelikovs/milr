@@ -7,8 +7,8 @@ import { gsap, useGSAP } from "@/utils/gsap"
 import { playTween } from "@/utils/playTween"
 import { useTransitionParticipant } from "@/hooks/useTransitionParticipant"
 import { useAspect } from "@/hooks/useAspect"
-import { UV_PASS_THROUGH_VERT } from "@/shaders/passThroughVert"
-import { HERO_FADE_IN_FRAG } from "@/shaders/heroFadeInFrag"
+import UV_PASS_THROUGH_VERT from "@/shaders/passThroughVert.glsl"
+import HERO_FADE_IN_FRAG from "@/shaders/heroFadeInFrag.glsl"
 
 const TEXTURE_URL = "/placeholder.png"
 
@@ -21,7 +21,7 @@ const LUMA_DISPLACE = 1.0
 const FALLOFF = 0.2
 const ORIGIN: [number, number] = [0.5, 0.0]
 const SKEW = 0.5
-const SCALE_FROM = 1.2
+const SCALE_FROM = 1.3
 const SCALE_TO = 1.0
 
 export default function HeroSceneGeometries() {
@@ -55,7 +55,7 @@ export default function HeroSceneGeometries() {
 		revealTimeline.current = gsap.timeline({ paused: true })
 			.fromTo(material.uniforms.uRadius,
 				{ value: 0.0 },
-				{ value: 1.0, duration: 1, ease: 'power1.out' },
+				{ value: 1.0, duration: 1.5, ease: 'power4.out' },
 				0
 			)
 			.fromTo(material.uniforms.uScale,
@@ -66,7 +66,12 @@ export default function HeroSceneGeometries() {
 	}, { dependencies: [uniforms] })
 
 	useTransitionParticipant('heroSceneGeometries', {
-		geometriesIn: () => playTween(revealTimeline.current)
+		geometriesIn: () => {
+			// Logs the timeline too: a null one makes playTween resolve on the spot, which looks
+			// identical to this participant never having been called at all.
+			console.log(`[HeroSceneGeometries] geometriesIn | timeline: ${!!revealTimeline.current}`)
+			return playTween(revealTimeline.current)
+		}
 	})
 
 	return (

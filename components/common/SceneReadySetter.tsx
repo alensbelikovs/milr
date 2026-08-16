@@ -1,27 +1,14 @@
 "use client"
 
-import { useLayoutEffect, useRef } from "react"
 import { useFrame } from "@react-three/fiber"
 import { useSceneStore } from "@/store/SceneStore"
 
+// Drop this inside a <Canvas> to report that its scene has drawn. The matching registerScene call
+// lives on the canvas wrapper instead — see useSceneRegistration for why the two are split.
 export default function SceneReadySetter({ id }: { id: string }) {
-	const readyLocal = useRef<boolean>(false)
-	const { registerScene, unregisterScene, signalSceneReady } = useSceneStore()
-
-	// Before paint register scene into the store.
-	useLayoutEffect(() => {
-		registerScene(id)
-
-		return () => unregisterScene(id)
-	}, [])
-
-	// On first frame, signal to store that scene has rendered.
-	useFrame(() => {
-		if (!readyLocal.current) {
-			readyLocal.current = true
-			signalSceneReady(id)
-		}
-	})
+	// Left unguarded on purpose: signalSceneReady ignores every frame after the first, and re-arms
+	// itself if the scene is ever re-registered, which a local "already signalled" ref would miss.
+	useFrame(() => useSceneStore.getState().signalSceneReady(id))
 
 	return null
 }

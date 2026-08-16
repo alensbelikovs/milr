@@ -2,7 +2,7 @@
 
 :root {
 	--background: #ffffff;
-	--foreground: #171717;
+	--foreground: #000000;
 }
 
 @theme inline {
@@ -51,10 +51,18 @@ body {
 		background: #000000;
 		background: linear-gradient(0deg,rgba(0, 0, 0, 1) 0%, rgba(0, 0, 0, 0) 100%);
 	}
+	.text-body-1, .text-body-2, .text-body-3 {
+		letter-spacing: 0%;
+	}
 }
 
 body::selection {
 	background: var(--foreground);
 	color: var(--background);
+}
+
+footer::selection {
+	background: var(--background);
+	color: var(--foreground);
 }
 
