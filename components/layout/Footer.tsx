@@ -1,6 +1,6 @@
-import LinkPrimary from "@/components/navigation/LinkPrimary"
-import LinkSecondary from "@/components/navigation/LinkSecondary"
-import FooterGroup from "@/components/common/FooterGroup"
+import LinkPrimary from "@/components/common/LinkPrimary"
+import LinkSecondary from "@/components/common/LinkSecondary"
+import FooterGroup from "@/components/layout/FooterGroup"
 
 export default function Footer({ heading="Ready when You are." }: { heading?: string }) {
 	return (
@@ -8,9 +8,6 @@ export default function Footer({ heading="Ready when You are." }: { heading?: st
 			<footer className="sticky flex flex-col min-h-screen top-0 left-0 pt-[144px] px-[24px] w-full bg-foreground text-background">
 				<div className="w-full flex flex-col items-center">
 					<h2 className="text-heading-3 text-center">{ heading }</h2>
-					<div className="mt-[64px]">
-						<LinkSecondary href="/contact">Reach Out</LinkSecondary>
-					</div>
 				</div>
 				<div className="flex justify-between w-full mt-[216px] text-body-1">
 					<div>

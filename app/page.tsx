@@ -1,19 +1,21 @@
 import PageReadySignal from "@/components/transition/PageReadySignal"
-import HomeAbout from "@/components/sections/HomeAbout"
-import HomeFeaturedWork from "@/components/sections/HomeFeaturedWork"
-import CommonHeroScene from "@/components/sections/CommonHeroScene"
-import CommonTestimonial from "@/components/sections/CommonTestimonial"
-import Footer from "@/components/sections/Footer"
+import HomeAbout from "@/components/home/HomeAbout"
+import HomeFeaturedWork from "@/components/home/HomeFeaturedWork"
+import CommonHeroScene from "@/components/hero-scene/HeroScene"
+import Footer from "@/components/layout/Footer"
+import HomeProcess from "@/components/home/HomeProcess"
+import HomeFeaturedBlogs from "@/components/home/HomeFeaturedBlogs"
 
 
 export default function HomePage() {
 	return (
 		<>
-			<CommonHeroScene id="home-hero" title="Rinalds Miļicins"/>
+			<CommonHeroScene id="home-hero" title="Rinalds Miļicins" src="/placeholder.png"/>
 			<HomeAbout />
 			<HomeFeaturedWork />
-			<CommonTestimonial />
-			<Footer />
+			<HomeProcess />
+			<HomeFeaturedBlogs />
+			{/* <Footer /> */}
 			<PageReadySignal />
 		</>
 	)

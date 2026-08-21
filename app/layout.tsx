@@ -3,7 +3,7 @@ import localFont from "next/font/local"
 import { ReactLenis } from "lenis/react"
 import "lenis/dist/lenis.css"
 import "./globals.css"
-import Navbar from "@/components/navigation/Navbar"
+import Navbar from "@/components/layout/Navbar"
 import TransitionControl from "@/components/transition/TransitionControl"
 
 

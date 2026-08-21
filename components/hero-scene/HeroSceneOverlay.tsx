@@ -32,12 +32,12 @@ export default function HeroSceneOverlay({ title }: { title: string }) {
 		<div 
 			className="
 				absolute inset-0 z-1
-				grid grid-cols-15 gap-[24px] p-[24px] grid-rows-12
+				grid grid-cols-12 gap-regular p-regular grid-rows-12
 			"
 			ref={scopeRef}
 		>
 			<div ref={dimmerRef} className="dimmer absolute inset-0"/>
-			<div className="col-start-2 col-span-13 row-start-10 row-span-full flex justify-start items-start">
+			<div className="col-start-2 col-span-10 row-start-10 row-span-full flex justify-start items-start">
 				<div className="overflow-hidden">
 					<h1 ref={headingRef} className="text-heading-3 leading-[1.2]! text-background p-[2px]">{ title }</h1>
 				</div>

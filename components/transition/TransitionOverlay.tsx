@@ -16,11 +16,11 @@ export default function TransitionOverlay() {
 	useGSAP(() => {
 		fadeInTweenRef.current = gsap.fromTo(overlayRef.current,
 			CLEAR,
-			{ ...OPAQUE, paused: true, immediateRender: false, duration: 0.4, ease: "power4.out" }
+			{ ...OPAQUE, paused: true, immediateRender: false, duration: 0.3, ease: "power1.inOut" }
 		)
 		fadeOutTweenRef.current = gsap.fromTo(overlayRef.current,
 			OPAQUE,
-			{ ...CLEAR, paused: true, immediateRender: false, duration: 0.4, ease: "power4.out" }
+			{ ...CLEAR, paused: true, immediateRender: false, duration: 0.3, ease: "power1.inOut" }
 		)
 	}, { scope: overlayRef })
 
@@ -33,7 +33,7 @@ export default function TransitionOverlay() {
 		<div
 			ref={overlayRef}
 			aria-hidden="true"
-			className="fixed inset-0 z-15 h-screen w-full bg-white"
+			className="fixed inset-0 z-15 h-[120vh] w-full bg-white"
 		/>
 	)
 }

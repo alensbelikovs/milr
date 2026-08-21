@@ -1,5 +1,5 @@
 "use client"
-import PaginationPageButton from "@/components/common/PaginationPageButton"
+import PaginationPageButton from "@/components/testimonial/PaginationPageButton"
 
 export default function Pagination() {
 	return (

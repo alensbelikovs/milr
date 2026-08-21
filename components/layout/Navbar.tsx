@@ -1,7 +1,7 @@
 "use client"
 import { useRef } from "react"
 
-import LinkPrimary from "@/components/navigation/LinkPrimary"
+import LinkPrimary from "@/components/common/LinkPrimary"
 import { gsap, useGSAP } from "@/utils/gsap"
 import { playTween } from "@/utils/playTween"
 import { useTransitionParticipant } from "@/hooks/useTransitionParticipant"

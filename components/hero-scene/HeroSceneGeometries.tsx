@@ -10,8 +10,6 @@ import { useAspect } from "@/hooks/useAspect"
 import UV_PASS_THROUGH_VERT from "@/shaders/passThroughVert.glsl"
 import HERO_FADE_IN_FRAG from "@/shaders/heroFadeInFrag.glsl"
 
-const TEXTURE_URL = "/placeholder.png"
-
 const ASPECT_W = 16
 const ASPECT_H = 9
 const PLANE_ASPECT = ASPECT_W / ASPECT_H
@@ -24,11 +22,12 @@ const SKEW = 0.5
 const SCALE_FROM = 1.3
 const SCALE_TO = 1.0
 
-export default function HeroSceneGeometries() {
+export default function HeroSceneGeometries({ src }: { src: string }) {
 	const scale = useAspect(ASPECT_W, ASPECT_H)
 
-	// Suspends until the image has decoded.
-	const texture = useLoader(THREE.TextureLoader, TEXTURE_URL)
+	// Suspends until the image has decoded. uImageAspect is read off the decoded bitmap below, so the
+	// cover can be any shape without the plane distorting it.
+	const texture = useLoader(THREE.TextureLoader, src)
 
 	// The actual material reference used for transition
 	const materialRef = useRef<THREE.ShaderMaterial>(null)
