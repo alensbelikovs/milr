@@ -5,6 +5,8 @@ import LinkPrimary from "@/components/common/LinkPrimary"
 import { gsap, useGSAP } from "@/utils/gsap"
 import { playTween } from "@/utils/playTween"
 import { useTransitionParticipant } from "@/hooks/useTransitionParticipant"
+import Link from "next/link"
+import Logo from "@/components/common/Logo"
 
 export default function Navbar() {
 	const navRef = useRef<HTMLElement>(null)
@@ -25,16 +27,18 @@ export default function Navbar() {
 	})
 
 	return (
-		<header className="fixed top-0 left-0 z-10 w-full text-background">
-			<nav ref={navRef} className="p-[16px] flex w-full items-center justify-between gap-[24px]">
-				<div className="flex gap-[12px]">
-					<LinkPrimary href="/">Home</LinkPrimary>
-					<LinkPrimary href="/projects">Projects</LinkPrimary>
-					<LinkPrimary href="/about">About</LinkPrimary>
-					<LinkPrimary href="/video-blog">Video Blog</LinkPrimary>
+		<header className="fixed top-0 left-0 z-10 w-full text-background mix-blend-difference">
+			<nav ref={navRef} className="py-regular px-[36px] gap-[36px] grid grid-cols-12">
+				<Link href="/">
+					<Logo dimensions="32"/>
+				</Link>
+				<div className="flex gap-regular col-start-7 col-span-3">
+					<LinkPrimary href="/projects" target="_self">Projects</LinkPrimary>
+					<LinkPrimary href="/diary" target="_self">Diary</LinkPrimary>
+					<LinkPrimary href="/about" target="_self">About</LinkPrimary>
 				</div>
-				<div className="flex gap-[12px]">
-					<LinkPrimary href="/contact">Contact</LinkPrimary>
+				<div className="flex justify-end col-start-10 col-span-3">
+					<LinkPrimary href="mailto:contact@milrstudio.com">contact@milrstudio.com</LinkPrimary>
 				</div>
 			</nav>
 		</header>

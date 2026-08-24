@@ -5,6 +5,7 @@ import "lenis/dist/lenis.css"
 import "./globals.css"
 import Navbar from "@/components/layout/Navbar"
 import TransitionControl from "@/components/transition/TransitionControl"
+import Footer from "@/components/layout/Footer"
 
 
 const sans = localFont({
@@ -41,6 +42,7 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
 				<ReactLenis root/> 
 					<Navbar />
 					<TransitionControl>{children}</TransitionControl>
+					<Footer />
 			</body>
 		</html>
 	)

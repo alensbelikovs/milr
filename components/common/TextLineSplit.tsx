@@ -1,6 +1,6 @@
 "use client"
 
-import { createElement, useRef } from "react"
+import { useRef } from "react"
 import type { ReactNode } from "react"
 import { gsap, useGSAP, ScrollTrigger, SplitText } from "@/utils/gsap"
 
@@ -92,5 +92,11 @@ export default function TextLineSplit({
 		}
 	}, { scope: elementRef })
 
-	return createElement(as, { ref: elementRef, className }, children)
+	// A JSX tag rather than createElement, because the ref lint rule cannot see that createElement
+	// does not read a ref it is handed: to it, any function taking a ref might read .current during
+	// render. As a JSX attribute the ref is understood for what it is, and React assigns it after
+	// mount as always. The cast is what lets one ref type serve every tag `as` allows.
+	const Tag = as as unknown as React.FC<{ ref?: React.Ref<HTMLElement>, className?: string, children?: ReactNode }>
+
+	return <Tag ref={elementRef} className={className}>{children}</Tag>
 }

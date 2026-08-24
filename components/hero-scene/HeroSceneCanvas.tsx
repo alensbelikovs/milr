@@ -9,6 +9,12 @@ import { Suspense, useRef } from "react"
 // Parallax lag, as a share of the canvas height.
 const PARALLAX_Y_PERCENT = 25
 
+// ...and only from lg up. 64rem is Tailwind's lg. Below it the hero simply scrolls away with the
+// page: a quarter of the canvas height is a far bigger share of a short viewport than of a tall one,
+// and holding the scene back that far leaves the section it is scrolling into arriving over a hero
+// that has not finished leaving.
+const PARALLAX_RANGE = "(min-width: 64rem)"
+
 export default function HeroSceneCanvas({ id, src }: { id: string, src: string }) {
 	const scopeRef = useRef<HTMLDivElement>(null)
 
@@ -17,19 +23,27 @@ export default function HeroSceneCanvas({ id, src }: { id: string, src: string }
 	useSceneRegistration(id)
 
 	useGSAP(() => {
-		gsap.fromTo(scopeRef.current,
-			{ yPercent: 0 },
-			{
-				yPercent: PARALLAX_Y_PERCENT,
-				ease: "none",
-				scrollTrigger: {
-					trigger: document.documentElement,
-					start: "top top",
-					end: "+=100%",
-					scrub: true,
-				},
-			}
-		)
+		// matchMedia rather than a width read once on mount, because the answer has to survive a resize
+		// in both directions: the tween is built on the way up past lg, and reverted on the way down.
+		// The revert is the part that earns it — a scrub leaves the canvas parked at whatever yPercent
+		// the scroll position last implied, and without it a narrowed window would keep that offset with
+		// nothing left to move it back.
+		const mm = gsap.matchMedia()
+		mm.add(PARALLAX_RANGE, () => {
+			gsap.fromTo(scopeRef.current,
+				{ yPercent: 0 },
+				{
+					yPercent: PARALLAX_Y_PERCENT,
+					ease: "none",
+					scrollTrigger: {
+						trigger: document.documentElement,
+						start: "top top",
+						end: "+=100%",
+						scrub: true,
+					},
+				}
+			)
+		})
 	}, { scope: scopeRef })
 
 	return (

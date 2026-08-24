@@ -57,8 +57,14 @@ export default function ProjectGridItem(
 					</div>
 				</div>
 				<h3 className="flex justify-between gap-small mt-small text-body-1">
-					<span className={CAPTION_UNDERLINE}>{title}</span>
-					{category && <span className={`font-serif ${CAPTION_UNDERLINE}`}>{category}</span>}
+					<span className={
+						"group-hover:underline group-hover:underline-offset-4 "
+						+ "group-focus-visible:underline group-focus-visible:underline-offset-4"
+					}
+					>
+						{title}
+					</span>
+					{category && <span className="font-serif">{category}</span>}
 				</h3>
 			</Link>
 		</ScrollReveal>

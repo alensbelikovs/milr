@@ -12,12 +12,8 @@ const ASPECT_W = 16
 const ASPECT_H = 9
 const PLANE_ASPECT = ASPECT_W / ASPECT_H
 
-// Shader config. Both radii are measured in units of plane height, the space the shader's aspect
-// correction puts distances in, so the circle stays round on a 16:9 plane.
 const RADIUS_MIN = 0.5
 const RADIUS_MAX = 1.0
-// How deep the image's own luminance bites into that radius. Sized against RADIUS_MIN, not against a
-// full-plane sweep: much larger and the resting circle is eaten away entirely.
 const LUMA_DISPLACE = 0.5
 const FALLOFF = 0.1
 
@@ -53,8 +49,6 @@ export default function PaintSceneGeometries({ srcBefore, srcAfter }: { srcBefor
 		uRadiusMax: { value: RADIUS_MAX },
 		uLumaDisplace: { value: LUMA_DISPLACE },
 		uFalloff: { value: FALLOFF },
-		// Overwritten from the pointer every frame. Centred to start with, which is also where an
-		// untouched state.pointer sits, so the circle rests dead centre until the cursor first moves.
 		uOrigin: { value: new THREE.Vector2(0.5, 0.5) },
 		uProgress: { value: 0.0 },
 	}), [beforeTexture, afterTexture])
@@ -63,11 +57,6 @@ export default function PaintSceneGeometries({ srcBefore, srcAfter }: { srcBefor
 		const material = materialRef.current
 		if (!material) return
 
-		// A timeline rather than a bare tween: further effects get added at their own positions later
-		// without the click handling below having to change.
-		//
-		// Note reverse() plays the ease backwards, so an out ease reads as an in ease on the way back —
-		// swap to a symmetric inOut if the shrink should feel like the expand.
 		revealTimeline.current = gsap.timeline({ paused: true })
 			.fromTo(material.uniforms.uProgress,
 				{ value: 0.0 },
@@ -76,9 +65,6 @@ export default function PaintSceneGeometries({ srcBefore, srcAfter }: { srcBefor
 			)
 	}, { dependencies: [uniforms] })
 
-	// Kept out of the useGSAP above on purpose: with dependencies present, useGSAP defers its cleanup to
-	// unmount, so a listener registered in there would be added a second time if the textures ever
-	// changed. Keyed to the canvas element alone, this pairs its own add and remove.
 	useEffect(() => {
 		const toggleReveal = () => {
 			const timeline = revealTimeline.current
@@ -86,8 +72,6 @@ export default function PaintSceneGeometries({ srcBefore, srcAfter }: { srcBefor
 
 			isRevealed.current = !isRevealed.current
 
-			// play/reverse rather than restart: a click mid-flight turns the reveal around from wherever
-			// it currently sits instead of snapping back to an end.
 			if (isRevealed.current) timeline.play()
 			else timeline.reverse()
 		}
@@ -96,10 +80,6 @@ export default function PaintSceneGeometries({ srcBefore, srcAfter }: { srcBefor
 		return () => canvasElement.removeEventListener('click', toggleReveal)
 	}, [canvasElement])
 
-	// The circle sits exactly under the cursor, so uOrigin is rewritten every frame rather than eased.
-	// r3f's own event layer already maintains state.pointer in NDC on every pointer event over the
-	// canvas, before any raycasting, so there is nothing to listen for here — and reading it off the
-	// frame state rather than through useThree keeps this free of store subscriptions and re-renders.
 	useFrame((state) => {
 		const material = materialRef.current
 		if (!material) return

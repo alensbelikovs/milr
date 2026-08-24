@@ -34,8 +34,18 @@ const STACKED = `not all and ${STAGGERED}`
 // image inside it. GSAP folds an element's computed CSS `scale` into `transform` the first time it
 // tweaks its transform and writes `scale: none` inline, and inline outranks a class — so a scale
 // class on whatever this tween touches goes dead, taking any hover variant of it along.
-const PARALLAX_FROM_Y = 5
-const PARALLAX_TO_Y = -5
+const PARALLAX_FROM_Y = 7
+const PARALLAX_TO_Y = -7
+
+// ...and only from lg up. 64rem is Tailwind's lg. The drift is a scroll-linked effect, so what it
+// costs is a transform recomputed on every scroll frame, and what it buys is depth between a card
+// and the page around it — a trade worth making on a wide layout, where the cards sit in a row with
+// room around them, and not on a narrow one, where a card is close to full-bleed and there is
+// nothing for it to have depth against.
+//
+// No complement here, unlike the pair above: below this width there is no other version to build,
+// the branch simply does not exist.
+const PARALLAX_RANGE = "(min-width: 64rem)"
 
 // A trigger box that stays put while everything inside it slides up into place, once, on scroll.
 //
@@ -92,28 +102,32 @@ export default function ScrollReveal(
 		// first one, because this one spans the box's whole pass through the viewport and scrubs,
 		// where the reveal fires once at 20% and plays on its own clock.
 		//
-		// Outside the matchMedia on purpose. The drift is the same at every width, and rebuilding it on
-		// every crossing would only hand it a fresh scrub to jump from.
-		const parallaxTarget = trigger.querySelector("[data-parallax]")
-		if (!parallaxTarget) return
+		// Its own range on the same matchMedia, so crossing lg builds it or takes it away. Reverting is
+		// the half that matters: a scrubbed tween leaves the element parked wherever the scroll left it,
+		// and matchMedia putting the transform back is what keeps a resize down to a phone width from
+		// stranding the image off-centre inside its clip.
+		mm.add(PARALLAX_RANGE, () => {
+			const parallaxTarget = trigger.querySelector("[data-parallax]")
+			if (!parallaxTarget) return
 
-		gsap.fromTo(parallaxTarget,
-			{ yPercent: PARALLAX_FROM_Y },
-			{
-				yPercent: PARALLAX_TO_Y,
-				// Linear, so position maps straight to scroll — any ease here reads as the image
-				// lagging and catching up against the scroll.
-				ease: "none",
-				scrollTrigger: {
-					trigger,
-					// The box's whole pass through the viewport: from its top touching the bottom edge
-					// to its bottom leaving the top edge.
-					start: "top bottom",
-					end: "bottom top",
-					scrub: true,
-				},
-			}
-		)
+			gsap.fromTo(parallaxTarget,
+				{ yPercent: PARALLAX_FROM_Y },
+				{
+					yPercent: PARALLAX_TO_Y,
+					// Linear, so position maps straight to scroll — any ease here reads as the image
+					// lagging and catching up against the scroll.
+					ease: "none",
+					scrollTrigger: {
+						trigger,
+						// The box's whole pass through the viewport: from its top touching the bottom
+						// edge to its bottom leaving the top edge.
+						start: "top bottom",
+						end: "bottom top",
+						scrub: true,
+					},
+				}
+			)
+		})
 	}, { scope: triggerRef, dependencies: [delay] })
 
 	// relative so the box is a containing block for anything absolutely positioned inside it, and so a

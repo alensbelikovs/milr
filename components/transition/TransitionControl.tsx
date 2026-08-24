@@ -6,7 +6,6 @@ import { useContext, useEffect, useRef, useState } from "react"
 import { useTransitionStore } from "@/store/TransitionStore"
 import { useSceneStore } from "@/store/SceneStore"
 import { TransitionToType } from "@/types/TransitionTypes"
-import { VIDEO_BLOG_SHOW_PATH } from "@/utils/videoBlogRoute"
 
 // Failsafe after which to force a transition to end. Spent across BOTH waits below rather than
 // granted to each: two of these in series is twenty seconds of opaque curtain on a page that never
@@ -99,6 +98,13 @@ const callParticipant = async (key: string, method: string) => {
 	await participant[method]()
 }
 
+// Whether a participant is on screen to answer for a method, asked before calling rather than found
+// out by calling. The warn above is right for the reveal — a route that should have animated and did
+// not is a fault every time — but wrong for the same-path branch below, where having nothing to
+// animate is the ordinary case on every route that is not a filtered list.
+const hasParticipant = (key: string, method: string) =>
+	Boolean(useTransitionStore.getState().participants[key]?.[method])
+
 export default function TransitionControl({ children }: { children: React.ReactNode }) {
 	const pathname = usePathname()
 	const context = useContext(LayoutRouterContext)
@@ -114,49 +120,26 @@ export default function TransitionControl({ children }: { children: React.ReactN
 	// Storing reference of wrapper to apply scroll lock
 	const mainRef = useRef<HTMLDivElement>(null)
 
-	// What pathname the last run of the effect saw. A modal opening is only recognisable as a pair —
-	// where the URL came from and where it went — and usePathname only ever hands over the latter.
-	const prevPathnameRef = useRef(pathname)
+	// What the last commit's pathname was, so the second effect can tell a navigation that changed the
+	// route from one that only changed the query.
+	const pathnameRef = useRef(pathname)
+
+	// Mounts new page, all checks that wait on things to get ready need to run after this. Both
+	// effects below go through it, so the identity check that keeps a no-op commit from re-rendering
+	// is written once and cannot drift between them.
+	const commit = () => setCommitted(prev =>
+		prev.component === children && prev.context === context
+			? prev
+			: { component: children, context }
+	)
 
 	useEffect(() => {
-		// Mounts new page, all checks that wait on things to get ready need to run after this
-		const unfreeze = () => setCommitted(prev =>
-			prev.component === children && prev.context === context
-				? prev
-				: { component: children, context }
-		)
+		const unfreeze = commit
 
 		// Whether unfreeze above will actually mount something new — the same comparison it makes, read
 		// before it runs. False on the reveal that runs at mount: committed was seeded with these very
 		// refs, so nothing swaps in, nothing new signals ready, and there is no swap to cover.
 		const willSwap = committed.component !== children || committed.context !== context
-
-		// A video blog opens in a modal on the page that listed it, and VideoBlogGridShell moves the URL to
-		// /video-blog/<slug> with history.pushState to say so. Next syncs that into usePathname, which
-		// wakes this effect for a navigation that never happened: no page arrives, nothing needs
-		// covering, and running the reveal anyway would drop the curtain over the page the reader is
-		// already looking at and replay its entrance behind it. Sat out in both directions — opening,
-		// closing, and switching blogs — so the URL moves alone and the content stays frozen.
-		//
-		// Three conditions, none of them spare:
-		//
-		// pathnameChanged is false on mount, so landing directly on a modal URL — which resolves to
-		// nothing and renders not-found — still gets its curtain lifted rather than hanging behind an
-		// opaque overlay forever.
-		//
-		// pageSwapped asks the narrower question willSwap does: whether a new page element arrived,
-		// ignoring the context half. It is what separates closing the modal from navigating away while
-		// it is open — a navbar click from /video-blog/<slug> also leaves a modal path behind, and that
-		// one has a real page coming and must transition normally.
-		//
-		// And the path is tested on both sides, because on close the modal path is the one being left.
-		const pathnameChanged = prevPathnameRef.current !== pathname
-		const pageSwapped = committed.component !== children
-		const isModalNav = pathnameChanged && !pageSwapped &&
-			(VIDEO_BLOG_SHOW_PATH.test(pathname) || VIDEO_BLOG_SHOW_PATH.test(prevPathnameRef.current))
-
-		prevPathnameRef.current = pathname
-		if (isModalNav) return
 
 		async function reveal() {
 			// Claims this flow. Re-read after every await below: a newer reveal bumps the ref, and the
@@ -188,6 +171,7 @@ export default function TransitionControl({ children }: { children: React.ReactN
 
 			// Unfreeze content and await readyness of next page.
 			unfreeze()
+
 			await waitForPageReady(readyTokenCaptured, remaining())
 			if (flow !== flowRef.current) return
 
@@ -200,8 +184,6 @@ export default function TransitionControl({ children }: { children: React.ReactN
 			// that mounted them — and registered their participant — has already happened.
 			await waitForScenesReady(remaining())
 			if (flow !== flowRef.current) return
-
-
 			// Global chrome, so they enter ahead of the switch rather than inside every branch. Neither
 			// is awaited: they run alongside whatever the branch below plays, not before it. Lifting the
 			// curtain is every route's reveal, so it lives out here unconditionally — a branch cannot
@@ -228,6 +210,74 @@ export default function TransitionControl({ children }: { children: React.ReactN
 		}
 		reveal()
 	}, [pathname])
+
+	// The navigation the reveal above structurally cannot see: a search-param change.
+	//
+	// usePathname strips the query, so /projects?category=residential reads as /projects and the
+	// effect keyed on it never re-runs. The router still hands down new children, but unfreeze only
+	// ever runs inside reveal — so with nothing to call it, the frozen page would keep rendering the
+	// old results for good. This effect is what commits them, and it is keyed on children so it hears
+	// what pathname cannot say.
+	//
+	// It is a whole reveal of its own, and it plays the same beats as the one above: curtain down, swap
+	// underneath, curtain up. What it leaves out is the scene wait, which has nothing to wait for on a
+	// list, and the per-type switch, which has no branch to run.
+	useEffect(() => {
+		// A real navigation. The reveal above owns it, and has not committed yet — unfreeze runs after
+		// its fadeIn — so committed is still stale here and the check below would misread it as work to
+		// do. Only bring the ref up to date.
+		if (pathnameRef.current !== pathname) {
+			pathnameRef.current = pathname
+			return
+		}
+
+		// Nothing new to show. True on first mount, where committed was seeded with these very refs,
+		// and on any re-render that did not come from the router.
+		if (committed.component === children && committed.context === context) return
+
+		// The same counter the reveal claims from, deliberately: both write to committed, and two
+		// flows allowed to finish in either order would let an older one land last and put the previous
+		// results back. Sharing it means whichever started last wins, so a second chip clicked while the
+		// first is still swapping supersedes it.
+		//
+		// It cuts the other way too — a swap starting mid-reveal would abort the reveal, and an aborted
+		// reveal never reaches the line that lifts the curtain. That is unreachable rather than handled:
+		// a reveal is only in flight while the overlay is opaque over the whole page, so there is no chip
+		// to click, and nothing here navigates on its own (no router.refresh, no Sanity live mode). Add
+		// either and this needs a way to hand the curtain back.
+		const flow = ++flowRef.current
+
+		async function swap() {
+			// Asked rather than called, because callParticipant warns about a missing participant and a
+			// route with no grid is the ordinary case, not a fault. Such a route commits bare: covering it
+			// would raise a curtain with nothing to signal that it is safe to lower again, and the wait
+			// below would sit out the full failsafe behind it.
+			if (!hasParticipant('projectGrid', 'scrollToTop')) { commit(); return }
+
+			await callParticipant('transitionOverlay', 'fadeIn')
+			if (flow !== flowRef.current) return
+
+			// Under cover now, so the scroll jumps rather than travels.
+			await callParticipant('projectGrid', 'scrollToTop')
+			if (flow !== flowRef.current) return
+
+			// Read before the commit that causes the bump, exactly as the reveal does. What answers here is
+			// the incoming ProjectGridShell rather than PageReadySignal: the page is reconciled, not
+			// remounted, so the page's own signal cannot fire twice for one mount.
+			const readyTokenCaptured = useTransitionStore.getState().readyToken
+
+			commit()
+
+			await waitForPageReady(readyTokenCaptured, READY_FAILSAFE)
+			if (flow !== flowRef.current) return
+
+			// Not awaited, matching the reveal: the curtain lifts alongside ScrollReveal's entrance rather
+			// than before it, so the cards are already rising as the white clears.
+			callParticipant('transitionOverlay', 'fadeOut')
+		}
+		swap()
+		// eslint-disable-next-line react-hooks/exhaustive-deps
+	}, [children, context, pathname])
 
 	return (
 		<main ref={mainRef} className="relative">

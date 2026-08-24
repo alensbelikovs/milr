@@ -14,6 +14,9 @@
 
 /* Fluid type scale — fluid between 375px and 1440px viewports, clamped outside. */
 @theme {
+	--text-heading-4: clamp(3rem, 1.5915rem + 6.0094vw, 7rem); /* 48 → 112 */
+	--text-heading-4--line-height: 1;
+
 	--text-heading-3: clamp(2.75rem, 1.9577rem + 3.3803vw, 5rem); /* 44 → 80 */
 	--text-heading-3--line-height: 1;
 
@@ -66,6 +69,30 @@ body {
 	.dimmer {
 		background: #000000;
 		background: linear-gradient(0deg,rgba(0, 0, 0, 1) 0%, rgba(0, 0, 0, 0) 100%);
+	}
+
+	/* The two link looks, kept here rather than in the components that usually wear them: a control
+	   acting on the view it is already in — the close on a dialog — has no address to point at, so it
+	   has to be a button, and it still has to read as the same thing.
+
+	   cursor-pointer is in both because of that button: Tailwind's preflight leaves buttons on the
+	   default arrow, and an anchor with an href already had the pointer regardless.
+
+	   One thing to know: a class lands after the utilities in this layer, so a conflicting utility
+	   passed through className loses to it, where a raw utility string would have been sorted among
+	   them. Nothing passes one today. */
+	.link-primary {
+		@apply inline-block cursor-pointer text-body-1;
+		@apply hover:underline hover:underline-offset-4 focus-visible:underline;
+		@apply aria-disabled:opacity-30 aria-disabled:cursor-not-allowed aria-disabled:no-underline;
+	}
+
+	/* Padding stays out of this one: LinkSecondary takes it as a prop, and a class cannot be told. */
+	.link-secondary {
+		@apply inline-block cursor-pointer text-body-1;
+		@apply opacity-60 underline underline-offset-4;
+		@apply hover:opacity-100 focus-visible:opacity-100;
+		@apply aria-disabled:opacity-30 aria-disabled:cursor-not-allowed;
 	}
 }
 

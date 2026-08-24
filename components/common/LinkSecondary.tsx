@@ -9,13 +9,15 @@ type LinkSecondaryProps = {
 	noPadding?: boolean
 }
 
+// The look lives in globals.css as .link-secondary, alongside .link-primary. Only the padding is
+// still written here, because it is the one part a prop decides.
 export default function LinkSecondary({ href, children, noPadding, className = "", target = "_self", disabled }: LinkSecondaryProps) {
 	return (
 		<Link
 			href={href}
 			target={target}
 			aria-disabled={disabled}
-			className={`inline-block ${noPadding ? "p-[0px]" : "p-[12px]"} text-body-1 opacity-60 underline underline-offset-4 hover:opacity-100 focus-visible:opacity-100 aria-disabled:opacity-30 aria-disabled:cursor-not-allowed ${className}`.trim()}>
+			className={`link-secondary ${noPadding ? "p-[0px]" : "p-[12px]"} ${className}`.trim()}>
 			{children}
 		</Link>
 	)

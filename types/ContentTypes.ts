@@ -13,6 +13,16 @@ export type ProjectListType = {
 	category: string | null
 }
 
+// A category as the chips need it: the id to filter on, the title to print, and how many projects
+// carry it. The _id is here rather than a slug because the document has no slug field — see
+// SCHEMAS.md — so the URL segment is derived from the title by categorySlug and resolved back to
+// this id, which is what the query actually filters on.
+export type CategoryListType = {
+	_id: string,
+	title: string,
+	count: number
+}
+
 export type ProjectShowType = ProjectListType & {
 	alt: string | null
 	location: string

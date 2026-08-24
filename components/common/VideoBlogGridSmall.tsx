@@ -3,10 +3,10 @@ import type { VideoBlogType } from "@/types/ContentTypes"
 
 // One entry, not three. Every card in this grid is placed the same way, and variantAt wraps, so a
 // single-entry rhythm dresses all three — and keeps tiling three-up if the section ever features
-// more. The 3/4 ratio is not here because VideoBlogGridItem already appends it to whatever variant
-// it is handed.
+// more. The 3/4 ratio is not here because VideoBlogGridItem sets it on the cover itself, where it
+// measures the picture rather than the picture and its caption together.
 const BLOG_VARIANTS_SMALL = ([
-	"col-span-4",
+	"md:col-span-4 col-span-full",
 ])
 
 // The step between cards, in seconds. All three sit on one line, so their triggers fire at the same
@@ -32,7 +32,7 @@ export default function VideoBlogGridSmall({ items }: { items: VideoBlogType[] }
 			variants={BLOG_VARIANTS_SMALL}
 			stagger={STAGGER_STEP}
 			className="
-				py-normal-2 px-regular grid grid-cols-12 items-start
+				py-normal-2 grid grid-cols-12 items-start
 				gap-x-regular gap-y-normal-2 overflow-hidden
 			" />
 	)

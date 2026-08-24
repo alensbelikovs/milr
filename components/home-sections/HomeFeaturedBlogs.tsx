@@ -20,7 +20,7 @@ export default async function HomeFeaturedBlogs() {
 	if (blogs.length === 0) return null
 
 	return (
-		<section className="pt-section px-regular bg-background relative z-1">
+		<section className="pt-section px-regular bg-background relative z-1 pb-normal-3">
 			<div className="grid grid-cols-15 gap-x-regular">
 				<div className="col-span-full md:col-start-2 md:col-span-13">
 					<SectionHeading sizeClassSerif="text-body-3" num={formatCount(total)}>My Design Diary</SectionHeading>
