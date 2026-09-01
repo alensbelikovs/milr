@@ -3,6 +3,7 @@
 :root {
 	--background: #ffffff;
 	--foreground: #000000;
+	--accent: #0015FF;
 }
 
 @theme inline {
@@ -12,88 +13,44 @@
 	--font-serif: var(--font-serif-local);
 }
 
-/* Fluid type scale — fluid between 375px and 1440px viewports, clamped outside. */
 @theme {
-	--text-heading-4: clamp(3rem, 1.5915rem + 6.0094vw, 7rem); /* 48 → 112 */
-	--text-heading-4--line-height: 1;
+	/* Spacing — py-size-24, mt-size-48, gap-size-96, ... */
+	--spacing-size-16: clamp(12px, calc(12px + (16 - 12) * ((100vw - 390px) / 1050)), 16px);
+	--spacing-size-24: clamp(16px, calc(16px + (24 - 16) * ((100vw - 390px) / 1050)), 24px);
+	--spacing-size-48: clamp(32px, calc(32px + (48 - 32) * ((100vw - 390px) / 1050)), 48px);
+	--spacing-size-64: clamp(40px, calc(40px + (64 - 40) * ((100vw - 390px) / 1050)), 64px);
+	--spacing-size-96: clamp(56px, calc(56px + (96 - 56) * ((100vw - 390px) / 1050)), 96px);
+	--spacing-size-192: clamp(96px, calc(96px + (192 - 96) * ((100vw - 390px) / 1050)), 192px);
 
-	--text-heading-3: clamp(2.75rem, 1.9577rem + 3.3803vw, 5rem); /* 44 → 80 */
-	--text-heading-3--line-height: 1;
+	/* Text — text-size-24, text-size-96, ... */
+	--text-size-96: clamp(48px, calc(48px + (96 - 48) * ((100vw - 390px) / 1050)), 96px);
+	--text-size-96--line-height: 1;
 
-	--text-heading-2: clamp(2.5rem, 1.9718rem + 2.2535vw, 4rem); /* 40 → 64 */
-	--text-heading-2--line-height: 1.05;
+	--text-size-64: clamp(36px, calc(36px + (64 - 36) * ((100vw - 390px) / 1050)), 64px);
+	--text-size-64--line-height: 1;
 
-	--text-heading-1: clamp(2rem, 1.6479rem + 1.5023vw, 3rem); /* 32 → 48 */
-	--text-heading-1--line-height: 1.1;
+	--text-size-48: clamp(30px, calc(30px + (48 - 30) * ((100vw - 390px) / 1050)), 48px);
+	--text-size-48--line-height: 1;
 
-	--text-subheading: clamp(1.625rem, 1.4049rem + 0.939vw, 2.25rem); /* 26 → 36 */
-	--text-subheading--line-height: 1.2;
+	--text-size-36: clamp(24px, calc(24px + (36 - 24) * ((100vw - 390px) / 1050)), 36px);
+	--text-size-36--line-height: 1;
 
-	--text-body-3: clamp(1.125rem, 0.993rem + 0.5634vw, 1.5rem); /* 18 → 24 */
-	--text-body-3--line-height: 1.2;
+	--text-size-24: clamp(18px, calc(18px + (24 - 18) * ((100vw - 390px) / 1050)), 24px);
+	--text-size-24--line-height: 1;
 
-	--text-body-2: clamp(1.0625rem, 0.9745rem + 0.3756vw, 1.3125rem); /* 17 → 21 */
-	--text-body-2--line-height: 1.2;
+	--text-size-16: clamp(14px, calc(14px + (16 - 14) * ((100vw - 390px) / 1050)), 16px);
+	--text-size-16--line-height: 1;
 
-	--text-body-1: clamp(0.875rem, 0.831rem + 0.1878vw, 1rem); /* 14 → 16 */
-	--text-body-1--line-height: 1.2;
-
-	--text-small: clamp(0.6875rem, 0.6655rem + 0.0939vw, 0.75rem); /* 11 → 12 */
-	--text-small--line-height: 1.2;
-
-	/* Fluid spacing scale — same 375px → 1440px track as the type scale above.
-	   Larger steps compress harder on mobile; micro barely moves. */
-	--spacing-section: clamp(6rem, 3.8873rem + 9.0141vw, 12rem); /* 96 → 192 */
-	--spacing-normal-3: clamp(3.5rem, 2.6197rem + 3.7559vw, 6rem); /* 56 → 96 */
-	--spacing-normal-2: clamp(2.5rem, 1.9718rem + 2.2535vw, 4rem); /* 40 → 64 */
-	--spacing-normal-1: clamp(2rem, 1.6479rem + 1.5023vw, 3rem); /* 32 → 48 */
-	--spacing-regular: clamp(1rem, 0.8239rem + 0.7512vw, 1.5rem); /* 16 → 24 */
-	--spacing-small: clamp(0.75rem, 0.662rem + 0.3756vw, 1rem); /* 12 → 16 */
-	--spacing-micro: clamp(0.375rem, 0.331rem + 0.1878vw, 0.5rem); /* 6 → 8 */
+	--text-size-14: clamp(13px, calc(13px + (14 - 13) * ((100vw - 390px) / 1050)), 14px);
+	--text-size-14--line-height: 1;
 }
 
 body {
 	background: var(--background);
 	color: var(--foreground);
 	font-family: var(--font-sans);
-	font-weight: 450;
-	letter-spacing: -3%;
-}
-
-/* Links sit above body weight on the wght axis.
-   Layered as base so font-* utilities still win on individual elements. */
-@layer utilities {
-	a {
-		font-weight: 500;
-	}
-	.dimmer {
-		background: #000000;
-		background: linear-gradient(0deg,rgba(0, 0, 0, 1) 0%, rgba(0, 0, 0, 0) 100%);
-	}
-
-	/* The two link looks, kept here rather than in the components that usually wear them: a control
-	   acting on the view it is already in — the close on a dialog — has no address to point at, so it
-	   has to be a button, and it still has to read as the same thing.
-
-	   cursor-pointer is in both because of that button: Tailwind's preflight leaves buttons on the
-	   default arrow, and an anchor with an href already had the pointer regardless.
-
-	   One thing to know: a class lands after the utilities in this layer, so a conflicting utility
-	   passed through className loses to it, where a raw utility string would have been sorted among
-	   them. Nothing passes one today. */
-	.link-primary {
-		@apply inline-block cursor-pointer text-body-1;
-		@apply hover:underline hover:underline-offset-4 focus-visible:underline;
-		@apply aria-disabled:opacity-30 aria-disabled:cursor-not-allowed aria-disabled:no-underline;
-	}
-
-	/* Padding stays out of this one: LinkSecondary takes it as a prop, and a class cannot be told. */
-	.link-secondary {
-		@apply inline-block cursor-pointer text-body-1;
-		@apply opacity-60 underline underline-offset-4;
-		@apply hover:opacity-100 focus-visible:opacity-100;
-		@apply aria-disabled:opacity-30 aria-disabled:cursor-not-allowed;
-	}
+	font-weight: 500;
+	letter-spacing: -0.05em;
 }
 
 body::selection {
@@ -105,4 +62,3 @@ footer::selection {
 	background: var(--background);
 	color: var(--foreground);
 }
-

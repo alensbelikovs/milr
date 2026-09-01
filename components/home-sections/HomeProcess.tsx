@@ -11,7 +11,7 @@ export default function HomeProcess() {
 					md:col-span-9 md:col-start-2
 					lg:col-span-6 xl:col-span-5 lg:col-start-2 xl:col-start-2
 					flex flex-col gap-normal-2
-					mb-section
+					mb-normal-2
 				"
 				>
 					<TextLineSplit as="p" className="text-subheading">

@@ -2,6 +2,7 @@
 import TransitionOverlay from "@/components/transition/TransitionOverlay"
 import { LayoutRouterContext } from "next/dist/shared/lib/app-router-context.shared-runtime"
 import { usePathname } from "next/navigation"
+import { useLenis } from "lenis/react"
 import { useContext, useEffect, useRef, useState } from "react"
 import { useTransitionStore } from "@/store/TransitionStore"
 import { useSceneStore } from "@/store/SceneStore"
@@ -21,7 +22,7 @@ const resolveTransitionType = (pathname: string): TransitionToType => {
 		return TransitionToType.HERO
 	}
 
-	if (pathname === "/projects" || pathname === "/video-blog") {
+	if (pathname === "/projects" || pathname === "/diary") {
 		return TransitionToType.LIST
 	}
 
@@ -120,6 +121,39 @@ export default function TransitionControl({ children }: { children: React.ReactN
 	// Storing reference of wrapper to apply scroll lock
 	const mainRef = useRef<HTMLDivElement>(null)
 
+	// Closed over directly, where ListRouteShell has to hold the same value through a ref. The
+	// difference is who reads it: that one registers a methods object on its FIRST render and never
+	// re-registers, so a closure there would keep the undefined useLenis hands back before its store
+	// subscription settles. This is read inside an effect keyed on pathname, rebuilt on every
+	// navigation, and the one run where Lenis may still be unresolved is the mount — which does not
+	// swap, and so never calls the function below.
+	const lenis = useLenis()
+
+	// Every navigation lands at the top of the page, and this is the only place that can promise it.
+	//
+	// Next's own scroll handling cannot: it keeps scroll position whenever the page element is still
+	// in the viewport, so clicking a card from halfway down a grid can drop you halfway down the page
+	// it opens. Nor should it — Lenis drives the real document scroll in root mode, and a native jump
+	// moves window.scrollY outside its rAF loop, leaving Lenis's internal target on the old value so
+	// the next wheel event pulls back against the jump.
+	//
+	// Called under an opaque curtain and BEFORE the commit, both deliberately. Under cover, so it
+	// jumps rather than travels — a scroll nobody can see is time spent for nothing. Before, so the
+	// incoming page mounts already at the top: ScrollReveal builds its ScrollTriggers on mount and
+	// measures them against the scroll position it finds, so committing first and scrolling after
+	// would leave every trigger on the new page measured against a position it no longer sits at.
+	//
+	// Falls back to the window when Lenis has yet to resolve, which is the frame or two after a hard
+	// load. Skipped entirely when nothing is swapping in — a first load or a refresh is the browser's
+	// own restoration to make, not ours to overrule.
+	const scrollToTop = () => {
+		if (lenis) {
+			lenis.scrollTo(0, { immediate: true })
+			return
+		}
+		window.scrollTo(0, 0)
+	}
+
 	// What the last commit's pathname was, so the second effect can tell a navigation that changed the
 	// route from one that only changed the query.
 	const pathnameRef = useRef(pathname)
@@ -150,6 +184,9 @@ export default function TransitionControl({ children }: { children: React.ReactN
 			if (willSwap) {
 				await callParticipant('transitionOverlay', 'fadeIn')
 				if (flow !== flowRef.current) return
+
+				// Curtain is opaque and the page underneath is still the old one — see scrollToTop.
+				scrollToTop()
 			}
 
 			// Find out what page transitioning to.
@@ -252,17 +289,17 @@ export default function TransitionControl({ children }: { children: React.ReactN
 			// route with no grid is the ordinary case, not a fault. Such a route commits bare: covering it
 			// would raise a curtain with nothing to signal that it is safe to lower again, and the wait
 			// below would sit out the full failsafe behind it.
-			if (!hasParticipant('projectGrid', 'scrollToTop')) { commit(); return }
+			if (!hasParticipant('listRoute', 'scrollToTop')) { commit(); return }
 
 			await callParticipant('transitionOverlay', 'fadeIn')
 			if (flow !== flowRef.current) return
 
 			// Under cover now, so the scroll jumps rather than travels.
-			await callParticipant('projectGrid', 'scrollToTop')
+			await callParticipant('listRoute', 'scrollToTop')
 			if (flow !== flowRef.current) return
 
 			// Read before the commit that causes the bump, exactly as the reveal does. What answers here is
-			// the incoming ProjectGridShell rather than PageReadySignal: the page is reconciled, not
+			// the incoming ListRouteShell rather than PageReadySignal: the page is reconciled, not
 			// remounted, so the page's own signal cannot fire twice for one mount.
 			const readyTokenCaptured = useTransitionStore.getState().readyToken
 

@@ -1,22 +1,21 @@
-import PageReadySignal from "@/components/transition/PageReadySignal"
-import HomeAbout from "@/components/home-sections/HomeAbout"
-import HomeFeaturedWork from "@/components/home-sections/HomeFeaturedWork"
-import CommonHeroScene from "@/components/hero-scene/HeroScene"
-import Footer from "@/components/layout/Footer"
-import HomeProcess from "@/components/home-sections/HomeProcess"
-import HomeFeaturedBlogs from "@/components/home-sections/HomeFeaturedBlogs"
-
+import AboutIntro from "@/components2/sections/AboutIntro"
+import FeaturedProjects from "@/components2/sections/FeaturedProjects"
+import Testimonials from "@/components2/sections/Testimonials"
+import DesignProcess from "@/components2/sections/DesignProcess"
+import FeaturedDiary from "@/components2/sections/FeaturedDiary"
+import Contact from "@/components2/sections/Contact"
 
 export default function HomePage() {
 	return (
-		<>
-			<CommonHeroScene id="home-hero" title="Rinalds Miļicins" src="/placeholder.png"/>
-			<HomeAbout />
-			<HomeFeaturedWork />
-			<HomeProcess />
-			<HomeFeaturedBlogs />
-			{/* <Footer /> */}
-			<PageReadySignal />
-		</>
+		<main className="flex flex-col gap-size-192">
+			<div className="h-screen bg-zinc-200"/>
+			<AboutIntro />
+			<FeaturedProjects />
+			<Testimonials />
+			<DesignProcess />
+			<FeaturedDiary />
+			<Contact />
+			<div className="h-screen"></div>
+		</main>
 	)
 }

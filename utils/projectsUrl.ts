@@ -1,11 +1,12 @@
 // How many cards a page of /projects holds. Read by the page to size its slice and to count the
 // pages, and by nothing else — Pagination is handed a total rather than working it out again.
 //
-// Five because that is the length of ProjectGrid's placement rhythm. variantAt wraps by index within
-// the page, so a page size that is a multiple of the rhythm gives every page a complete cycle; six
-// would leave the last card of each page repeating the first card's placement, and the negative
-// margins in that rhythm are tuned to where a cycle lands, not to a fragment of one.
-export const PROJECTS_PER_PAGE = 5
+// Twelve because the shared placement rhythm is six entries long — see gridVariants. variantAt
+// wraps by index within the page, so a page size that is a multiple of the rhythm gives every page
+// complete cycles of it, two here, where a size like eight would leave the last cards of a page
+// repeating the first cards placement against a rhythm whose negative margins and cycle break are
+// tuned to where a cycle lands, not to a fragment of one.
+export const PROJECTS_PER_PAGE = 12
 
 // The category document carries a title and nothing else — see SCHEMAS.md — so the URL segment is
 // derived from the title rather than read off a field.

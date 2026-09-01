@@ -28,7 +28,7 @@ export default async function HomeFeaturedBlogs() {
 			</div>
 			<VideoBlogGridSmall items={blogs} />
 			<div className="flex items-center justify-center w-full col-span-full">
-				<LinkSecondary href="/video-blog" target="_self">See More</LinkSecondary>
+				<LinkSecondary href="/diary" target="_self">See More</LinkSecondary>
 			</div>
 		</section>
 	)

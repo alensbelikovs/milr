@@ -3,6 +3,9 @@ import HeroScene from "@/components/hero-scene/HeroScene"
 import { getProject } from "@/utils/sanityGetters"
 import buildImageUrl, { HERO } from "@/utils/buildImageUrl"
 import { notFound } from "next/navigation"
+import ProjectAbout from "@/components/project-show-sections/ProjectAbout"
+import ProjectGallery from "@/components/project-show-sections/ProjectGallery"
+import Testimonials from "@/components/common/Testimonials"
 
 export default async function ProjectShow({ params }: PageProps<"/projects/[projectSlug]">) {
 	const { projectSlug } = await params
@@ -19,6 +22,12 @@ export default async function ProjectShow({ params }: PageProps<"/projects/[proj
 				id="project-show-hero"
 				title={project.title}
 				src={buildImageUrl(project.img, HERO)} />
+			<ProjectAbout project={project}/>
+			<ProjectGallery gallery={project.gallery} />
+			{/* Checked rather than asserted, because the reference really is optional — see SCHEMA.md —
+			    and most projects carry no quote. A ! here reads as "there is always one" and turns the
+			    ordinary case into a 500 on the way in. */}
+			{project.testimonial && <Testimonials testimonials={[project.testimonial]} />}
 			<PageReadySignal />
 		</>
 	)

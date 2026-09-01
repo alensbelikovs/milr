@@ -1,6 +1,8 @@
+"use client"
+
 import Link from "next/link"
 import SerifNumSpan from "@/components/common/SerifNumSpan"
-import ProjectsHeaderCategory from "@/components/projects-sections/ProjectsHeaderCategory"
+import ProjectsHeaderCategory from "@/components/project-index-sections/ProjectsHeaderCategory"
 import type { CategoryListType } from "@/types/ContentTypes"
 import { categorySlug, projectsHref } from "@/utils/projectsUrl"
 
@@ -16,6 +18,16 @@ import { categorySlug, projectsHref } from "@/utils/projectsUrl"
 //
 // Categories with nothing in them are dropped: a chip whose only destination is an empty grid is a
 // dead end. Reaching one by URL still works and still renders — see the page's page-count floor.
+//
+// A client component, and only for the click guard below. Everything else here would happily run on
+// the server: the props arrive already resolved from the page, the mapping is two entries long, and
+// categorySlug and projectsHref are pure string functions. ProjectsHeaderCategory is a client
+// component for the same reason, so the marginal cost of this one is the mapping and SerifNumSpan.
+//
+// The guard could have been CSS — pointer-events-none on the selected link — and that would have
+// cost no JavaScript at all. It is not, because it only stops the pointer: the link stays tabbable
+// and Enter still navigates, so the heading would answer the keyboard differently from the chips
+// beside it, which block both.
 export default function ProjectsHeader(
 	{ categories, activeSlug, totalCount }:
 	{ categories: CategoryListType[], activeSlug: string | null, totalCount: number }
@@ -35,37 +47,43 @@ export default function ProjectsHeader(
 			py-section gap-regular px-regular
 			relative z-1 bg-background
 			grid grid-cols-12
+			xl:gap-y-0
+			gap-y-normal-3
 		"
 		>
-			<div className="col-start-2 col-span-6">
+			<div className="xl:col-start-2 xl:col-span-6 col-start-1 lg:col-span-10 lg:col-start-2 col-span-full">
 				<h1 className="text-heading-4">
-					{/* Still a link when it is the selected one, unlike the current page number in
-					    Pagination, which renders as a span. The difference is what the control means: a
-					    page number is a position, and a self-link to where you already are is a tab stop
-					    that does nothing, while a category is an option that stays an option once picked.
-					    Keeping it an anchor also keeps the heading clickable at all times, so the hit area
-					    and the layout do not shift as the filter changes. */}
 					<Link
 						href={projectsHref({ category: null })}
 						aria-current={allActive ? "page" : undefined}
+						// Clicking All Work while All Work is what is showing is a navigation to the address
+						// the page is already on. Left alone the router runs it, refetches the tree and hands
+						// fresh children down, and TransitionControl — which sees new children and cannot tell
+						// they render the same thing — spends the whole curtain sequence arriving back exactly
+						// where it started.
+						//
+						// Written the same way round as the chips': the early return means preventDefault only
+						// ever runs on the click that was going to change nothing, and every other click falls
+						// through to the anchor untouched, prefetch and modifier clicks included.
+						onClick={event => {
+							if (!allActive) return
+							event.preventDefault()
+						}}
 						className={`
-							hover:text-foreground hover:underline hover:underline-offset-4
+							hover:underline hover:underline-offset-4
 							focus-visible:text-foreground
 							focus-visible:underline focus-visible:underline-offset-4
 							${allActive ? "text-foreground" : "text-foreground/50"}
 						`}
 					>
-						All Work<SerifNumSpan sizeClass="text-subheading">{totalCount}</SerifNumSpan>
+						All Projects<SerifNumSpan sizeClass="text-subheading">{totalCount}</SerifNumSpan>
 					</Link>
 				</h1>
 			</div>
 
-			{/* A landmark, so the filters are one named thing to skip past rather than links loose in a
-			    heading block. The All Work link is deliberately outside it: it is the page's h1, and the
-			    page title does not belong inside a navigation landmark. */}
 			<nav
 				aria-label="Filter projects by category"
-				className="col-start-8 col-span-5 flex flex-wrap items-end gap-regular pb-small"
+				className="xl:col-start-8 xl:col-span-4 col-start-1 col-span-full lg:col-span-10 lg:col-start-2 flex flex-wrap items-end gap-regular pb-small"
 			>
 				{options.map(option => (
 					<ProjectsHeaderCategory

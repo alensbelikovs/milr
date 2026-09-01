@@ -1,18 +1,16 @@
 import type { Metadata } from "next"
 import { notFound, redirect } from "next/navigation"
 import PageReadySignal from "@/components/transition/PageReadySignal"
-import ProjectsHeader from "@/components/projects-sections/ProjectsHeader"
-import ProjectGrid from "@/components/common/ProjectGrid"
-import ProjectGridShell from "@/components/common/ProjectGridShell"
+import ProjectsHeader from "@/components/project-index-sections/ProjectsHeader"
+import CardGrid from "@/components/common/CardGrid"
+import ProjectGridItem from "@/components/common/ProjectGridItem"
+import ListRouteShell from "@/components/common/ListRouteShell"
 import Pagination from "@/components/common/Pagination"
+import { GRID_CONTAINER, GRID_CYCLE_SPACER, PROJECT_VARIANTS } from "@/utils/gridVariants"
 import { getCategories, getProjectsCount, getProjectsPage } from "@/utils/sanityGetters"
 import { PROJECTS_PER_PAGE, categorySlug, projectsHref } from "@/utils/projectsUrl"
+import { first } from "@/utils/firstParam"
 import type { CategoryListType } from "@/types/ContentTypes"
-
-// A repeated key comes back as an array — ?category=a&category=b — and the first one is the answer.
-// Reading it straight would hand an array to a string comparison that then silently never matches.
-const first = (value: string | string[] | undefined) =>
-	Array.isArray(value) ? value[0] : value
 
 // Everything the URL says, checked against what exists, in one place: both the page and
 // generateMetadata need the same answers and neither should reach a different conclusion.
@@ -107,16 +105,24 @@ export default async function ProjectsIndexPage({ searchParams }: PageProps<"/pr
 			<section className="px-regular bg-background relative z-1">
 				{/* Keyed on the state it is showing, which is what makes a filter change tear the grid
 				    down and build a new one. ScrollReveal only animates on a fresh mount — see
-				    ProjectGridShell — so reconciling in place would swap the cards in with no entrance. */}
-				<ProjectGridShell key={`${categorySlugParam ?? "all"}-${page}`}>
-					<ProjectGrid items={projects} />
-				</ProjectGridShell>
+				    ListRouteShell — so reconciling in place would swap the cards in with no entrance. */}
+				<ListRouteShell key={`${categorySlugParam ?? "all"}-${page}`}>
+					<CardGrid
+						items={projects}
+						variants={PROJECT_VARIANTS}
+						className={GRID_CONTAINER}
+						cycleSpacer={GRID_CYCLE_SPACER}
+						getKey={project => project.slug}
+						renderCard={(project, cardClassName) => (
+							<ProjectGridItem project={project} className={cardClassName} />
+						)} />
+				</ListRouteShell>
 
-				<div className="grid grid-cols-15 gap-x-regular">
+				<div className="grid grid-cols-12 gap-x-regular">
 					<Pagination
 						currentPage={page}
 						totalPages={totalPages}
-						category={categorySlugParam} />
+						buildHref={page => projectsHref({ category: categorySlugParam, page })} />
 				</div>
 			</section>
 

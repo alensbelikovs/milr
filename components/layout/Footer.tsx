@@ -6,7 +6,7 @@ import LinkPrimary from "@/components/common/LinkPrimary"
 import LinkSecondary from "@/components/common/LinkSecondary"
 import RevealMask from "@/components/common/RevealMask"
 import FooterGroup from "@/components/layout/FooterGroup"
-import Link from "next/link"
+import LinkSmall from "@/components/common/LinkSmall"
 
 // Where along the wrapper's scroll range each part reveals, as ScrollTrigger progress. With the
 // start and end set below, 0.5 is the moment the footer covers the screen and 1 is the bottom of the
@@ -133,21 +133,10 @@ export default function Footer({ heading="Ready when You are." }: { heading?: st
 								<p>2026 © All Rights Reserved</p>
 							</RevealMask>
 							<RevealMask>
-								<Link
-								className="hover:underline"
-								href="/cookies-privacy"
-								>
-									Cookies & Privacy
-								</Link>
+								<LinkSmall href="/cookies-privacy">Cookies & Privacy</LinkSmall>
 							</RevealMask>
 							<RevealMask>
-								<Link
-								className="hover:underline"
-								href="https://alensbelikovs.com/"
-								target="_blank"
-								>
-									Designed by AB
-								</Link>
+								<LinkSmall href="https://alensbelikovs.com/" target="_blank">Designed by AB</LinkSmall>
 							</RevealMask>
 						</div>
 					</div>
