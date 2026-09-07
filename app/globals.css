@@ -1,13 +1,16 @@
 @import "tailwindcss";
 
 :root {
-	--background: #ffffff;
+	--background: #F5F2F8;
+	--image-placeholder: rgba(0, 0, 0, 0.05);
 	--foreground: #000000;
 	--accent: #0015FF;
 }
 
 @theme inline {
 	--color-background: var(--background);
+	--color-image-placeholder: var(--image-placeholder);
+	--color-accent: var(--accent);
 	--color-foreground: var(--foreground);
 	--font-sans: var(--font-sans-local);
 	--font-serif: var(--font-serif-local);
@@ -15,34 +18,121 @@
 
 @theme {
 	/* Spacing — py-size-24, mt-size-48, gap-size-96, ... */
+	--spacing-size-12: clamp(9px, calc(9px + (12 - 9) * ((100vw - 390px) / 1050)), 12px);
 	--spacing-size-16: clamp(12px, calc(12px + (16 - 12) * ((100vw - 390px) / 1050)), 16px);
 	--spacing-size-24: clamp(16px, calc(16px + (24 - 16) * ((100vw - 390px) / 1050)), 24px);
 	--spacing-size-48: clamp(32px, calc(32px + (48 - 32) * ((100vw - 390px) / 1050)), 48px);
 	--spacing-size-64: clamp(40px, calc(40px + (64 - 40) * ((100vw - 390px) / 1050)), 64px);
 	--spacing-size-96: clamp(56px, calc(56px + (96 - 56) * ((100vw - 390px) / 1050)), 96px);
+	--spacing-size-120: clamp(68px, calc(68px + (120 - 68) * ((100vw - 390px) / 1050)), 120px);
+	--spacing-size-144: clamp(80px, calc(80px + (144 - 80) * ((100vw - 390px) / 1050)), 144px);
 	--spacing-size-192: clamp(96px, calc(96px + (192 - 96) * ((100vw - 390px) / 1050)), 192px);
 
-	/* Text — text-size-24, text-size-96, ... */
+	--font-serif--letter-spacing: -0.04em;
+
+	/* Text — text-size-24, text-size-96, ...
+	   Each size owns its line-height and letter-spacing. */
+	--text-size-128: clamp(64px, calc(64px + (128 - 64) * ((100vw - 390px) / 1050)), 128px);
+	--text-size-128--line-height: 1;
+	--text-size-128--letter-spacing: -0.04em;
+
 	--text-size-96: clamp(48px, calc(48px + (96 - 48) * ((100vw - 390px) / 1050)), 96px);
 	--text-size-96--line-height: 1;
+	--text-size-96--letter-spacing: -0.04em;
+
+	--text-size-72: clamp(40px, calc(40px + (72 - 40) * ((100vw - 390px) / 1050)), 72px);
+	--text-size-72--line-height: 1;
+	--text-size-72--letter-spacing: -0.04em;
 
 	--text-size-64: clamp(36px, calc(36px + (64 - 36) * ((100vw - 390px) / 1050)), 64px);
-	--text-size-64--line-height: 1;
+	--text-size-64--line-height: 1.2;
+	--text-size-64--letter-spacing: -0.04em;
 
 	--text-size-48: clamp(30px, calc(30px + (48 - 30) * ((100vw - 390px) / 1050)), 48px);
 	--text-size-48--line-height: 1;
+	--text-size-48--letter-spacing: -0.04em;
 
 	--text-size-36: clamp(24px, calc(24px + (36 - 24) * ((100vw - 390px) / 1050)), 36px);
-	--text-size-36--line-height: 1;
+	--text-size-36--line-height: 1.15;
+	--text-size-36--letter-spacing: -0.04em;
 
 	--text-size-24: clamp(18px, calc(18px + (24 - 18) * ((100vw - 390px) / 1050)), 24px);
-	--text-size-24--line-height: 1;
+	--text-size-24--line-height: 1.15;
+	--text-size-24--letter-spacing: -0.03em;
+
+	--text-size-18: clamp(15px, calc(15px + (18 - 15) * ((100vw - 390px) / 1050)), 18px);
+	--text-size-18--line-height: 1.4;
+	--text-size-18--letter-spacing: -0.02em;
 
 	--text-size-16: clamp(14px, calc(14px + (16 - 14) * ((100vw - 390px) / 1050)), 16px);
 	--text-size-16--line-height: 1;
+	--text-size-16--letter-spacing: -0.02em;
 
 	--text-size-14: clamp(13px, calc(13px + (14 - 13) * ((100vw - 390px) / 1050)), 14px);
-	--text-size-14--line-height: 1;
+	--text-size-14--line-height: 1.4;
+	--text-size-14--letter-spacing: -0.02em;
+
+	/* Arrow — enters from the left on hover, then keeps travelling right on
+	   unhover. arrow-out deliberately has no forwards fill, so once it ends the
+	   element snaps back to its resting -120% while still clipped out of view. */
+	--animate-arrow-in: arrow-in 400ms ease forwards;
+	--animate-arrow-out: arrow-out 400ms ease;
+
+	@keyframes arrow-in {
+		from { translate: -120% 0; }
+		to { translate: 0 0; }
+	}
+
+	@keyframes arrow-out {
+		from { translate: 0 0; }
+		to { translate: 120% 0; }
+	}
+}
+
+@utility font-serif {
+	letter-spacing: var(--tw-tracking, var(--font-serif--letter-spacing));
+}
+
+/* Keeps an overflowing field's scrollbar on the page background instead of the browser's own
+   light grey, which reads as a seam against --background. The standard property takes thumb and
+   track as a pair — there is no way to set the track alone — so the thumb is pinned to a muted
+   foreground, in the same register as the foreground/10 border the fields already use. The
+   WebKit pseudo-elements cover Safari, which does not support scrollbar-color. */
+@utility scrollbar-background {
+	scrollbar-color: color-mix(in srgb, var(--foreground) 30%, transparent) var(--background);
+
+	&::-webkit-scrollbar {
+		background: var(--background);
+	}
+
+	&::-webkit-scrollbar-track {
+		background: var(--background);
+	}
+
+	&::-webkit-scrollbar-thumb {
+		background: color-mix(in srgb, var(--foreground) 30%, transparent);
+	}
+}
+
+@layer utils {
+	.grid-standard {
+		@apply grid grid-cols-12 gap-x-size-24 px-size-24;
+	}
+}
+
+/* Reserves the scrollbar's width whether or not a scrollbar is drawn, so nothing on the page
+   moves sideways when one comes or goes — between a short page and a tall one, and above all when
+   the sidebar locks scrolling and Lenis takes the document's scrollbar away underneath it. */
+html {
+	scrollbar-gutter: stable;
+}
+
+/* lenis.css parks a stopped Lenis on `overflow: clip`, which stops being a scroll container at all
+   and so drops the gutter reserved above — the very layout shift this is here to prevent. `hidden`
+   holds scrolling just as still while staying a scroll container, so the gutter survives the lock.
+   Matched selector plus `html` to outrank the original rather than relying on import order. */
+html.lenis:not(.lenis-autoToggle).lenis-stopped {
+	overflow: hidden;
 }
 
 body {
@@ -50,7 +140,6 @@ body {
 	color: var(--foreground);
 	font-family: var(--font-sans);
 	font-weight: 500;
-	letter-spacing: -0.05em;
 }
 
 body::selection {

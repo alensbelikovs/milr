@@ -6,42 +6,25 @@ import { useLenis } from "lenis/react"
 import { useContext, useEffect, useRef, useState } from "react"
 import { useTransitionStore } from "@/store/TransitionStore"
 import { useSceneStore } from "@/store/SceneStore"
-import { TransitionToType } from "@/types/TransitionTypes"
 
 // Failsafe after which to force a transition to end. Spent across BOTH waits below rather than
 // granted to each: two of these in series is twenty seconds of opaque curtain on a page that never
 // signalled, which reads as a dead site rather than a slow one.
 const READY_FAILSAFE = 10000
 
-// A project show page — /projects/<slug>, and nothing nested deeper.
-const PROJECT_SHOW_PATH = /^\/projects\/[^/]+$/
-
-// Find out transition type from current pathname (applied to transitionTo)
-const resolveTransitionType = (pathname: string): TransitionToType => {
-	if (pathname === "/" || PROJECT_SHOW_PATH.test(pathname)) {
-		return TransitionToType.HERO
-	}
-
-	if (pathname === "/projects" || pathname === "/diary") {
-		return TransitionToType.LIST
-	}
-
-	return TransitionToType.OTHER
-}
-
 // Resolves when readyToken in store advances past 'from' value. Awaits page load.
 const waitForPageReady = (from: number, timeoutMs: number) => new Promise<void>(resolve => {
 	// Resolve instantly if readyToken already advanced past 'from' value.
-    if (useTransitionStore.getState().readyToken > from) { console.log('page ready (already committed)'); return resolve() }
+	if (useTransitionStore.getState().readyToken > from) { console.log('page ready (already committed)'); return resolve() }
 
 	// Subscribe to store change
-    const unsub = useTransitionStore.subscribe(state => {
+	const unsub = useTransitionStore.subscribe(state => {
 		// When readyToken advances past 'from' value, clear fallback timeout and resolve promise.
-        if (state.readyToken > from) { clearTimeout(timeout); unsub(); resolve(); console.log('page ready') }
-    })
+		if (state.readyToken > from) { clearTimeout(timeout); unsub(); resolve(); console.log('page ready') }
+	})
 
 	// Fallback timeout to resolve after set duration if transition is stuck.
-    const timeout: ReturnType<typeof setTimeout> = setTimeout(() => { console.warn('page ready FAILSAFE'); unsub(); resolve() }, timeoutMs)
+	const timeout: ReturnType<typeof setTimeout> = setTimeout(() => { console.warn('page ready FAILSAFE'); unsub(); resolve() }, timeoutMs)
 })
 
 // Every id in 'pending' has reported drawn. An id missing from the registry counts as NOT ready: it
@@ -53,11 +36,14 @@ const everySceneReady = (scenes: Record<string, boolean>, pending: string[]) =>
 
 // Resolves when every scene the incoming page registered has drawn its first frame.
 //
-// Call it only AFTER waitForPageReady, which is what makes the registry read below the incoming
-// page's rather than the outgoing one's: the page being left unregisters its scenes and the page
-// arriving registers its own from a layout effect, all inside the commit that bumps readyToken.
-// Layout effects run before the browser paints, so by the time this runs the registry is settled —
-// nothing is on its way in.
+// Nothing in this version of the site registers a scene yet, so in practice this takes the empty
+// branch below and resolves in the same tick — the wait costs nothing. It is written now rather than
+// deferred because the ordering it depends on is the awkward part, not the waiting: call it only
+// AFTER waitForPageReady, which is what makes the registry read below the incoming page's rather
+// than the outgoing one's. The page being left unregisters its scenes and the page arriving
+// registers its own from a layout effect, all inside the commit that bumps readyToken. Layout
+// effects run before the browser paints, so by the time this runs the registry is settled — nothing
+// is on its way in.
 const waitForScenesReady = (timeoutMs: number) => new Promise<void>(resolve => {
 	// Snapshot taken once: what is registered at this instant is what this transition waits for, and
 	// nothing that registers later can join. Deciding once is the point — the registry keeps moving
@@ -65,9 +51,9 @@ const waitForScenesReady = (timeoutMs: number) => new Promise<void>(resolve => {
 	const scenes = useSceneStore.getState().scenes
 	const pending = Object.keys(scenes)
 
-	// Nothing registered means this page has no scenes to wait on — LIST and OTHER — so resolve now.
-	// Subscribing instead would hang: with no scene to draw a frame, no store change is ever coming
-	// and the transition would sit behind the curtain until the failsafe fires.
+	// Nothing registered means this page has no scenes to wait on — every page, for now — so resolve
+	// now. Subscribing instead would hang: with no scene to draw a frame, no store change is ever
+	// coming and the transition would sit behind the curtain until the failsafe fires.
 	if (pending.length === 0) { console.log('scenes ready (none registered)'); return resolve() }
 
 	// Registered and already drawn. Reachable when waitForPageReady returned on its own failsafe,
@@ -99,13 +85,6 @@ const callParticipant = async (key: string, method: string) => {
 	await participant[method]()
 }
 
-// Whether a participant is on screen to answer for a method, asked before calling rather than found
-// out by calling. The warn above is right for the reveal — a route that should have animated and did
-// not is a fault every time — but wrong for the same-path branch below, where having nothing to
-// animate is the ordinary case on every route that is not a filtered list.
-const hasParticipant = (key: string, method: string) =>
-	Boolean(useTransitionStore.getState().participants[key]?.[method])
-
 export default function TransitionControl({ children }: { children: React.ReactNode }) {
 	const pathname = usePathname()
 	const context = useContext(LayoutRouterContext)
@@ -118,15 +97,9 @@ export default function TransitionControl({ children }: { children: React.ReactN
 	// once — all of them driving the same participants, including those of a page on its way out.
 	const flowRef = useRef(0)
 
-	// Storing reference of wrapper to apply scroll lock
-	const mainRef = useRef<HTMLDivElement>(null)
-
-	// Closed over directly, where ListRouteShell has to hold the same value through a ref. The
-	// difference is who reads it: that one registers a methods object on its FIRST render and never
-	// re-registers, so a closure there would keep the undefined useLenis hands back before its store
-	// subscription settles. This is read inside an effect keyed on pathname, rebuilt on every
-	// navigation, and the one run where Lenis may still be unresolved is the mount — which does not
-	// swap, and so never calls the function below.
+	// Read inside an effect keyed on pathname, rebuilt on every navigation, and the one run where
+	// Lenis may still be unresolved is the mount — which does not swap, and so never calls the
+	// function below.
 	const lenis = useLenis()
 
 	// Every navigation lands at the top of the page, and this is the only place that can promise it.
@@ -139,9 +112,9 @@ export default function TransitionControl({ children }: { children: React.ReactN
 	//
 	// Called under an opaque curtain and BEFORE the commit, both deliberately. Under cover, so it
 	// jumps rather than travels — a scroll nobody can see is time spent for nothing. Before, so the
-	// incoming page mounts already at the top: ScrollReveal builds its ScrollTriggers on mount and
-	// measures them against the scroll position it finds, so committing first and scrolling after
-	// would leave every trigger on the new page measured against a position it no longer sits at.
+	// incoming page mounts already at the top: anything building a ScrollTrigger on mount measures it
+	// against the scroll position it finds, so committing first and scrolling after would leave every
+	// trigger on the new page measured against a position it no longer sits at.
 	//
 	// Falls back to the window when Lenis has yet to resolve, which is the frame or two after a hard
 	// load. Skipped entirely when nothing is swapping in — a first load or a refresh is the browser's
@@ -154,18 +127,21 @@ export default function TransitionControl({ children }: { children: React.ReactN
 		window.scrollTo(0, 0)
 	}
 
-	// What the last commit's pathname was, so the second effect can tell a navigation that changed the
-	// route from one that only changed the query.
-	const pathnameRef = useRef(pathname)
-
-	// Mounts new page, all checks that wait on things to get ready need to run after this. Both
-	// effects below go through it, so the identity check that keeps a no-op commit from re-rendering
-	// is written once and cannot drift between them.
-	const commit = () => setCommitted(prev =>
-		prev.component === children && prev.context === context
-			? prev
-			: { component: children, context }
-	)
+	// Mounts new page, all checks that wait on things to get ready need to run after this.
+	//
+	// Publishing the pathname from in here, rather than leaving readers to call usePathname for
+	// themselves, is what gives them the pathname of the page ON SCREEN. usePathname flips the moment
+	// the router commits — while the curtain is still fading in over the page being left — and context
+	// propagation reaches into the frozen tree regardless of its element identity, so a "see next"
+	// list keyed on it would visibly reshuffle before the page it belongs to has gone.
+	const commit = () => {
+		useTransitionStore.getState().setCommittedPathname(pathname)
+		setCommitted(prev =>
+			prev.component === children && prev.context === context
+				? prev
+				: { component: children, context }
+		)
+	}
 
 	useEffect(() => {
 		const unfreeze = commit
@@ -189,10 +165,6 @@ export default function TransitionControl({ children }: { children: React.ReactN
 				scrollToTop()
 			}
 
-			// Find out what page transitioning to.
-			const transitioningTo = resolveTransitionType(pathname)
-			console.log(transitioningTo)
-			
 			// Baseline waitForPageReady() compares against: it resolves once readyToken passes this.
 			// A swap means the page arriving has yet to signal, so wait for the count to pass what it
 			// reads now. No swap means the committed page signalled before this effect ever ran —
@@ -212,116 +184,26 @@ export default function TransitionControl({ children }: { children: React.ReactN
 			await waitForPageReady(readyTokenCaptured, remaining())
 			if (flow !== flowRef.current) return
 
-			// Held here rather than inside the HERO branch so that everything registered from inside a
-			// canvas — heroSceneGeometries among them — is in participants by the time the switch calls
-			// it. Moved into the branch, the switch runs first and those calls silently no-op.
-			//
-			// What makes that hold is where a scene's ready signal comes from: SceneReadySetter sits in
-			// the same <Suspense> as the geometries, so it cannot report a drawn frame until the commit
-			// that mounted them — and registered their participant — has already happened.
 			await waitForScenesReady(remaining())
 			if (flow !== flowRef.current) return
-			// Global chrome, so they enter ahead of the switch rather than inside every branch. Neither
-			// is awaited: they run alongside whatever the branch below plays, not before it. Lifting the
-			// curtain is every route's reveal, so it lives out here unconditionally — a branch cannot
-			// forget it, and the page underneath is uncovered while its own entrance is already playing.
-			callParticipant('navbar', 'navIn')
-			callParticipant('transitionOverlay', 'fadeOut')
 
-			// Run appropriate animations for each different transition type
-			switch (transitioningTo) {
-				case TransitionToType.HERO:
-					Promise.all([
-						callParticipant('heroSceneOverlay', 'dimmerIn'),
-						callParticipant('heroSceneOverlay', 'headingIn'),
-						callParticipant('heroSceneGeometries', 'geometriesIn'),
-					])
-					break
-				case TransitionToType.LIST:
-					// await list animation
-					break
-				case TransitionToType.OTHER:
-					// Nothing of its own — the curtain lifting above is the whole reveal.
-					break
-			}
+			// Lifting the curtain is the whole reveal, for now — no route animates an entrance of its
+			// own yet. Left unawaited so that when one does, it plays alongside the white clearing
+			// rather than behind it.
+			callParticipant('transitionOverlay', 'fadeOut')
 		}
 		reveal()
+		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, [pathname])
 
-	// The navigation the reveal above structurally cannot see: a search-param change.
-	//
-	// usePathname strips the query, so /projects?category=residential reads as /projects and the
-	// effect keyed on it never re-runs. The router still hands down new children, but unfreeze only
-	// ever runs inside reveal — so with nothing to call it, the frozen page would keep rendering the
-	// old results for good. This effect is what commits them, and it is keyed on children so it hears
-	// what pathname cannot say.
-	//
-	// It is a whole reveal of its own, and it plays the same beats as the one above: curtain down, swap
-	// underneath, curtain up. What it leaves out is the scene wait, which has nothing to wait for on a
-	// list, and the per-type switch, which has no branch to run.
-	useEffect(() => {
-		// A real navigation. The reveal above owns it, and has not committed yet — unfreeze runs after
-		// its fadeIn — so committed is still stale here and the check below would misread it as work to
-		// do. Only bring the ref up to date.
-		if (pathnameRef.current !== pathname) {
-			pathnameRef.current = pathname
-			return
-		}
-
-		// Nothing new to show. True on first mount, where committed was seeded with these very refs,
-		// and on any re-render that did not come from the router.
-		if (committed.component === children && committed.context === context) return
-
-		// The same counter the reveal claims from, deliberately: both write to committed, and two
-		// flows allowed to finish in either order would let an older one land last and put the previous
-		// results back. Sharing it means whichever started last wins, so a second chip clicked while the
-		// first is still swapping supersedes it.
-		//
-		// It cuts the other way too — a swap starting mid-reveal would abort the reveal, and an aborted
-		// reveal never reaches the line that lifts the curtain. That is unreachable rather than handled:
-		// a reveal is only in flight while the overlay is opaque over the whole page, so there is no chip
-		// to click, and nothing here navigates on its own (no router.refresh, no Sanity live mode). Add
-		// either and this needs a way to hand the curtain back.
-		const flow = ++flowRef.current
-
-		async function swap() {
-			// Asked rather than called, because callParticipant warns about a missing participant and a
-			// route with no grid is the ordinary case, not a fault. Such a route commits bare: covering it
-			// would raise a curtain with nothing to signal that it is safe to lower again, and the wait
-			// below would sit out the full failsafe behind it.
-			if (!hasParticipant('listRoute', 'scrollToTop')) { commit(); return }
-
-			await callParticipant('transitionOverlay', 'fadeIn')
-			if (flow !== flowRef.current) return
-
-			// Under cover now, so the scroll jumps rather than travels.
-			await callParticipant('listRoute', 'scrollToTop')
-			if (flow !== flowRef.current) return
-
-			// Read before the commit that causes the bump, exactly as the reveal does. What answers here is
-			// the incoming ListRouteShell rather than PageReadySignal: the page is reconciled, not
-			// remounted, so the page's own signal cannot fire twice for one mount.
-			const readyTokenCaptured = useTransitionStore.getState().readyToken
-
-			commit()
-
-			await waitForPageReady(readyTokenCaptured, READY_FAILSAFE)
-			if (flow !== flowRef.current) return
-
-			// Not awaited, matching the reveal: the curtain lifts alongside ScrollReveal's entrance rather
-			// than before it, so the cards are already rising as the white clears.
-			callParticipant('transitionOverlay', 'fadeOut')
-		}
-		swap()
-		// eslint-disable-next-line react-hooks/exhaustive-deps
-	}, [children, context, pathname])
-
+	// A div rather than the <main> this used to render: the pages own that element themselves, and
+	// one <main> nested inside another is invalid.
 	return (
-		<main ref={mainRef} className="relative">
+		<div className="relative">
 			<LayoutRouterContext.Provider value={committed.context}>
 				{committed.component}
 			</LayoutRouterContext.Provider>
 			<TransitionOverlay />
-		</main>
+		</div>
 	)
 }

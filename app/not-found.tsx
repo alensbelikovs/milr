@@ -1,4 +1,4 @@
-import PageReadySignal from "@/components/transition/PageReadySignal"
+// import PageReadySignal from "@/components/transition/PageReadySignal"
 
 export default function NotFound() {
 	return (
@@ -7,7 +7,7 @@ export default function NotFound() {
 			<p className="col-start-2 col-span-6 text-body-2">
 				This page does not exist.
 			</p>
-			<PageReadySignal />
+			{/*<PageReadySignal />*/}
 		</main>
 	)
 }

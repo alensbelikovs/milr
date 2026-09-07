@@ -7,6 +7,17 @@ type TransitionStoreType = {
 	readyToken: number
 	signalReady: () => void
 
+	// The pathname of what is actually ON SCREEN, which is not what usePathname says while a
+	// transition is in flight: TransitionControl keeps rendering the outgoing tree until it commits,
+	// and the router has already moved on by then. Written from commit(), so it changes in the very
+	// set that swaps the page it describes.
+	//
+	// Null until the first commit — a server render, and the frames before TransitionControl's mount
+	// effect runs. A reader wanting a pathname that early should fall back to usePathname, where the
+	// two agree anyway because nothing has navigated yet.
+	committedPathname: string | null
+	setCommittedPathname: (pathname: string) => void
+
 	// Keyed by participant name. Registered from a layout effect on mount, dropped on unmount,
 	// so the set in here is always exactly what is on screen.
 	participants: Record<string, TransitionParticipantMethodsType>
@@ -17,6 +28,11 @@ type TransitionStoreType = {
 export const useTransitionStore = create<TransitionStoreType>(set => ({
 	readyToken: 0,
 	signalReady: () => set(state => ({ readyToken: state.readyToken + 1 })),
+
+	committedPathname: null,
+	setCommittedPathname: pathname => set(state =>
+		state.committedPathname === pathname ? state : { committedPathname: pathname }
+	),
 
 	participants: {},
 	registerParticipant: (key, methods) => set(state => ({

@@ -1,5 +1,5 @@
 "use client"
-import PageReadySignal from "@/components/transition/PageReadySignal"
+// import PageReadySignal from "@/components/transition/PageReadySignal"
 import "./globals.css"
 
 // The last-resort boundary: it catches what no nested error boundary did, including a failure in the
@@ -24,7 +24,7 @@ export default function GlobalError({ retry }: { error: Error & { digest?: strin
 					    with it, so nothing is subscribed to hear the signal. Kept so that any future error UI
 					    lifted into the layout — an app/error.tsx — resolves the curtain rather than stranding
 					    it on the failsafe. */}
-					<PageReadySignal />
+					{/*<PageReadySignal />*/}
 				</main>
 			</body>
 		</html>

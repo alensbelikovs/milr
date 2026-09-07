@@ -1,21 +1,29 @@
-import AboutIntro from "@/components2/sections/AboutIntro"
-import FeaturedProjects from "@/components2/sections/FeaturedProjects"
-import Testimonials from "@/components2/sections/Testimonials"
-import DesignProcess from "@/components2/sections/DesignProcess"
-import FeaturedDiary from "@/components2/sections/FeaturedDiary"
-import Contact from "@/components2/sections/Contact"
+import Introduction from "@/components/sections/Introduction"
+import FeaturedProjects from "@/components/sections/FeaturedProjects"
+import Testimonial from "@/components/sections/Testimonial"
+import FeaturedPosts from "@/components/sections/FeaturedPosts"
+import HeroCommon from "@/components/sections/HeroCommon"
+import SectionNavWrapper from "@/components/actions/SectionNavWrapper"
+import Process from "@/components/sections/Process"
+import Contact from "@/components/sections/Contact"
+import PageReadySignal from "@/components/general/PageReadySignal"
+
 
 export default function HomePage() {
 	return (
-		<main className="flex flex-col gap-size-192">
-			<div className="h-screen bg-zinc-200"/>
-			<AboutIntro />
-			<FeaturedProjects />
-			<Testimonials />
-			<DesignProcess />
-			<FeaturedDiary />
-			<Contact />
-			<div className="h-screen"></div>
+		<main className="relative">
+			<HeroCommon
+				heading="Rinalds Miļicins"
+				subheading="Designing interiors for families and businesses" />
+			<SectionNavWrapper>
+				<Introduction />
+				<FeaturedProjects />
+				<Testimonial />
+				<Process />
+				<FeaturedPosts />
+				<Contact />
+			</SectionNavWrapper>
+			<PageReadySignal />
 		</main>
 	)
 }

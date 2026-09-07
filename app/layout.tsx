@@ -3,10 +3,9 @@ import localFont from "next/font/local"
 import { ReactLenis } from "lenis/react"
 import "lenis/dist/lenis.css"
 import "./globals.css"
-import Navbar from "@/components/layout/Navbar"
+import Navbar from "@/components/actions/Navbar"
 import TransitionControl from "@/components/transition/TransitionControl"
-import Footer from "@/components/layout/Footer"
-
+import Sidebar from "@/components/actions/Sidebar"
 
 const sans = localFont({
 	src: "../fonts/font-sans.woff2",
@@ -36,8 +35,14 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
 			className={`${sans.variable} ${serif.variable} h-full antialiased`}
 		>
 			<body className="min-h-screen">
+				{/* Above TransitionControl, which calls useLenis to jump each incoming page to the top. */}
 				<ReactLenis root/>
-				{children}
+				{/* Holds the page being left on screen until the one arriving has signalled ready, and
+				    covers the swap with the curtain. Navbar stays outside it so it survives the swap
+				    rather than being torn down and rebuilt on every navigation. */}
+				<TransitionControl>{children}</TransitionControl>
+				<Navbar />
+				<Sidebar />
 			</body>
 		</html>
 	)
