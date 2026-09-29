@@ -92,6 +92,20 @@ export default function TransitionControl({ children }: { children: React.ReactN
 	// Slot for what actually is rendered
 	const [committed, setCommitted] = useState({ component: children, context })
 
+	// What a navigation is, as far as the reveal below is concerned: the path AND the query. A filter or
+	// page change on /work keeps the pathname and changes only the query, and it still swaps in a new
+	// tree — keyed on the pathname alone, the effect never ran for it, nothing committed, and the page
+	// stayed frozen on the old results under a URL that had moved on.
+	//
+	// Read off the router context rather than useSearchParams, which this component sits too high to
+	// call: in the root layout, above every page, it would bail each prerendered route out to client
+	// rendering. The context is already read here for the freeze, and its url is the router's canonical
+	// URL, updated in the same state as the tree it describes.
+	//
+	// The hash is cut off. It moves without swapping anything — a same-page anchor is a scroll, not a
+	// page — and a reveal for it would raise the curtain over the page it never left.
+	const url = (context?.url ?? pathname).split("#")[0]
+
 	// Bumped by every reveal so a flow can tell it has been superseded. The effect re-runs on each
 	// navigation and dev StrictMode double-invokes it, so more than one reveal can be in flight at
 	// once — all of them driving the same participants, including those of a page on its way out.
@@ -134,8 +148,12 @@ export default function TransitionControl({ children }: { children: React.ReactN
 	// the router commits — while the curtain is still fading in over the page being left — and context
 	// propagation reaches into the frozen tree regardless of its element identity, so a "see next"
 	// list keyed on it would visibly reshuffle before the page it belongs to has gone.
+	//
+	// The URL is published beside it for readers that care about a query change as well — see
+	// committedUrl in the store.
 	const commit = () => {
 		useTransitionStore.getState().setCommittedPathname(pathname)
+		useTransitionStore.getState().setCommittedUrl(url)
 		setCommitted(prev =>
 			prev.component === children && prev.context === context
 				? prev
@@ -158,6 +176,11 @@ export default function TransitionControl({ children }: { children: React.ReactN
 
 			// Only a real swap needs covering. At mount the curtain is already opaque.
 			if (willSwap) {
+				// The curtain is a GSAP tween, and GSAP is held while the page is not ready (see
+				// utils/gsap). A flow superseded mid-wait returns without opening the gate again, so
+				// this one has to — otherwise the fade would sit frozen on a page that never
+				// signalled, and so would every reveal after it.
+				useTransitionStore.getState().setPageReady(true)
 				await callParticipant('transitionOverlay', 'fadeIn')
 				if (flow !== flowRef.current) return
 
@@ -178,6 +201,12 @@ export default function TransitionControl({ children }: { children: React.ReactN
 			const deadline = Date.now() + READY_FAILSAFE
 			const remaining = () => Math.max(0, deadline - Date.now())
 
+			// Shut the gate on everything GSAP drives before the incoming page mounts, so nothing it
+			// builds on mount plays out behind the curtain before the page is ready. Its own signal
+			// opens it again. Only on a swap: at mount nothing new is coming, and the gate has been
+			// shut since the store was made.
+			if (willSwap) useTransitionStore.getState().setPageReady(false)
+
 			// Unfreeze content and await readyness of next page.
 			unfreeze()
 
@@ -187,6 +216,11 @@ export default function TransitionControl({ children }: { children: React.ReactN
 			await waitForScenesReady(remaining())
 			if (flow !== flowRef.current) return
 
+			// Normally already open — the page's signal opened it. Opened here as well for the page
+			// that never signalled and let the failsafe through: the curtain lifts either way, and it
+			// could not move with GSAP still held.
+			useTransitionStore.getState().setPageReady(true)
+
 			// Lifting the curtain is the whole reveal, for now — no route animates an entrance of its
 			// own yet. Left unawaited so that when one does, it plays alongside the white clearing
 			// rather than behind it.
@@ -194,7 +228,7 @@ export default function TransitionControl({ children }: { children: React.ReactN
 		}
 		reveal()
 		// eslint-disable-next-line react-hooks/exhaustive-deps
-	}, [pathname])
+	}, [url])
 
 	// A div rather than the <main> this used to render: the pages own that element themselves, and
 	// one <main> nested inside another is invalid.

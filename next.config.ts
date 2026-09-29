@@ -15,6 +15,9 @@ const nextConfig: NextConfig = {
 		// Project covers come back from getProjects as cdn.sanity.io URLs, and next/image refuses any
 		// remote host it has not been told about.
 		remotePatterns: [{ protocol: "https", hostname: "cdn.sanity.io" }],
+		// Every <Image> here asks for 99. Next only builds the qualities it is told about and warns
+		// about any other, so the list has to name it — 75 stays for anything that does not ask.
+		qualities: [75, 99],
 	},
 	turbopack: {
 		rules: {

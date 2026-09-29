@@ -1,9 +1,12 @@
 import PageReadySignal from "@/components/transition/PageReadySignal"
+import Contact from "@/components/sections/Contact"
+import MainNav from "@/components/navigation/MainNav"
 
 export default function ContactPage() {
 	return (
-		<div className="min-h-screen grid grid-cols-12 gap-[24px] p-[24px] pt-[35vh]">
-			contact
+		<div>
+			<MainNav color="text-foreground" />
+			<Contact heading={<>Contact</>} />
 			<PageReadySignal />
 		</div>
 	)

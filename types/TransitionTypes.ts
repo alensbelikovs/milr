@@ -1,5 +1,5 @@
-//   HERO:		/ and /projects/<slug>: opens on a full viewport scene
-//   LIST:		/projects, /diary
+//   HERO:		/ and /work/<slug>: opens on a full viewport scene
+//   LIST:		/work, /diary
 //   OTHER:		everything else
 export enum TransitionToType {
 	HERO = "HERO",

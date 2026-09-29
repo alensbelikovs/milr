@@ -1,17 +1,21 @@
-import Section from "@/components/general/Section"
-import Heading128 from "@/components/typography/Heading128"
-import ContactFormWrapper from "@/components/actions/ContactFormWrapper"
+import { type ReactNode } from "react"
+import Section from "@/components/layout/Section"
+import ContactFormWrapper from "@/components/contact/ContactFormWrapper"
 
 
 const NAV_LABEL = "Contact"
 
-export default function Contact() {
+// ReactNode rather than string so callers can break the line themselves with <br />.
+//
+// The heading is handed to the wrapper rather than rendered here, because sending the message
+// changes it: "I would love to hear your ideas" becomes "Thank You!" or "Oops!". The wrapper holds
+// both it and the form so the pair can fade out and come back as one block — see there.
+export default function Contact(
+	{ heading = <>I would love to <br /> Hear Your ideas.</> }:
+		{ heading?: ReactNode }) {
 	return (
 		<Section label={NAV_LABEL}>
-			<Heading128 className="mb-size-144">I would love to <br /> Hear Your ideas.</Heading128>
-			{/* The wrapper is the client boundary and picks between the form, the success and
-			    the error state. This section stays a server component so it keeps its nav link. */}
-			<ContactFormWrapper home />
+			<ContactFormWrapper heading={heading} />
 		</Section>
 	)
 }

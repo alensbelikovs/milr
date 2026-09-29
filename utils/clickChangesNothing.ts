@@ -1,5 +1,5 @@
-// Whether following this href would land exactly where the page already is — the click ProjectsHeader
-// and ProjectsHeaderCategory each guard by hand, asked generically so the shared link components can
+// Whether following this href would land exactly where the page already is — the click WorkHeader
+// and WorkHeaderCategory each guard by hand, asked generically so the shared link components can
 // guard it too.
 //
 // Left alone that click is a real navigation: the router runs it, refetches the tree and hands fresh

@@ -1,20 +1,24 @@
 import Body36 from "@/components/typography/Body36"
-import BodyLink from "@/components/actions/BodyLink"
+import Body36Container from "@/components/typography/Body36Container"
+import BodyLink from "@/components/buttons/BodyLink"
 import Body18 from "@/components/typography/Body18"
 import Body18Container from "@/components/typography/Body18Container"
-import Section from "@/components/general/Section"
+import Section from "@/components/layout/Section"
+import TextBlockReveal from "@/components/animation/TextBlockReveal"
 
 const NAV_LABEL = "Intro"
 
 export default function Introduction() {
 	return (
-		<Section label={NAV_LABEL}>
-			<Body36>
-				{
-					"I am an interior designer creating practical and memorable spaces"
-					+ " that compliment routines and stay useful for years to come."
-				}
-			</Body36>
+		<Section className="pt-size-48 md:pt-size-96 lg:pt-size-192 pb-size-192" label={NAV_LABEL}>
+			<Body36Container>
+				<Body36>
+					{
+						"I am an interior designer creating practical and memorable spaces"
+						+ " that compliment routines and stay useful for years to come."
+					}
+				</Body36>
+			</Body36Container>
 			<Body18Container>
 				<Body18>
 					{
@@ -49,7 +53,9 @@ export default function Introduction() {
 						+ " it followed a passing style, but because it was never chasing one."
 					}
 				</Body18>
-				<BodyLink href="/#">Read About Me</BodyLink>
+				<TextBlockReveal as="div" className="w-full">
+					<BodyLink className="w-full" href="/about">My Story</BodyLink>
+				</TextBlockReveal>
 			</Body18Container>
 		</Section>
 	)

@@ -1,15 +1,23 @@
-import Section from "@/components/general/Section"
+import Section from "@/components/layout/Section"
 import Serif48 from "@/components/typography/Serif64"
-import Body16Secondary from "@/components/typography/Body16Secondary"
-import Pagination from "@/components/actions/Pagination"
+import Serif64Footnote from "@/components/typography/Serif64Footnote"
+import { type TestimonialType } from "@/types/ContentTypes"
+import Body18Container from "@/components/typography/Body18Container"
 
 const NAV_LABEL = "Client Stories"
 
-export default function Testimonial() {
+// Required, with no stand-in behind it. A placeholder quote is an invented client saying invented
+// things, and the moment the studio has none to show, saying nothing is the honest answer — which is
+// the call the page makes by not rendering this at all.
+export default function Testimonial(
+	{ testimonial }:
+		{ testimonial: TestimonialType }) {
+	const { text, author, description } = testimonial
+
 	return (
-		<Section label={NAV_LABEL}>
-			<Serif48>We came in with a hundred Pinterest boards and no idea how any of it would actually fit our apartment. Rinalds asked more questions about our morning routine than our style, which felt strange at first, but it made all the difference. Somehow the result feels exactly like us, not like any of those.</Serif48>
-			<Body16Secondary className="mt-size-48">— Kārlis and Marta, <br/> reflecting on their home redesign</Body16Secondary>
+		<Section className="pt-size-192 pb-size-192" label={NAV_LABEL}>
+			<Serif48>{text}</Serif48>
+			<Serif64Footnote className="mt-size-96">— {author}, <br/> {description}</Serif64Footnote>
 		</Section>
 	)
 }

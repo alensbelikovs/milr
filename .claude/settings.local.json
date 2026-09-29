@@ -1,0 +1,18 @@
+{
+  "permissions": {
+    "allow": [
+      "PowerShell(npx tsc --noEmit)",
+      "Bash(cat)",
+      "Bash(node /tmp/check.js)",
+      "Bash(rm -f /tmp/check.js)",
+      "Bash(npx tsc *)",
+      "Bash(npx eslint *)",
+      "Bash(node twtest/run.mjs)",
+      "Bash(git -C /c/code/milr status --porcelain app/globals.css)",
+      "Bash(echo \"---exit:$?\")",
+      "Bash(xargs -I{} echo \"tsc errors in Heading96: {}\")",
+      "Bash(curl -s \"http://localhost:3000/work\" -o /tmp/w.html)",
+      "Read(//tmp/**)"
+    ]
+  }
+}

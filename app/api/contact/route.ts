@@ -33,4 +33,5 @@ export async function POST(request: Request) {
 	console.log("Contact form submission:", body)
 
 	return json("success", 200)
+	// return json("error", 400)
 }

@@ -16,10 +16,10 @@
 // for why an item is two boxes. Any card these dress has to keep that shape, or the aspect lands on
 // the wrong box and the cover collapses.
 
-// The six-step pattern the full-page grids lay out on, named for where it started. /projects plays
-// it, /diary borrows it whole, and a project's own gallery plays it again over plain images — three
+// The six-step pattern the full-page grids lay out on, named for where it started. /work plays
+// it, /diary borrows it whole, and a work item's own gallery plays it again over plain images — three
 // callers, one rhythm, so a change to the shape of a page is a change here and nowhere else.
-export const PROJECT_VARIANTS = ([
+export const WORK_VARIANTS = ([
 	"col-start-1 col-span-full md:col-span-9 lg:col-span-6 *:aspect-16/10",
 	"col-start-1 col-span-full md:col-start-8 md:col-span-5 lg:col-start-9 lg:mt-section lg:col-span-4 *:aspect-16/10 md:*:aspect-10/16",
 	"col-start-1 col-span-full md:col-span-6 md:-mt-section lg:col-span-5 *:aspect-16/10 md:*:aspect-4/3",
@@ -60,7 +60,7 @@ export const GRID_CYCLE_SPACER = "col-span-full hidden md:block md:h-normal-3"
 
 // The shared box every grid playing the rhythm above is laid out in — same columns, same gutters,
 // same row gap, same clip. Part of what "the same grid with different cards in it" means, and the
-// reason /projects, /diary and a project's gallery read as one page design rather than three.
+// reason /work, /diary and a work item's gallery read as one page design rather than three.
 //
 // The grid clips. The reveal parks every card half a viewport below its place, and a translated box
 // still counts toward scrollable overflow, so unclipped the section grows by that much empty space

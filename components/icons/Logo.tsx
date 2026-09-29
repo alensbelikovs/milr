@@ -1,0 +1,25 @@
+export default function Logo(
+	{ dimensions, fill, className = "" }:
+	{ dimensions: number; fill: string; className?: string }
+) {
+	return (
+		<svg
+			width={dimensions}
+			height={dimensions}
+			viewBox="0 0 64 64"
+			className={className ? className : ""}
+			fill={fill}
+			xmlns="http://www.w3.org/2000/svg">
+			<path d="M4 50.6597V40.7882C17.2559
+				40.5415 18.2685 23.0503 17.6548 13.95L22.5644
+				13.333C26.0932 42.1764 34.3781 40.4797 34.3781
+				40.4797C40.3923 40.4797 40.3616 29.9912 39.4411
+				23.6673L44.3507 23.0503C47.5726 43.1018 60 40.7882
+				60 40.7882V50.6597C47.8795 50.8139 44.3507 42.1764
+				44.3507 42.1764C44.3507 42.1764 43.5836 50.9403
+				34.3781 50.6597C25.1726 50.3792 21.337 36.3152
+				21.337 36.3152C20.3865 39.5543 15.6603 50.6597
+				4 50.6597Z" />
+		</svg>
+	)
+}

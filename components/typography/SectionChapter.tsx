@@ -10,7 +10,7 @@ const STACK_GAP = 0
 const FONT_HEIGHT = 10
 
 export default function SectionChapter(
-	{ name, index, className }:
+	{ name, index, className = "" }:
 		{ name: string; index: number; className?: string }
 ) {
 	const ref = useRef<HTMLDivElement>(null)

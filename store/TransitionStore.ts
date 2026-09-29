@@ -7,6 +7,16 @@ type TransitionStoreType = {
 	readyToken: number
 	signalReady: () => void
 
+	// Whether the page on screen has signalled ready — the gate every GSAP animation on the site waits
+	// behind (see utils/gsap). A counter cannot answer that on its own: it says how many pages have
+	// been ready, not whether the one mounting now is yet.
+	//
+	// False from the start, so nothing animates during hydration before the first page signals.
+	// Shut by TransitionControl as it swaps a page in, and opened again by that page's signal — or by
+	// TransitionControl itself, when a page never signals and the curtain has to lift regardless.
+	pageReady: boolean
+	setPageReady: (ready: boolean) => void
+
 	// The pathname of what is actually ON SCREEN, which is not what usePathname says while a
 	// transition is in flight: TransitionControl keeps rendering the outgoing tree until it commits,
 	// and the router has already moved on by then. Written from commit(), so it changes in the very
@@ -18,6 +28,12 @@ type TransitionStoreType = {
 	committedPathname: string | null
 	setCommittedPathname: (pathname: string) => void
 
+	// The same, with the query: pathname plus search, hash dropped. A filter or page change on /work
+	// swaps the page under the same pathname, so anything that has to answer every swap — a remeasure
+	// of the document height, say — keys on this instead. Written in the same commit as the pathname.
+	committedUrl: string | null
+	setCommittedUrl: (url: string) => void
+
 	// Keyed by participant name. Registered from a layout effect on mount, dropped on unmount,
 	// so the set in here is always exactly what is on screen.
 	participants: Record<string, TransitionParticipantMethodsType>
@@ -27,11 +43,19 @@ type TransitionStoreType = {
 
 export const useTransitionStore = create<TransitionStoreType>(set => ({
 	readyToken: 0,
-	signalReady: () => set(state => ({ readyToken: state.readyToken + 1 })),
+	signalReady: () => set(state => ({ readyToken: state.readyToken + 1, pageReady: true })),
+
+	pageReady: false,
+	setPageReady: ready => set(state => state.pageReady === ready ? state : { pageReady: ready }),
 
 	committedPathname: null,
 	setCommittedPathname: pathname => set(state =>
 		state.committedPathname === pathname ? state : { committedPathname: pathname }
+	),
+
+	committedUrl: null,
+	setCommittedUrl: url => set(state =>
+		state.committedUrl === url ? state : { committedUrl: url }
 	),
 
 	participants: {},
