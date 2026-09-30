@@ -53,7 +53,7 @@ export default async function WorkShow({ params }: PageProps<"/work/[workSlug]">
 				subheading={work.summary}
 				published={work._createdAt} />
 			<PageReadySignal />
-			<Section>
+			<Section className="pt-size-48 md:pt-size-96 lg:pt-size-192 pb-size-192">
 				<Body36Container>
 					{work.description.map((paragraph, index) => (
 						<Body36 key={index}>{paragraph}</Body36>
@@ -63,7 +63,7 @@ export default async function WorkShow({ params }: PageProps<"/work/[workSlug]">
 				    in the schema, so each row is written as a condition rather than as a blank the
 				    reader has to read past. Category, Type and Published are required, so they are
 				    always there. */}
-				<DetailTable className="mt-size-192">
+				<DetailTable className="mt-size-96">
 					{
 						place &&
 						<DetailTableRow label="Location"><span>{place}</span></DetailTableRow>

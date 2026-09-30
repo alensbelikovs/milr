@@ -4,12 +4,13 @@ import LoadingLabel from "@/components/buttons/LoadingLabel"
 
 export default function BodyButton(
 	{
-		children, className = "", type = "button", disabled, onClick, icon,
+		children, className = "", type = "button", disabled, onClick, icon, color,
 		"aria-busy": ariaBusy, "aria-expanded": ariaExpanded, "aria-controls": ariaControls,
 	}:
 		{
 			children: React.ReactNode;
 			icon?: React.ReactNode;
+			color?: string;
 			className?: string;
 			type?: "button" | "submit" | "reset";
 			disabled?: boolean;
@@ -26,15 +27,19 @@ export default function BodyButton(
 		<div className={`col-start-7 col-span-3 ${className}`} >
 			{/* Explicit type: a button inside a <form> submits by default, which is right for the
 			    contact form but wrong everywhere else this component gets reused. */}
+			{/* light and the padding are BodyLink's, so the two still read as one family wherever
+			    they sit side by side — light for a button laid over a picture or a dark band. */}
 			<button
-				className="
+				className={`
 				group text-size-16 w-full
 				flex items-center justify-between
 				cursor-pointer capitalize
-				bg-foreground/10
-				hover:bg-foreground hover:text-background
-				rounded-sm p-size-12
-				disabled:bg-foreground/10 disabled:text-foreground/40 disabled:cursor-not-allowed"
+				${
+					color ? color
+					: "bg-foreground/10 backdrop-blur-2xl hover:bg-foreground text-foreground hover:text-background"
+				}
+				rounded-sm p-size-16 lg:p-size-12
+				disabled:bg-foreground/10 disabled:text-foreground/40 disabled:cursor-not-allowed`}
 				type={type}
 				disabled={disabled}
 				onClick={onClick}

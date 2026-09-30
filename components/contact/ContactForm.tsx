@@ -72,7 +72,12 @@ export default function ContactForm(
 
 	return (
 		<div className="col-span-full grid grid-cols-12 gap-size-24">
-			<aside className="col-span-2 col-start-2">
+			<aside className="
+				text-center lg:text-left
+				col-start-2 col-span-10
+				sm:col-span-4 sm:col-start-5
+				lg:col-span-2 lg:col-start-2
+				mb-size-96">
 				<p className="text-size-24">
 					{
 						"Send a quick note to start the chat," +
@@ -85,7 +90,7 @@ export default function ContactForm(
 				</p>
 			</aside>
 			<form
-				className="col-start-6 col-span-6 grid grid-cols-6 gap-size-24"
+				className="col-start-1 col-span-full lg:col-start-6 lg:col-span-6 grid grid-cols-6 gap-size-24"
 				aria-label="Contact form"
 				onSubmit={handleSubmit}>
 				<InputString
@@ -129,14 +134,14 @@ export default function ContactForm(
 					required
 					value={form.subject}
 					onChange={handleChange} />
-				<div className="col-span-3 mt-size-16 self-start">
+				<div className="col-span-full lg:col-span-3 mt-size-16 self-start">
 					{/* One label, whatever the state: while it is busy the button shows its own
 					    rotating one instead, and this is what a screen reader keeps hearing. */}
 					<BodyButton type="submit" disabled={loading} aria-busy={loading}>
 						Send Message
 					</BodyButton>
 				</div>
-				<div className="col-span-2 col-start-5 mt-size-16">
+				<div className="col-span-4 col-start-2 text-center md:col-span-2 md:col-start-3 lg:text-left lg:col-span-2 lg:col-start-5 mt-size-16">
 					<p className="text-foreground/50 text-size-14">
 						{
 							"This site uses reCAPTCHA to prevent spam,"

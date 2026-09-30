@@ -1,6 +1,7 @@
 "use client"
 import type { MouseEvent } from "react"
 import NavLink from "@/components/navigation/NavLink"
+import FilterNavMobile from "@/components/navigation/FilterNavMobile"
 import clickChangesNothing from "@/utils/clickChangesNothing"
 import { workHref } from "@/utils/workUrl"
 import { type WorkCategory, type WorkType } from "@/types/ContentTypes"
@@ -59,23 +60,35 @@ export default function FilterNav(
 		)
 	}
 
+	// Below lg the bar is replaced by FilterNavMobile's button and sheet — two rows of links side by
+	// side have no room there.
 	return (
-		<nav
-			aria-label="Filter work"
-			className="grid-standard bg-background/50 backdrop-blur-2xl py-size-24 sticky top-0 left-0 z-10">
-			<div className="col-start-2 col-span-10 flex justify-between">
-				<div className="flex flex-row gap-size-48">
-					{categoryLink(null, "All Categories")}
-					{categories.map(category => categoryLink(category.slug, category.name))}
+		<>
+			<FilterNavMobile
+				categories={categories}
+				types={types}
+				activeCategory={activeCategory}
+				activeType={activeType} />
+			{/* grid-standard spelled out: it lives in a layer after Tailwind's utilities, so its own
+			    display:grid would win over hidden and the bar would show on mobile regardless. */}
+			<nav
+				aria-label="Filter work"
+				className="hidden lg:grid grid-cols-12 gap-x-size-24 px-size-24
+				bg-background/50 backdrop-blur-2xl py-size-24 sticky top-0 left-0 z-10">
+				<div className="col-start-2 col-span-10 flex justify-between">
+					<div className="flex flex-row gap-size-48">
+						{categoryLink(null, "All Categories")}
+						{categories.map(category => categoryLink(category.slug, category.name))}
+					</div>
+					{/* Reversed so the list reads outward from the right edge: "All Types" sits against
+					    it, mirroring "All Categories" on the left, while the DOM order stays the same
+					    as the left container's. */}
+					<div className="flex flex-row-reverse gap-size-48">
+						{typeLink(null, "All Types")}
+						{types.map(type => typeLink(type.slug, type.name))}
+					</div>
 				</div>
-				{/* Reversed so the list reads outward from the right edge: "All Types" sits against
-				    it, mirroring "All Categories" on the left, while the DOM order stays the same
-				    as the left container's. */}
-				<div className="flex flex-row-reverse gap-size-48">
-					{typeLink(null, "All Types")}
-					{types.map(type => typeLink(type.slug, type.name))}
-				</div>
-			</div>
-		</nav>
+			</nav>
+		</>
 	)
 }

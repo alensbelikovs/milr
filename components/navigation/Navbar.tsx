@@ -23,12 +23,13 @@ export default function Navbar() {
 	return (
 		<header className="fixed left-0 top-0 w-full mix-blend-difference z-15 pointer-events-none">
 			{/* The link has to carry its own name: what is inside it is a shape with no text, so
-			    without this it reaches a screen reader as a link with nothing to read out. */}
+			    without this it reaches a screen reader as a link with nothing to read out.
+			    Desktop only: below lg this corner belongs to SectionNavMobile's Jump To. */}
 			<Link
 				href="/"
 				aria-label="Home"
 				className="pointer-events-auto absolute left-size-24
-				h-size-64 top-0 aspect-square flex items-center">
+				h-size-64 top-0 aspect-square hidden lg:flex items-center">
 				<Logo dimensions={32} fill="var(--background)" />
 			</Link>
 			<NavMenuButton />

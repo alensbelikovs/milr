@@ -1,5 +1,6 @@
 import { Children, isValidElement } from "react"
 import SectionNav from "@/components/navigation/SectionNav"
+import SectionNavMobile from "@/components/navigation/SectionNavMobile"
 import slugify from "@/utils/slugify"
 
 export type SectionNavLink = { id: string; label: string }
@@ -41,6 +42,7 @@ export default function SectionNavWrapper(
 	return (
 		<>
 			<SectionNav links={links} />
+			<SectionNavMobile links={links} />
 			{children}
 		</>
 	)

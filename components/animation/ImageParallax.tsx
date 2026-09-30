@@ -37,38 +37,49 @@ export default function ImageParallax(
 		const layer = layerRef.current
 		if (!layer) return
 
-		gsap.fromTo(layer,
-			{ yPercent: -DRIFT, scale: OVERHANG },
-			{
-				yPercent: DRIFT,
-				scale: OVERHANG,
+		// 48rem is Tailwind's md, the same line ScrollReveal draws. Only the wide query is given:
+		// below it there is no drift at all, and nothing to set up. Crossing the line reverts the
+		// tween and its trigger, which takes the inline transform with them — the layer is back to
+		// sitting flat in its box, unscaled, filling the clip exactly as its classes lay it out.
+		// Below md the pictures run the width of the screen and a phone scrolls in flicks, and a
+		// drift under that reads as the image slipping rather than as depth.
+		const mm = gsap.matchMedia()
+		mm.add("(min-width: 48rem)", () => {
+			gsap.fromTo(layer,
+				{ yPercent: -DRIFT, scale: OVERHANG },
+				{
+					yPercent: DRIFT,
+					scale: OVERHANG,
 
-				// Linear, because the scrollbar is the playhead: any curve here would make the
-				// picture drift at a speed the scroll is not moving at.
-				ease: "none",
-				invalidateOnRefresh: true,
-				scrollTrigger: {
-					// The parent, not the layer. A trigger is measured where it sits, and this layer is
-					// the one thing on the page guaranteed to be somewhere else by then — it is
-					// mid-travel at every moment except the exact middle of the range. The box around
-					// it stays put and is the box the drift is timed against anyway.
-					trigger: layer.parentElement ?? layer,
+					// Linear, because the scrollbar is the playhead: any curve here would make the
+					// picture drift at a speed the scroll is not moving at.
+					ease: "none",
+					invalidateOnRefresh: true,
+					scrollTrigger: {
+						// The parent, not the layer. A trigger is measured where it sits, and this layer
+						// is the one thing on the page guaranteed to be somewhere else by then — it is
+						// mid-travel at every moment except the exact middle of the range. The box around
+						// it stays put and is the box the drift is timed against anyway.
+						trigger: layer.parentElement ?? layer,
 
-					// The whole of the crossing: from the box's top at the bottom of the screen to its
-					// bottom at the top. A box already on screen at load starts part-way through, which
-					// is the point — it opens at the drift its position has earned rather than snapping
-					// to one end.
-					start: "top bottom",
-					end: "bottom top",
+						// The whole of the crossing: from the box's top at the bottom of the screen to its
+						// bottom at the top. A box already on screen at load starts part-way through,
+						// which is the point — it opens at the drift its position has earned rather than
+						// snapping to one end.
+						start: "top bottom",
+						end: "bottom top",
 
-					// true, not a number. A numeric scrub smooths towards the scroll position through a
-					// tween of its own, and that tween is a child of the global timeline — which
-					// utils/gsap holds paused until the page on screen signals ready, so the drift
-					// would stall behind the curtain and lurch when it lifted. scrub: true sets the
-					// tween's progress outright, which renders whatever the timeline is doing.
-					scrub: true,
-				},
-			})
+						// true, not a number. A numeric scrub smooths towards the scroll position through
+						// a tween of its own, and that tween is a child of the global timeline — which
+						// utils/gsap holds paused until the page on screen signals ready, so the drift
+						// would stall behind the curtain and lurch when it lifted. scrub: true sets the
+						// tween's progress outright, which renders whatever the timeline is doing.
+						scrub: true,
+					},
+				})
+		})
+
+		return () => { mm.revert() }
 	}, { scope: layerRef })
 
 	// The scale lives in the tween above rather than in a scale-110 class here, and it has to. The

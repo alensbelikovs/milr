@@ -25,7 +25,7 @@ import ArrowRight from "@/components/icons/ArrowRight"
 // entrance — the last line of a form's result, arriving after the words above it — opens on that
 // sequence's clock rather than on a trigger of its own.
 export default function BodyLink(
-	{ children, target="_self", href="#", instant = false, timeline, position = 0, className, light }:
+	{ children, target="_self", href="#", instant = false, timeline, position = 0, className, color }:
 		{
 			children: React.ReactNode
 			target?: string
@@ -34,7 +34,7 @@ export default function BodyLink(
 			timeline?: (() => gsap.core.Timeline) | null
 			position?: number,
 			className?: string,
-			light?: boolean
+			color?: string
 		})
 {
 	return (
@@ -46,7 +46,8 @@ export default function BodyLink(
 				flex items-center justify-between
 				cursor-pointer capitalize
 				${
-					light ? "bg-background/40 backdrop-blur-2xl hover:bg-background text-foreground" : "bg-foreground/10 hover:bg-foreground text-background"
+					color ? color
+					: "bg-foreground/10 backdrop-blur-2xl hover:bg-foreground text-foreground hover:text-background"
 				}
 				rounded-sm p-size-16 lg:p-size-12
 				disabled:bg-foreground/10 disabled:text-foreground/40 disabled:cursor-not-allowed`}

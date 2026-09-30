@@ -18,11 +18,11 @@ import { type WorkGalleryImageType } from "@/types/ContentTypes"
 // below — so its absence here is deliberate rather than an omission.
 const VARIANTS = [
 	"col-span-full aspect-4/3",
-	"col-start-2 col-span-6",
-	"col-start-6 col-span-6",
+	"col-span-8 col-start-2 md:col-start-2 md:col-span-6",
+	"col-span-8 col-start-4 md:col-start-6 md:col-span-6",
 	"col-span-full aspect-4/3",
-	"col-start-6 col-span-6",
-	"col-start-2 col-span-6"
+	"col-span-8 col-start-4 md:col-start-6 md:col-span-6",
+	"col-span-8 col-start-2 md:col-start-2 md:col-span-6"
 ]
 
 // Which steps of the rhythm above hold five of the twelve columns rather than all of them, by index:

@@ -14,7 +14,7 @@ export default function Contact(
 	{ heading = <>I would love to <br /> Hear Your ideas.</> }:
 		{ heading?: ReactNode }) {
 	return (
-		<Section label={NAV_LABEL}>
+		<Section className="py-size-192" label={NAV_LABEL}>
 			<ContactFormWrapper heading={heading} />
 		</Section>
 	)

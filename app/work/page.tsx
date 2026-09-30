@@ -106,7 +106,7 @@ export default async function WorkPage({ searchParams }: PageProps<"/work">) {
 			    never tell TransitionControl the new results are in, leaving the curtain on its
 			    failsafe. */}
 			<Fragment key={workHref({ ...filter, page })}>
-				<section className="my-size-192">
+				<section className="">
 					<div className="grid-standard">
 						<WorkGrid work={firstGrid} />
 					</div>

@@ -68,16 +68,24 @@ export default function ProudestWork({ work }: { work: ProudestWorkType | null }
 				<Body36>My Proudest Work</Body36>
 			</Body36Container>
 			{/* Below lg the heading takes the band's first row and this the rest of it, sat at its
-			    foot and across the whole band. The row wrapper only goes flex at lg, where it is
-			    what keeps the link to the width of its label; below it, a plain block lets the
-			    link's own w-full reach the column's edges. */}
+			    foot. Columns are HeroCommon's subheading's, breakpoint for breakpoint, so the link
+			    lines up with the column the heroes put their second line in. The row wrapper only
+			    goes flex at lg, where it is what keeps the link to the width of its label; below it,
+			    a plain block lets the link's own w-full reach the column's edges. */}
 			<div className={`
-				col-start-1 col-span-12
-				lg:col-start-7 lg:col-span-5
+				col-start-7 col-span-6
+				sm:col-start-7 sm:col-span-5
+				md:col-start-7 md:col-span-4
+				lg:col-start-7 lg:col-span-3
+				xl:col-start-7 xl:col-span-3
+				2xl:col-start-7 2xl:col-span-2
+				lg:hidden
 				max-lg:self-end
 				flex flex-col gap-size-64 relative z-5`}>
-				<div className="lg:flex">
-					<BodyLink light href={`/work/${slug}`}>View Project</BodyLink>
+				<div className="">
+					<BodyLink
+						color="bg-foreground text-background hover:text-foreground hover:bg-background"
+						href={`/work/${slug}`}>View Project</BodyLink>
 				</div>
 			</div>
 			{/* The whole band is the link, so it is one target rather than a line of text inside a

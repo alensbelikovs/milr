@@ -6,6 +6,7 @@ import "./globals.css"
 import Navbar from "@/components/navigation/Navbar"
 import TransitionControl from "@/components/transition/TransitionControl"
 import Sidebar from "@/components/sidebar/Sidebar"
+import MobileSheet from "@/components/mobile-sheet/MobileSheet"
 import Footer from "@/components/sections/Footer"
 import PointerOverlay from "@/components/pointer/PointerOverlay"
 import { GeneralInformationProvider } from "@/store/GeneralInformationStore"
@@ -61,6 +62,7 @@ export default async function RootLayout({ children }: LayoutProps<"/">) {
 					<TransitionControl>{children}</TransitionControl>
 					<Navbar />
 					<Sidebar />
+					<MobileSheet />
 					{/* One for the document, drawn here and told what to say by whatever the pointer is
 					    over. In the layout rather than in any page, so it survives a navigation the same
 					    way the navbar does. */}

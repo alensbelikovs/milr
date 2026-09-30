@@ -2,6 +2,7 @@
 import { useEffect, useRef } from "react"
 import { gsap, useGSAP } from "@/utils/gsap"
 import { useSidebarContentStore } from "@/store/SidebarContentStore"
+import { useMobileSheetStore } from "@/store/MobileSheetStore"
 
 // Timing for both halves of the swap: the lines going out and the cross coming in. inOut rather
 // than an out ease, because the one timeline runs backwards to close — an out ease reversed is an in
@@ -11,6 +12,10 @@ const SWAP = { duration: 0.35, ease: "expo.inOut" }
 // Two lines when the sidebar is shut, a cross when it is open. Reads the store for both what it
 // shows and what it does, so the navbar only has to place it.
 //
+// The mobile sheet (Jump To, Filters) counts as open too. It covers the page the same way the sidebar does, and
+// this is the control that sits over it, so while it is showing the cross closes it — the menu is
+// only reachable again once it has gone.
+//
 // The cross is its own pair of lines rather than the menu lines turned on their sides. Those two
 // differ in width and anchoring, and the bottom one widens on hover through a CSS width transition
 // — re-laying them out into a cross would mean GSAP writing width and position inline, which fights
@@ -18,7 +23,13 @@ const SWAP = { duration: 0.35, ease: "expo.inOut" }
 // apart, GSAP only ever touches transforms, and each pair keeps the layout its classes give it.
 export default function NavMenuButton() {
 	const toggleNav = useSidebarContentStore(state => state.toggleNav)
-	const isOpen = useSidebarContentStore(state => state.sidebarContent !== null)
+	const sidebarOpen = useSidebarContentStore(state => state.sidebarContent !== null)
+	const sheetOpen = useMobileSheetStore(state => state.content !== null)
+	const closeSheet = useMobileSheetStore(state => state.close)
+	const isOpen = sidebarOpen || sheetOpen
+
+	const handleClick = sheetOpen ? closeSheet : toggleNav
+	const label = sheetOpen ? "Close" : sidebarOpen ? "Close menu" : "Open menu"
 
 	const buttonRef = useRef<HTMLButtonElement>(null)
 	const timelineRef = useRef<gsap.core.Timeline | null>(null)
@@ -56,10 +67,10 @@ export default function NavMenuButton() {
 		<button
 			ref={buttonRef}
 			type="button"
-			onClick={toggleNav}
+			onClick={handleClick}
 			// The lines are all there is to see, so the name has to come from here — and it says
 			// which way a press goes, since the same button both opens and closes.
-			aria-label={isOpen ? "Close menu" : "Open menu"}
+			aria-label={label}
 			aria-expanded={isOpen}
 			className="group cursor-pointer
 			pointer-events-auto absolute top-0
