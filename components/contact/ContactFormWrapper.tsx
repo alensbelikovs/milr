@@ -26,8 +26,7 @@ const FADE = { duration: 0.4, ease: "power2.out" }
 // Both fades are built once, against the container, and left paused. fromTo with immediateRender
 // off, so neither writes an opacity until it is actually played: a from-value applied at build time
 // would leave the idle form invisible, and a plain `to` would have to guess where it started.
-export default function ContactFormWrapper(
-	{ heading }: { heading: ReactNode }) {
+export default function ContactFormWrapper() {
 	const [status, setStatus] = useState<ContactStatusType | "idle">("idle")
 	const containerRef = useRef<HTMLDivElement>(null)
 	const fadeOutRef = useRef<gsap.core.Tween | null>(null)
@@ -97,7 +96,7 @@ export default function ContactFormWrapper(
 			{status === "idle"
 				? (
 					<>
-						<Heading128 className="mb-size-192">{heading}</Heading128>
+						<Heading128 className="mb-size-192">Contact</Heading128>
 						<ContactForm onResult={handleResult} />
 					</>
 				)

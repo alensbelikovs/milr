@@ -6,7 +6,6 @@ import ImageDimmer from "@/components/media/ImageDimmer"
 import BodyLink from "@/components/buttons/BodyLink"
 import buildImageUrl, { HERO } from "@/utils/buildImageUrl"
 import formatDate from "@/utils/formatDate"
-import { workHref } from "@/utils/workUrl"
 import { type CoverType, type WorkCategory, type WorkType } from "@/types/ContentTypes"
 
 

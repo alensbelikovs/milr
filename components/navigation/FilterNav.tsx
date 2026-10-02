@@ -3,7 +3,7 @@ import type { MouseEvent } from "react"
 import NavLink from "@/components/navigation/NavLink"
 import FilterNavMobile from "@/components/navigation/FilterNavMobile"
 import clickChangesNothing from "@/utils/clickChangesNothing"
-import { workHref } from "@/utils/workUrl"
+import withSearchParams from "@/utils/withSearchParams"
 import { type WorkCategory, type WorkType } from "@/types/ContentTypes"
 
 // Sticky filter bar for the work index: categories from the left edge, types from the right.
@@ -33,7 +33,7 @@ export default function FilterNav(
 	}
 
 	const categoryLink = (slug: string | null, label: string) => {
-		const href = workHref({ category: slug, type: activeType })
+		const href = withSearchParams("/work", { category: slug, type: activeType })
 		return (
 			<NavLink
 				key={slug ?? "all"}
@@ -47,7 +47,7 @@ export default function FilterNav(
 	}
 
 	const typeLink = (slug: string | null, label: string) => {
-		const href = workHref({ category: activeCategory, type: slug })
+		const href = withSearchParams("/work", { category: activeCategory, type: slug })
 		return (
 			<NavLink
 				key={slug ?? "all"}

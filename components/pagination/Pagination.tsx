@@ -1,21 +1,30 @@
 import Link from "next/link"
 import PaginationStepButton from "@/components/pagination/PaginationStepButton"
+import withSearchParams from "@/utils/withSearchParams"
 
 // Numbers, Prev and Next for a paged list.
 //
-// buildHref rather than a route: /work hands it a builder that carries the active filters along with
-// the page, and this serves any list without knowing what it is paging. Passing a function is fine —
-// this stays a server component, so nothing crosses a client boundary.
+// Handed the page's own path and searchParams, and sets page on top of them — so whatever else the
+// list is showing (the filters on /work, nothing on /diary) rides along without this knowing what it
+// is paging. Page 1 is no param at all rather than ?page=1, so the first page keeps one address.
 //
 // It takes a total rather than working one out — the page already counted the set it is slicing, and
 // a second opinion here could disagree with the slice it is labelling.
 export default function Pagination(
-	{ currentPage, totalPages, buildHref }:
-	{ currentPage: number, totalPages: number, buildHref: (page: number) => string }
+	{ currentPage, totalPages, pathname, searchParams }:
+	{
+		currentPage: number
+		totalPages: number
+		pathname: string
+		searchParams: Record<string, string | string[] | undefined>
+	}
 ) {
 	// One page is not a pagination: a lone "1" between two dead steps is a control with nothing to
 	// control.
 	if (totalPages <= 1) return null
+
+	const buildHref = (page: number) =>
+		withSearchParams(pathname, { ...searchParams, page: page > 1 ? page : null })
 
 	const pages = Array.from({ length: totalPages }, (_, index) => index + 1)
 

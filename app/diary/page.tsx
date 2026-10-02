@@ -5,16 +5,17 @@ import PostGrid from "@/components/cards/PostGrid"
 import Pagination from "@/components/pagination/Pagination"
 import MainNav from "@/components/navigation/MainNav"
 import { getPostsCount, getPostsPage } from "@/utils/sanityGetters"
-import { POSTS_PER_PAGE, diaryHref } from "@/utils/diaryUrl"
-import { first } from "@/utils/firstParam"
+
+const POSTS_PER_PAGE = 12
 
 export default async function DiaryPage({ searchParams }: PageProps<"/diary">) {
 	const params = await searchParams
-	const pageParam = first(params.page)
 
-	// Anything that is not a whole number from 1 up was not built by diaryHref.
-	const page = pageParam === undefined ? 1 : Number(pageParam)
+	// Check for page param correctness.
+	// If page param is not a number or on an invalid page, return notFound() page.
+	const page = Number(params.page)
 	if (!Number.isInteger(page) || page < 1) notFound()
+
 
 	// ?page=1 is the same content as no page param at all, and two addresses for one page is a
 	// duplicate to a crawler and a second router cache entry. Sent to the canonical one before
@@ -34,6 +35,8 @@ export default async function DiaryPage({ searchParams }: PageProps<"/diary">) {
 	// Floored at one, so an empty diary still has a page to land on. 404ing there would break the link
 	// the nav and the home section both offer, and an empty grid is the honest answer to "show me
 	// these".
+	//
+	//
 	const totalPages = Math.max(1, Math.ceil(totalCount / POSTS_PER_PAGE))
 	if (page > totalPages) notFound()
 

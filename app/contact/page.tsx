@@ -6,7 +6,7 @@ export default function ContactPage() {
 	return (
 		<div>
 			<MainNav color="text-foreground" />
-			<Contact heading={<>Contact</>} />
+			<Contact />
 			<PageReadySignal />
 		</div>
 	)

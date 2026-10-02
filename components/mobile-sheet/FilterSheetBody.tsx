@@ -6,7 +6,7 @@ import MobileSheetBody from "@/components/mobile-sheet/MobileSheetBody"
 import DetailList from "@/components/details/DetailList"
 import BodyButton from "@/components/buttons/BodyButton"
 import clickChangesNothing from "@/utils/clickChangesNothing"
-import { workHref } from "@/utils/workUrl"
+import withSearchParams from "@/utils/withSearchParams"
 import { type WorkCategory, type WorkType } from "@/types/ContentTypes"
 import Plus from "@/components/icons/Plus"
 
@@ -36,7 +36,7 @@ export default function FilterSheetBody(
 	// curtain. Applying what is already showing only closes the sheet — see clickChangesNothing.
 	function apply(event: FormEvent<HTMLFormElement>) {
 		event.preventDefault()
-		const href = workHref({ category, type })
+		const href = withSearchParams("/work", { category, type })
 		close()
 		if (!clickChangesNothing(href)) router.push(href, { scroll: false })
 	}
@@ -45,7 +45,7 @@ export default function FilterSheetBody(
 	// actually showing a filter. With none applied, clearing is just a way out of the sheet.
 	function clear() {
 		close()
-		if (activeCategory || activeType) router.push(workHref({}), { scroll: false })
+		if (activeCategory || activeType) router.push("/work", { scroll: false })
 	}
 
 	const optionList = (

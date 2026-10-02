@@ -15,7 +15,7 @@ import DetailTableRow from "@/components/details/DetailTableRow"
 import BodyLinkSecondary from "@/components/buttons/BodyLinkSecondary"
 import ServiceButton from "@/components/buttons/ServiceButton"
 import formatDate from "@/utils/formatDate"
-import { workHref } from "@/utils/workUrl"
+import withSearchParams from "@/utils/withSearchParams"
 
 // How many pieces the closing "More Work" grid shows.
 const MORE_WORK = 4
@@ -74,12 +74,12 @@ export default async function WorkShow({ params }: PageProps<"/work/[workSlug]">
 						<DetailTableRow label="Area"><span>{work.area} m²</span></DetailTableRow>
 					}
 					<DetailTableRow label="Category">
-						<BodyLinkSecondary href={workHref({ category: work.category.slug })}>
+						<BodyLinkSecondary href={withSearchParams("/work", { category: work.category.slug })}>
 							{work.category.name}
 						</BodyLinkSecondary>
 					</DetailTableRow>
 					<DetailTableRow label="Type">
-						<BodyLinkSecondary href={workHref({ type: work.type.slug })}>
+						<BodyLinkSecondary href={withSearchParams("/work", { type: work.type.slug })}>
 							{work.type.name}
 						</BodyLinkSecondary>
 					</DetailTableRow>

@@ -9,24 +9,8 @@ export type WorkListType = {
 	media: SanityImageSource
 }
 
-export type WorkCategory = {
-	name: string,
-	slug: string,
-}
-
-export type WorkType = {
-	name: string,
-	slug: string,
-}
-
-// The one piece of work the index features between its two grids: a picture to fill the band and a
-// slug to send the reader to, which is all the band is made of. Its type and category are not here
-// because nothing needs them — the query already decides whether the piece belongs under the active
-// filter, so the page has no slugs to compare and the band prints no words of its own.
-//
-// The cover is not nullable: a work's lead image is required in the schema.
-export type ProudestWorkType = {
-	cover: CoverType,
+export type WorkFilter = {
+	title: string,
 	slug: string
 }
 
@@ -145,4 +129,9 @@ export type GeneralInformationType = {
 	socials: SocialLinkType[],
 	hours: OpeningHoursType,
 	address: AddressType
+}
+
+export type ImageType = {
+	src: SanityImageSource,
+	alt?: string
 }

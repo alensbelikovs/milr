@@ -10,12 +10,10 @@ const NAV_LABEL = "Contact"
 // The heading is handed to the wrapper rather than rendered here, because sending the message
 // changes it: "I would love to hear your ideas" becomes "Thank You!" or "Oops!". The wrapper holds
 // both it and the form so the pair can fade out and come back as one block — see there.
-export default function Contact(
-	{ heading = <>I would love to <br /> Hear Your ideas.</> }:
-		{ heading?: ReactNode }) {
+export default function Contact() {
 	return (
 		<Section className="py-size-192" label={NAV_LABEL}>
-			<ContactFormWrapper heading={heading} />
+			<ContactFormWrapper />
 		</Section>
 	)
 }
