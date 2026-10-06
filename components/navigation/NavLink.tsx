@@ -1,26 +1,23 @@
 import Link from "next/link"
-import type { MouseEvent } from "react"
 
-// scroll passes straight through to Link. Off where TransitionControl owns the scroll — see
-// FilterNav — and left at Link's default everywhere else.
+// Inactive links are dimmed; only SectionNav ever marks one inactive
 export default function NavLink(
-	{ href, active, onClick, children, target, scroll }: {
-		href: string
-		active?: boolean
-		onClick?: (event: MouseEvent<HTMLAnchorElement>) => void
-		children: React.ReactNode
-		target?: string
-		scroll?: boolean
-	}
-) {
+	{ children, href, active = true, target, onClick }: {
+		children: React.ReactNode,
+		href: string,
+		active?: boolean,
+		target?: string,
+		onClick?: (event: React.MouseEvent<HTMLAnchorElement>) => void
+	}) {
 	return (
 		<Link
 			href={href}
-			onClick={onClick}
-			scroll={scroll}
-			className={`text-size-16 transition-colors hover:underline ${active ? "text-current" : "text-current/50"}`}
 			target={target}
-		>
+			onClick={onClick}
+			className={`
+				text-size-16 transition-colors hover:underline
+				${active ? "text-current" : "text-current/50"}
+			`}>
 			{children}
 		</Link>
 	)

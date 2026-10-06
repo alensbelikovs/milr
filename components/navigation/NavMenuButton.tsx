@@ -1,42 +1,20 @@
 "use client"
 import { useEffect, useRef } from "react"
-import { gsap, useGSAP } from "@/utils/gsap"
 import { useSidebarContentStore } from "@/store/SidebarContentStore"
-import { useMobileSheetStore } from "@/store/MobileSheetStore"
+import { gsap, useGSAP } from "@/utils/gsap"
 
-// Timing for both halves of the swap: the lines going out and the cross coming in. inOut rather
-// than an out ease, because the one timeline runs backwards to close — an out ease reversed is an in
-// ease, and the close would feel like a different animation from the open.
+// inOut, because the same timeline plays in reverse to close
 const SWAP = { duration: 0.35, ease: "expo.inOut" }
 
-// Two lines when the sidebar is shut, a cross when it is open. Reads the store for both what it
-// shows and what it does, so the navbar only has to place it.
-//
-// The mobile sheet (Jump To, Filters) counts as open too. It covers the page the same way the sidebar does, and
-// this is the control that sits over it, so while it is showing the cross closes it — the menu is
-// only reachable again once it has gone.
-//
-// The cross is its own pair of lines rather than the menu lines turned on their sides. Those two
-// differ in width and anchoring, and the bottom one widens on hover through a CSS width transition
-// — re-laying them out into a cross would mean GSAP writing width and position inline, which fights
-// that transition on the way in and strands inline values over the classes on the way back. Kept
-// apart, GSAP only ever touches transforms, and each pair keeps the layout its classes give it.
+// Two lines when the sidebar is closed, a cross while it is open
 export default function NavMenuButton() {
 	const toggleNav = useSidebarContentStore(state => state.toggleNav)
-	const sidebarOpen = useSidebarContentStore(state => state.sidebarContent !== null)
-	const sheetOpen = useMobileSheetStore(state => state.content !== null)
-	const closeSheet = useMobileSheetStore(state => state.close)
-	const isOpen = sidebarOpen || sheetOpen
-
-	const handleClick = sheetOpen ? closeSheet : toggleNav
-	const label = sheetOpen ? "Close" : sidebarOpen ? "Close menu" : "Open menu"
+	const isOpen = useSidebarContentStore(state => state.sidebarContent !== null)
 
 	const buttonRef = useRef<HTMLButtonElement>(null)
 	const timelineRef = useRef<gsap.core.Timeline | null>(null)
 
-	// Built once, played forwards to open and backwards to close. One timeline rather than a tween
-	// per toggle, so a second press mid-swap turns the animation around from wherever it has got to
-	// instead of starting a new one over the top of it.
+	// The cross is a separate pair of lines, so GSAP only ever touches transforms
 	useGSAP(() => {
 		const button = buttonRef.current
 		if (!button) return
@@ -44,9 +22,6 @@ export default function NavMenuButton() {
 		const lines = button.querySelectorAll("[data-menu-line]")
 		const [crossA, crossB] = button.querySelectorAll("[data-cross-line]")
 
-		// The menu lines shrink toward the right edge they share. The cross lines grow out of the
-		// point where they meet, so their origin is their own middle — which is also what makes the
-		// ±45 turn a cross rather than two lines swinging off an end.
 		gsap.set(lines, { transformOrigin: "100% 50%" })
 		gsap.set(crossA, { transformOrigin: "50% 50%", rotation: 45, scaleX: 0, opacity: 1 })
 		gsap.set(crossB, { transformOrigin: "50% 50%", rotation: -45, scaleX: 0, opacity: 1 })
@@ -57,33 +32,36 @@ export default function NavMenuButton() {
 	}, { scope: buttonRef })
 
 	useEffect(() => {
-		const timeline = timelineRef.current
-		if (!timeline) return
-		if (isOpen) timeline.play()
-		else timeline.reverse()
+		if (isOpen) timelineRef.current?.play()
+		else timelineRef.current?.reverse()
 	}, [isOpen])
 
 	return (
 		<button
 			ref={buttonRef}
 			type="button"
-			onClick={handleClick}
-			// The lines are all there is to see, so the name has to come from here — and it says
-			// which way a press goes, since the same button both opens and closes.
-			aria-label={label}
+			onClick={toggleNav}
+			aria-label={isOpen ? "Close menu" : "Open menu"}
 			aria-expanded={isOpen}
-			className="group cursor-pointer
-			pointer-events-auto absolute top-0
-			right-size-24 h-size-64 aspect-16/10">
+			className="
+				group absolute top-0 right-size-24 h-size-64 aspect-16/10
+				cursor-pointer pointer-events-auto
+			">
 			<div className="relative h-6 w-full">
-				<div data-menu-line className="h-0.5 w-8 bg-background absolute right-0 top-1.5"></div>
+				<div data-menu-line className="absolute right-0 top-1.5 h-0.5 w-8 bg-background" />
 				<div
 					data-menu-line
-					className={`h-0.5 w-4 transition-[width] duration-200 ease-in-out
+					className={`
+						absolute right-0 bottom-2 h-0.5 w-4 bg-background
+						transition-[width] duration-200 ease-in-out
 						${isOpen ? "" : "group-hover:w-8"}
-						bg-background absolute right-0 bottom-2`}></div>
-				<div data-cross-line className="h-0.5 w-8 -mt-px bg-background absolute -right-1 top-1/2 opacity-0"></div>
-				<div data-cross-line className="h-0.5 w-8 -mt-px bg-background absolute -right-1 top-1/2 opacity-0"></div>
+					`} />
+				{[0, 1].map(line => (
+					<div
+						key={line}
+						data-cross-line
+						className="absolute -right-1 top-1/2 h-0.5 w-8 -mt-px bg-background opacity-0" />
+				))}
 			</div>
 		</button>
 	)

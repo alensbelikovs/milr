@@ -1,9 +1,6 @@
-// This file contains all site routes in one place so navigation components have one SSOT for routes
+export type Route = { href: string, label: string }
 
-export type Route = { href: string; label: string }
-
-// The nav list rendered by the footer and the sidebar menu, in this fixed order. Kept here to edit
-// quickly and in the same place as all routes
+// Site routes in nav order, shared by the main nav, footer and sidebar menu
 export const STATIC_ROUTES: Route[] = [
 	{ href: "/", label: "Home" },
 	{ href: "/about", label: "About" },

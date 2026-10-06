@@ -2,44 +2,35 @@
 import ArrowDown from "@/components/icons/ArrowDown"
 
 export default function InputSelect(
-	{ id, name, placeholder, label, options, value, onChange, required }:
-		{
-			id: string;
-			name: string;
-			placeholder: string;
-			label: string;
-			options: { [key: string]: string };
-			value: string;
-			onChange: (e: React.ChangeEvent<HTMLSelectElement>) => void;
-			required?: boolean;
-		}) {
+	{ id, label, placeholder, options, ...props }: {
+		id: string,
+		name: string,
+		label: string,
+		placeholder: string,
+		options: Record<string, string>,
+		value: string,
+		onChange: (event: React.ChangeEvent<HTMLSelectElement>) => void,
+		required?: boolean
+	}) {
 	return (
 		<div className="flex flex-col col-span-full">
 			<label className="text-size-16" htmlFor={id}>{label}</label>
 			<div className="grid">
 				<select
+					id={id}
 					className="
 						col-start-1 row-start-1
 						appearance-none cursor-pointer
-						group py-size-16 pr-size-48 border-b
-						border-b-foreground/10
-						text-size-24
+						py-size-16 pr-size-48 text-size-24
+						border-b border-b-foreground/10
 					"
-					id={id}
-					name={name}
-					value={value}
-					onChange={onChange}
-					required={required}
-				>
-					{/* Disabled, so once a real subject is picked the prompt cannot be chosen again.
-					    Its empty value is what lets `required` block the submit until then. */}
+					{...props}>
+					{/* Empty and disabled, so `required` blocks submitting until a subject is picked */}
 					<option value="" disabled>{placeholder}</option>
-					{Object.entries(options).map(([key, label]) => (
-						<option key={key} value={key}>{label}</option>
+					{Object.entries(options).map(([key, option]) => (
+						<option key={key} value={key}>{option}</option>
 					))}
 				</select>
-				{/* pointer-events-none, so a click on the arrow falls through to the select under it.
-				    currentColor, so it takes whatever colour the field's text is. */}
 				<ArrowDown
 					dimensions={16}
 					fill="currentColor"

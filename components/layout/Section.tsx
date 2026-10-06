@@ -1,9 +1,12 @@
 import slugify from "@/utils/slugify"
 
-// The semantic <section> element for a page section, needed to appear in SectionNav.
+// A page section; a label gives it an id for SectionNav
 export default function Section(
-	{ label, children, className = "" }: { label?: string; children?: React.ReactNode; className?: string }
-) {
+	{ children, label, className = "" }: {
+		children: React.ReactNode,
+		label?: string,
+		className?: string
+	}) {
 	return (
 		<section
 			id={label ? slugify(label) : undefined}

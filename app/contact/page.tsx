@@ -1,13 +1,13 @@
-import PageReadySignal from "@/components/transition/PageReadySignal"
-import Contact from "@/components/sections/Contact"
 import MainNav from "@/components/navigation/MainNav"
+import Contact from "@/components/sections/Contact"
+import PageReadySignal from "@/components/transition/PageReadySignal"
 
 export default function ContactPage() {
 	return (
-		<div>
+		<main>
 			<MainNav color="text-foreground" />
 			<Contact />
 			<PageReadySignal />
-		</div>
+		</main>
 	)
 }

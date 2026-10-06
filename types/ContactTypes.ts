@@ -1,8 +1,8 @@
-// Shared by the contact form and its route handler, so the field names cannot drift apart.
+// Shared by the contact form and its route handler
 export type ContactPayloadType = {
-	name: string
-	email: string
-	subject: string
+	name: string,
+	email: string,
+	subject: string,
 	message: string
 }
 

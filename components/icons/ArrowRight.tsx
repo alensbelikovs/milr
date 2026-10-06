@@ -1,7 +1,5 @@
 export default function ArrowRight(
-	{ dimensions=24, fill, className = "" }:
-	{ dimensions: number; fill: string; className?: string }
-) {
+	{ dimensions, fill, className = "" }: { dimensions: number, fill: string, className?: string }) {
 	return (
 		<svg
 			width={dimensions}

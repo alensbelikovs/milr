@@ -1,37 +1,26 @@
-import type { ContactPayloadType, ContactResponseType } from "@/types/ContactTypes"
+import { type ContactPayloadType, type ContactResponseType } from "@/types/ContactTypes"
 
-const FIELDS = ["name", "email", "subject", "message"] as const
-
-// Narrows the parsed body to a payload. Every field is required and must carry something other
-// than whitespace, which mirrors the `required` attributes the form already enforces natively —
-// the browser is not the last word on what arrives here.
-function isPayload(body: unknown): body is ContactPayloadType {
-	if (typeof body !== "object" || body === null) return false
-	const record = body as Record<string, unknown>
-	return FIELDS.every(field =>
-		typeof record[field] === "string" && (record[field] as string).trim().length > 0)
-}
+const FIELDS: (keyof ContactPayloadType)[] = ["name", "email", "subject", "message"]
 
 function json(status: ContactResponseType["status"], code: number) {
 	return Response.json({ status } satisfies ContactResponseType, { status: code })
 }
 
-// POST is never cached, so this needs no route segment config.
 export async function POST(request: Request) {
-	let body: unknown
-
+	let body: Record<string, unknown>
 	try {
 		body = await request.json()
 	} catch {
 		return json("error", 400)
 	}
 
-	if (!isPayload(body)) return json("error", 400)
+	// Every field is required and must hold more than whitespace
+	const valid = typeof body === "object" && body !== null
+		&& FIELDS.every(field => typeof body[field] === "string" && body[field].trim().length > 0)
+	if (!valid) return json("error", 400)
 
-	// The whole "backend" for now: nothing is mailed or stored, the submission is only logged to
-	// the server console. Replace with the actual send when the mail provider is in place.
+	// Temporary: only logged until a mail provider is in place
 	console.log("Contact form submission:", body)
 
 	return json("success", 200)
-	// return json("error", 400)
 }

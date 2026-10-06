@@ -1,29 +1,11 @@
-// The spinner that stands in for an arrow while a control is busy — see BodyButton.
-//
-// animate-spin-fast is this project's, beside the arrow animations in globals.css. Tailwind ships
-// the same animation as animate-spin and it is only the duration that is wrong: a full second a
-// revolution is slow enough to read as stalled at the size this is drawn, which is 12px inside a
-// button. The duration-* utilities do not reach animation-duration — they set transition-duration —
-// so the number lives in the theme with every other piece of timing on the site.
-//
-// The class goes on the svg root rather than on the path inside it. The root is a replaced element
-// in the HTML flow, so it takes the ordinary 50% 50% transform-origin and turns about its own
-// centre; an element INSIDE the svg would default to an origin of 0 0 and swing around the corner
-// of the viewBox instead.
-//
-// The ring is drawn to the edges of a square viewBox, so it is its own bounding box turned about
-// its centre — which is what lets it spin inside BodyButton's overflow-hidden mask without the
-// corners being shaved off.
-export default function Loader(
-	{ dimensions=24, fill, className = "" }:
-	{ dimensions: number; fill: string; className?: string }
-) {
+// Spinner shown in place of an arrow while a control is busy
+export default function Loader({ dimensions, fill }: { dimensions: number, fill: string }) {
 	return (
 		<svg
 			width={dimensions}
 			height={dimensions}
 			viewBox="0 0 12 12"
-			className={`animate-spin-fast ${className}`}
+			className="animate-spin-fast"
 			fill={fill}
 			xmlns="http://www.w3.org/2000/svg">
 			<path d="M6 0C4.81331 -1.41511e-08 3.65327

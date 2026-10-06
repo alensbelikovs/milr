@@ -1,14 +1,10 @@
 "use client"
-
 import { useLayoutEffect } from "react"
-import { TransitionParticipantMethodsType } from "@/types/TransitionTypes"
 import { useTransitionStore } from "@/store/TransitionStore"
+import { type TransitionParticipantMethodsType } from "@/types/TransitionTypes"
 
 export function useTransitionParticipant(key: string, methods: TransitionParticipantMethodsType) {
-	// Empty deps on purpose: `methods` is rebuilt every render, and re-registering on each one would
-	// churn the store for nothing. The object captured on the first render is the one registered AND
-	// the one handed to the cleanup, which is what lets the store tell this participant's own removal
-	// from a same-key registration that replaced it.
+	// Registered once: the first render's methods object is also what the cleanup unregisters
 	useLayoutEffect(() => {
 		const { registerParticipant, unregisterParticipant } = useTransitionStore.getState()
 		registerParticipant(key, methods)

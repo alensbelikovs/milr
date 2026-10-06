@@ -1,72 +1,120 @@
-import { sanityClient } from "@/utils/sanityClient"
-import { type WorkFilter, type GeneralInformation } from "@/types/CommonTypes"
-import { type SolutionType, type WorkNarrow } from "@/types/WorkTypes"
 import { cache } from "react"
+import { sanityClient } from "@/utils/sanityClient"
+import {
+	type GeneralInformation,
+	type Post,
+	type Solution,
+	type Testimonial,
+	type WorkFilter
+} from "@/types/CommonTypes"
+import { type WorkBroad, type WorkNarrow } from "@/types/WorkTypes"
 
-const GENERAL_INFORMATION_QUERY = `*[_id == "generalInformation"][0]{
-	"img": img{ "src": @, alt },
-	email,
-	phone,
-	socials[]{ _key, title, url },
-	hours,
-	address
-}`
+const IMG = `"img": img{ "src": @, alt }`
+const WORK_CARD = `title, "slug": slug.current, ${IMG}`
+const POST_CARD = `_id, _createdAt, title, description, url, ${IMG}`
 
-const ALL_WORK_SECTORS_QUERY =
-	`*[_type == "sector"] | order(title asc){ title, "slug": slug.current }`
-
-const ALL_WORK_TYPES_QUERY =
-	`*[_type == "solution"] | order(title asc){
-		title,
-		"slug": slug.current,
-		description,
-		"img": img{ "src": @, alt }
-	}`
-
-// Work narrowed by the filters. Each filter is a list of slugs, and a work's sector and solutions are
-// each lists of references — so a work matches a filter when any of its own slugs is in the list:
-// pick two sectors and you get the work of both. The two filters narrow together, and an empty list is
-// that filter not applied.
-const WORK_FILTER = `_type == "work"
+// A work matches a filter when any of its slugs is in the list; an empty list means no filter
+export const WORK_FILTER = `_type == "work"
 	&& (count($sectors) == 0 || count((sector[]->slug.current)[@ in $sectors]) > 0)
 	&& (count($solutions) == 0 || count((solutions[]->slug.current)[@ in $solutions]) > 0)`
 
-// A slice of the filtered work, and how many there are in all so the caller can count pages. Newest
-// first; _id breaks ties so a piece can never land on two pages, or none.
-const WORK_QUERY = `{
-	"work": *[${WORK_FILTER}] | order(_createdAt desc, _id desc)[$start...$end]{
-		title,
-		"slug": slug.current,
-		"img": img{ "src": @, alt }
-	},
-	"count": count(*[${WORK_FILTER}])
-}`
+// cache() so the layout and the home page share one request per render
+export const getGeneralInformation = cache(async (): Promise<GeneralInformation | null> => {
+	return await sanityClient.fetch(`*[_id == "generalInformation"][0]{
+		${IMG},
+		email,
+		phone,
+		socials[]{ _key, title, url },
+		hours,
+		address
+	}`)
+})
 
-// start/end are slice bounds rather than a page number: turning a page into an offset is the page's
-// arithmetic, and this stays a plain range.
+export async function getSectors(): Promise<WorkFilter[]> {
+	return await sanityClient.fetch(`*[_type == "sector"] | order(title asc){ title, "slug": slug.current }`)
+}
+
+export async function getSolutions(): Promise<Solution[]> {
+	return await sanityClient.fetch(
+		`*[_type == "solution"] | order(title asc){ title, "slug": slug.current, description, ${IMG} }`
+	)
+}
+
+// _id breaks ties so a work never lands on two pages
 export async function getWork(
-	{ sectors = [], solutions = [], start, end }: {
-		sectors?: string[],
-		solutions?: string[],
+	{ sectors, solutions, start, end }: {
+		sectors: string[],
+		solutions: string[],
 		start: number,
 		end: number
-	}
-): Promise<{ work: WorkNarrow[], count: number }> {
-	return await sanityClient.fetch(WORK_QUERY, { sectors, solutions, start, end })
+	}): Promise<{ work: WorkNarrow[], count: number }> {
+	return await sanityClient.fetch(
+		`{
+			"work": *[${WORK_FILTER}] | order(_createdAt desc, _id desc)[$start...$end]{ ${WORK_CARD} },
+			"count": count(*[${WORK_FILTER}])
+		}`,
+		{ sectors, solutions, start, end }
+	)
 }
 
-export async function getAllWorkSectors(): Promise<WorkFilter[]> {
-	return await sanityClient.fetch<WorkFilter[]>(ALL_WORK_SECTORS_QUERY)
+export async function getLatestWork(
+	{ limit, except = "" }: { limit: number, except?: string }): Promise<WorkNarrow[]> {
+	return await sanityClient.fetch(
+		`*[_type == "work" && slug.current != $except] | order(_createdAt desc)[0...$limit]{ ${WORK_CARD} }`,
+		{ limit, except }
+	)
 }
 
-export async function getAllWorkTypes(): Promise<SolutionType[]> {
-	return await sanityClient.fetch<SolutionType[]>(ALL_WORK_TYPES_QUERY)
+export async function getWorkBySlug(slug: string): Promise<WorkBroad | null> {
+	return await sanityClient.fetch(
+		`*[_type == "work" && slug.current == $slug][0]{
+			${WORK_CARD},
+			_createdAt,
+			subtitle,
+			description,
+			"sector": coalesce(sector[]{ _key, "title": @->title, "slug": @->slug.current }, []),
+			"solutions": coalesce(solutions[]{
+				_key,
+				"title": @->title,
+				"slug": @->slug.current,
+				"description": @->description,
+				"img": @->img{ "src": @, alt }
+			}, []),
+			location,
+			area,
+			testimonial->{ text, author, description },
+			"gallery": coalesce(gallery[]{
+				_key,
+				"src": @,
+				alt,
+				"aspectRatio": asset->metadata.dimensions.aspectRatio
+			}, [])
+		}`,
+		{ slug }
+	)
 }
 
-export const getGeneralInformation = cache(
-	async (): Promise<GeneralInformation | null> =>
-		await sanityClient.fetch<GeneralInformation | null>(
-			GENERAL_INFORMATION_QUERY,
-			{},
-			{ next: { revalidate: 3600 } })
-)
+export async function getRandomTestimonial(): Promise<Testimonial | null> {
+	const testimonials = await sanityClient.fetch<Testimonial[]>(
+		`*[_type == "testimonial"]{ text, author, description }`
+	)
+	return testimonials[Math.floor(Math.random() * testimonials.length)] ?? null
+}
+
+export async function getPosts(limit: number): Promise<Post[]> {
+	return await sanityClient.fetch(
+		`*[_type == "post"] | order(_createdAt desc)[0...$limit]{ ${POST_CARD} }`,
+		{ limit }
+	)
+}
+
+export async function getPostsPage(
+	{ start, end }: { start: number, end: number }): Promise<{ posts: Post[], count: number }> {
+	return await sanityClient.fetch(
+		`{
+			"posts": *[_type == "post"] | order(_createdAt desc, _id desc)[$start...$end]{ ${POST_CARD} },
+			"count": count(*[_type == "post"])
+		}`,
+		{ start, end }
+	)
+}

@@ -1,4 +1,22 @@
-import { SanityImageSource } from "@sanity/image-url"
+import { type SanityImageSource } from "@sanity/image-url"
+
+export type Image = {
+	src: SanityImageSource,
+	alt?: string | null
+}
+
+// A title + slug pair, used for sectors and solution filters
+export type WorkFilter = {
+	title: string,
+	slug: string
+}
+
+export type Solution = {
+	title: string,
+	slug: string,
+	description: string,
+	img: Image | null
+}
 
 export type Testimonial = {
 	text: string,
@@ -6,28 +24,29 @@ export type Testimonial = {
 	description: string
 }
 
-export type Solution = {
+export type Post = {
+	_id: string,
+	_createdAt: string,
 	title: string,
 	description: string,
-	slug: string,
-	img: Image
-}
-
-export type Image = {
-	src: SanityImageSource,
-	alt?: string | null
-}
-
-// A general type for descriptive things such as category, project type, location, etc.
-export type WorkFilter = {
-	title: string,
-	slug: string
+	url: string,
+	img: Image | null
 }
 
 export type SocialLink = {
+	_key: string,
 	title: string,
 	url: string
 }
+
+// Days are lowercase slugs (monday … sunday), hours are zero-padded HH:MM
+export type OpeningHours = {
+	workFromDay: string,
+	workToDay: string,
+	workHourFrom: string,
+	workHourTo: string
+}
+
 export type Address = {
 	streetName: string,
 	streetNumber: string,
@@ -35,14 +54,9 @@ export type Address = {
 	city: string,
 	country: string
 }
-export type OpeningHours = {
-	workFromDay: string,
-	workToDay: string,
-	workHourFrom: string,
-	workHourTo: string
-}
+
 export type GeneralInformation = {
-	img: Image,
+	img: Image | null,
 	email: string,
 	phone: string,
 	socials: SocialLink[],

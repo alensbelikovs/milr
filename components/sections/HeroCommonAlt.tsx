@@ -1,27 +1,22 @@
-import DetailList from "@/components/details/DetailList"
-import BodyLink from "@/components/buttons/BodyLink"
-import Heading128 from "@/components/typography/Heading128"
+import Section from "@/components/layout/Section"
 import PointerOverlayTrigger from "@/components/pointer/PointerOverlayTrigger"
+import Heading128 from "@/components/typography/Heading128"
 
-// Doesn't use semantic <Section/> component,
-// since not included in <SectionNav/>
-// and has different styling
-export default function HeroCommonAlt(
-	{ heading, media }:
-		{
-			heading: React.ReactNode;
-			media?: string
-		}
-) {
+// A centered heading over a tall dark panel; not a nav section
+export default function HeroCommonAlt({ heading }: { heading: React.ReactNode }) {
 	return (
-		<section className="pt-size-192">
-			<div className="grid-standard mb-size-192"><Heading128 mainHeading>{heading}</Heading128></div>
-			{/* cursor-pointer across the whole panel, because the whole panel is what a click acts
-			    on — there is no smaller target to aim at. The label names what the next click does,
-			    so it alternates: Paint until it has been painted on, Clear until it is wiped. */}
-			<div className="min-h-screen lg:min-h-[175vh] bg-foreground col-span-full cursor-pointer">
+		<Section className="pt-size-192">
+			<div className="col-span-full mb-size-192">
+				<Heading128 mainHeading>{heading}</Heading128>
+			</div>
+			{/* Negative margin cancels the grid's side padding, so the panel runs edge to edge */}
+			<div className="
+				col-span-full -mx-size-24
+				min-h-screen lg:min-h-[175vh]
+				bg-foreground cursor-pointer
+			">
 				<PointerOverlayTrigger label="Paint" toggledLabel="Clear" />
 			</div>
-		</section>
+		</Section>
 	)
 }

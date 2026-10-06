@@ -1,25 +1,22 @@
 "use client"
-import { useMobileSheetStore } from "@/store/MobileSheetStore"
 import FixedButton from "@/components/buttons/FixedButton"
-import { MOBILE_SHEET_ID } from "@/components/mobile-sheet/MobileSheet"
-import SectionNavSheetBody from "@/components/mobile-sheet/SectionNavSheetBody"
-import type { SectionNavLink } from "@/components/navigation/SectionNavWrapper"
+import { type SectionNavLink } from "@/components/navigation/SectionNavWrapper"
+import { SIDEBAR_ID } from "@/components/sidebar/Sidebar"
+import { useSidebarContentStore } from "@/store/SidebarContentStore"
 
-// SectionNav for below lg, where a bar of links across the page has no room: a "Jump To" button that
-// opens the same links in the mobile sheet. The sheet, its slide and its locks all live in MobileSheet;
-// this only decides what goes in it.
+// SectionNav below lg: a "Jump To" button that opens the links in the sidebar
 export default function SectionNavMobile({ links }: { links: SectionNavLink[] }) {
-	const isOpen = useMobileSheetStore(state => state.content !== null)
-	const open = useMobileSheetStore(state => state.open)
-	const close = useMobileSheetStore(state => state.close)
+	const isOpen = useSidebarContentStore(state => state.sidebarContent !== null)
+	const openSectionNav = useSidebarContentStore(state => state.openSectionNav)
+	const closeSidebar = useSidebarContentStore(state => state.closeSidebar)
 
 	if (links.length === 0) return null
 
 	return (
 		<FixedButton
-			onClick={() => isOpen ? close() : open(<SectionNavSheetBody links={links} />)}
+			onClick={() => isOpen ? closeSidebar() : openSectionNav(links)}
 			aria-expanded={isOpen}
-			aria-controls={MOBILE_SHEET_ID}>
+			aria-controls={SIDEBAR_ID}>
 			Jump To
 		</FixedButton>
 	)

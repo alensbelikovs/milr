@@ -1,13 +1,9 @@
-export default function Logo(
-	{ dimensions, fill, className = "" }:
-	{ dimensions: number; fill: string; className?: string }
-) {
+export default function Logo({ dimensions, fill }: { dimensions: number, fill: string }) {
 	return (
 		<svg
 			width={dimensions}
 			height={dimensions}
 			viewBox="0 0 64 64"
-			className={className ? className : ""}
 			fill={fill}
 			xmlns="http://www.w3.org/2000/svg">
 			<path d="M4 50.6597V40.7882C17.2559

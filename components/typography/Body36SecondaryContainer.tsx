@@ -7,7 +7,8 @@ export default function Body36SecondaryContainer({ children }: { children: React
 			xl:col-start-7 xl:col-span-3
 			text-center items-center
 			md:text-left md:items-start
-			flex flex-col gap-size-48 mt-size-192">
+			flex flex-col gap-size-48 mt-size-192
+		">
 			{children}
 		</div>
 	)
