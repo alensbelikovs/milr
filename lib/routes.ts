@@ -1,10 +1,12 @@
-export type Route = { href: string, label: string }
+import { type Dictionary } from "@/lib/dictionaries"
 
-// Site routes in nav order, shared by the main nav, footer and sidebar menu
+export type Route = { href: string, key: keyof Dictionary["nav"] }
+
+// Site routes in nav order, shared by the main nav, footer and sidebar menu; labels come from dict.nav
 export const STATIC_ROUTES: Route[] = [
-	{ href: "/", label: "Home" },
-	{ href: "/about", label: "About" },
-	{ href: "/work", label: "Work" },
-	{ href: "/diary", label: "Diary" },
-	{ href: "/contact", label: "Contact" },
+	{ href: "/", key: "home" },
+	{ href: "/about", key: "about" },
+	{ href: "/work", key: "work" },
+	{ href: "/diary", key: "diary" },
+	{ href: "/contact", key: "contact" },
 ]

@@ -1,4 +1,5 @@
 import { notFound } from "next/navigation"
+import MainNav from "@/components/navigation/MainNav"
 import HeroList from "@/components/sections/HeroList"
 import Section from "@/components/layout/Section"
 import WorkGrid from "@/components/cards/WorkGrid"
@@ -8,12 +9,19 @@ import WorkFiltersButton from "@/components/buttons/WorkFiltersButton"
 import PageReadySignal from "@/components/transition/PageReadySignal"
 import { getSectors, getSolutions, getWork } from "@/utils/sanityGetters"
 import resolvePage from "@/utils/resolvePage"
+import { getDictionary } from "@/lib/dictionaries"
+import { alternates } from "@/lib/i18n"
 
 const WORK_PER_PAGE = 8
 
-export default async function WorkPage({ searchParams }: PageProps<"/work">) {
+export async function generateMetadata() {
+	const dict = await getDictionary()
+	return { title: dict.nav.work, alternates: alternates("/work") }
+}
+
+export default async function WorkPage({ searchParams }: PageProps<"/[lang]/work">) {
 	const params = await searchParams
-	const [allSectors, allSolutions] = await Promise.all([getSectors(), getSolutions()])
+	const [allSectors, allSolutions, dict] = await Promise.all([getSectors(), getSolutions(), getDictionary()])
 
 	// Filters arrive as a single value, repeated values or not at all; an unknown slug is a 404
 	const [sectors, solutions] = [
@@ -31,7 +39,8 @@ export default async function WorkPage({ searchParams }: PageProps<"/work">) {
 
 	return (
 		<main>
-			<HeroList heading="Work" count={count}>
+			<MainNav color="text-foreground" />
+			<HeroList heading={dict.nav.work} count={count}>
 				<WorkFiltersButton
 					count={count}
 					active={{ sectors, solutions }}
@@ -40,10 +49,10 @@ export default async function WorkPage({ searchParams }: PageProps<"/work">) {
 						solutions: allSolutions.map(({ title, slug }) => ({ title, slug }))
 					}} />
 			</HeroList>
-			<Section className="py-size-96 mb-size-96">
+			<Section noTopPadding className="mb-size-96">
 				{
 					count === 0
-						? <ListEmpty href="/work">Nothing matches these filters yet.</ListEmpty>
+						? <ListEmpty href="/work">{dict.work.empty}</ListEmpty>
 						: <WorkGrid work={work} />
 				}
 				<Pagination

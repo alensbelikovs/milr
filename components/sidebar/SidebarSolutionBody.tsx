@@ -16,7 +16,7 @@ export default function SidebarSolutionBody({ solution }: { solution: Solution }
 		">
 			<div className="col-start-2 col-span-4 flex flex-col">
 				<h5 className="font-serif text-size-18 opacity-50">{title}</h5>
-				<TextLineSplit className="text-size-24 mt-size-48">
+				<TextLineSplit onMount className="text-size-24 mt-size-48">
 					{description}
 				</TextLineSplit>
 			</div>
@@ -25,7 +25,7 @@ export default function SidebarSolutionBody({ solution }: { solution: Solution }
 				relative overflow-hidden aspect-16/10
 				bg-image-placeholder
 			">
-				<ScrollReveal delay={0.05} />
+				<ScrollReveal onMount delay={0.05} />
 				{
 					img &&
 					<Image

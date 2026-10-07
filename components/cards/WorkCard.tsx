@@ -1,4 +1,4 @@
-import Link from "next/link"
+import Link from "@/components/navigation/LocaleLink"
 import ScrollReveal from "@/components/animation/ScrollReveal"
 import Image from "@/components/media/Image"
 import PointerOverlayTrigger from "@/components/pointer/PointerOverlayTrigger"

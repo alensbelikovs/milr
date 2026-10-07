@@ -6,7 +6,9 @@ export default function DetailList(
 		action?: React.ReactNode,
 		className?: string
 	}) {
-	const labelId = `detail-list-${label.toLowerCase().replace(/[^a-z0-9]+/g, "-")}`
+	// Diacritics folded first, so "Navigācija" becomes navigacija rather than navig-cija
+	const slug = label.normalize("NFD").replace(/[̀-ͯ]/g, "").toLowerCase().replace(/[^a-z0-9]+/g, "-")
+	const labelId = `detail-list-${slug}`
 
 	return (
 		<div className={className}>

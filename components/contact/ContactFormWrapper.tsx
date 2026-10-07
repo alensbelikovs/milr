@@ -3,14 +3,13 @@ import { useRef, useState } from "react"
 import { useLenis } from "lenis/react"
 import ContactForm from "@/components/contact/ContactForm"
 import ContactResult from "@/components/contact/ContactResult"
-import Heading128 from "@/components/typography/Heading128"
 import { gsap, useGSAP } from "@/utils/gsap"
 import { playTween } from "@/utils/playTween"
 import { type ContactStatusType } from "@/types/ContactTypes"
 
 const FADE = { duration: 0.4, ease: "power2.out", paused: true, immediateRender: false }
 
-// Fades the heading and form out, then the result in.
+// Fades the form out, then the result in.
 // The client boundary, so Contact stays a server component.
 export default function ContactFormWrapper() {
 	const [status, setStatus] = useState<ContactStatusType | "idle">("idle")
@@ -40,10 +39,7 @@ export default function ContactFormWrapper() {
 		<div ref={containerRef} className="col-span-full">
 			{
 				status === "idle"
-					? <>
-						<Heading128 className="mb-size-192">Contact</Heading128>
-						<ContactForm onResult={handleResult} />
-					</>
+					? <ContactForm onResult={handleResult} />
 					: <ContactResult status={status} />
 			}
 		</div>

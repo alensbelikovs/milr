@@ -1,6 +1,5 @@
 "use client"
-import { useContext, useRef, type ReactNode } from "react"
-import { RevealOnMountContext } from "@/components/animation/RevealOnMountContext"
+import { useRef, type ReactNode } from "react"
 import { gsap, ScrollTrigger, useGSAP } from "@/utils/gsap"
 
 // Both ends are explicit: a resting clip-path of `none` is nothing GSAP can interpolate towards.
@@ -15,7 +14,6 @@ export default function ClipReveal(
 		delay?: number
 	}) {
 	const blockRef = useRef<HTMLDivElement>(null)
-	const onMount = useContext(RevealOnMountContext)
 
 	useGSAP(() => {
 		const block = blockRef.current
@@ -30,13 +28,13 @@ export default function ClipReveal(
 					duration: 1.2,
 					ease: "expo.out",
 					delay,
-					paused: !onMount,
+					paused: true,
 					// Removed afterwards so the clip doesn't cut off focus outlines
 					clearProps: "clipPath",
 				})
 
 			// restart(true) keeps the delay, which a trigger's own play() would skip
-			if (!onMount) ScrollTrigger.create({
+			ScrollTrigger.create({
 				trigger: block,
 				start: "top bottom",
 				once: true,
@@ -45,7 +43,7 @@ export default function ClipReveal(
 		})
 
 		return () => { mm.revert() }
-	}, { dependencies: [delay, onMount], scope: blockRef })
+	}, { dependencies: [delay], scope: blockRef })
 
 	return <div ref={blockRef} className={className}>{children}</div>
 }

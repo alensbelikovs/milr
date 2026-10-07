@@ -1,5 +1,6 @@
 "use client"
 import { useEffect, useRef } from "react"
+import { useSite } from "@/components/layout/SiteProvider"
 import { useSidebarContentStore } from "@/store/SidebarContentStore"
 import { gsap, useGSAP } from "@/utils/gsap"
 
@@ -8,6 +9,7 @@ const SWAP = { duration: 0.35, ease: "expo.inOut" }
 
 // Two lines when the sidebar is closed, a cross while it is open
 export default function NavMenuButton() {
+	const { dict } = useSite()
 	const toggleNav = useSidebarContentStore(state => state.toggleNav)
 	const isOpen = useSidebarContentStore(state => state.sidebarContent !== null)
 
@@ -41,7 +43,7 @@ export default function NavMenuButton() {
 			ref={buttonRef}
 			type="button"
 			onClick={toggleNav}
-			aria-label={isOpen ? "Close menu" : "Open menu"}
+			aria-label={isOpen ? dict.common.closeMenu : dict.common.openMenu}
 			aria-expanded={isOpen}
 			className="
 				group absolute top-0 right-size-24 h-size-64 aspect-16/10

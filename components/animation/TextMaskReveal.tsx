@@ -1,19 +1,19 @@
 "use client"
-import { useContext, useRef, type ReactNode } from "react"
-import { RevealOnMountContext } from "@/components/animation/RevealOnMountContext"
+import { useRef, type ReactNode } from "react"
 import { gsap, ScrollTrigger, useGSAP } from "@/utils/gsap"
 
 // Rises single-line text out of its own mask as one piece, on scroll (from lg up)
 export default function TextMaskReveal(
-	{ children, className = "", as = "span", delay = 0 }: {
+	{ children, className = "", as = "span", delay = 0, onMount = false }: {
 		children: ReactNode,
 		className?: string,
 		as?: keyof React.JSX.IntrinsicElements,
-		delay?: number
+		delay?: number,
+		// Skips the scroll trigger and plays right away (used inside the sidebar)
+		onMount?: boolean
 	}) {
 	const maskRef = useRef<HTMLElement>(null)
 	const riseRef = useRef<HTMLSpanElement>(null)
-	const onMount = useContext(RevealOnMountContext)
 
 	useGSAP(() => {
 		const mask = maskRef.current

@@ -1,17 +1,23 @@
 import Section from "@/components/layout/Section"
 import SolutionsList from "@/components/lists/SolutionsList"
+import { type NavId } from "@/components/navigation/SectionNavWrapper"
 import Heading72 from "@/components/typography/Heading72"
+import { getDictionary } from "@/lib/dictionaries"
 import { type Solution } from "@/types/CommonTypes"
 
-const NAV_LABEL = "Solutions"
+const NAV_ID: NavId = "solutions"
 
-export default function Solutions({ solutions }: { solutions: Solution[] }) {
+export default async function Solutions({ solutions }: { solutions: Solution[] }) {
+	const dict = await getDictionary()
+
 	return (
-		<Section className="py-size-192" label={NAV_LABEL}>
-			<Heading72 serif={`( ${solutions.length} )`} className="mb-size-96">Solutions</Heading72>
+		<Section navId={NAV_ID}>
+			<Heading72 serif={`( ${solutions.length} )`} className="mb-size-96">
+				{dict.sections[NAV_ID]}
+			</Heading72>
 			<SolutionsList solutions={solutions} />
 		</Section>
 	)
 }
 
-Solutions.navLabel = NAV_LABEL
+Solutions.navId = NAV_ID

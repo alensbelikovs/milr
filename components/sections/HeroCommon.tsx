@@ -11,7 +11,7 @@ export default function HeroCommon(
 	{ heading, subheading, img }: { heading: string, subheading: string, img?: ImageType | null }) {
 	return (
 		<Section className="
-			relative min-h-screen w-full py-size-24 overflow-hidden
+			relative min-h-screen w-full overflow-hidden
 			bg-foreground text-background selection-invert
 		">
 			{

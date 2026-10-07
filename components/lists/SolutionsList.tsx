@@ -112,7 +112,7 @@ export default function SolutionsList({ solutions }: { solutions: Solution[] }) 
 			">
 				{/* isolate keeps the pictures' z-indexes in their own stacking context */}
 				<div ref={scopeRef} className="relative isolate w-full h-full overflow-hidden">
-					{/* Every solution gets a container, so one without a picture still shows the placeholder */}
+					{/* Every solution gets a container, so a missing picture still shows the placeholder */}
 					{solutions.map(({ slug, title, img }, index) => (
 						<div
 							key={slug}

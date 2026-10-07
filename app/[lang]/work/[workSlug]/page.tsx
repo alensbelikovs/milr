@@ -13,16 +13,27 @@ import PageReadySignal from "@/components/transition/PageReadySignal"
 import Body36 from "@/components/typography/Body36"
 import Body36Container from "@/components/typography/Body36Container"
 import formatDate from "@/utils/formatDate"
+import { getDictionary, getLocale } from "@/lib/dictionaries"
+import { alternates } from "@/lib/i18n"
 import { getLatestWork, getWorkBySlug } from "@/utils/sanityGetters"
 
 const MORE_WORK = 4
 
-export default async function WorkShow({ params }: PageProps<"/work/[workSlug]">) {
+export async function generateMetadata({ params }: PageProps<"/[lang]/work/[workSlug]">) {
 	const { workSlug } = await params
-	const [work, moreWork] = await Promise.all([
+	const work = await getWorkBySlug(workSlug)
+	return { title: work?.title, alternates: alternates(`/work/${workSlug}`) }
+}
+
+export default async function WorkShow({ params }: PageProps<"/[lang]/work/[workSlug]">) {
+	const { workSlug } = await params
+	const [work, moreWork, dict, lang] = await Promise.all([
 		getWorkBySlug(workSlug),
 		getLatestWork({ limit: MORE_WORK, except: workSlug }),
+		getDictionary(),
+		getLocale(),
 	])
+	const { details } = dict.work
 
 	if (!work) notFound()
 
@@ -33,7 +44,7 @@ export default async function WorkShow({ params }: PageProps<"/work/[workSlug]">
 			<MainNav color="text-background" />
 			<HeroCommon heading={work.title} subheading={work.subtitle} img={work.img} />
 			<PageReadySignal />
-			<Section className="pt-size-48 md:pt-size-96 lg:pt-size-192 pb-size-192">
+			<Section>
 				<Body36Container>
 					{work.description.split(/\n+/).map((paragraph, index) => (
 						<Body36 key={index}>{paragraph}</Body36>
@@ -41,14 +52,14 @@ export default async function WorkShow({ params }: PageProps<"/work/[workSlug]">
 				</Body36Container>
 				{/* Optional facts only get a row when the work has them */}
 				<DetailTable className="mt-size-96">
-					{place && <DetailTableRow label="Location"><span>{place}</span></DetailTableRow>}
+					{place && <DetailTableRow label={details.location}><span>{place}</span></DetailTableRow>}
 					{
 						work.area !== null &&
-						<DetailTableRow label="Area"><span>{work.area} m²</span></DetailTableRow>
+						<DetailTableRow label={details.area}><span>{work.area} m²</span></DetailTableRow>
 					}
 					{
 						work.sector.length > 0 &&
-						<DetailTableRow label="Sector">
+						<DetailTableRow label={details.sector}>
 							{work.sector.map(sector => (
 								<BodyLinkSecondary
 									key={sector._key}
@@ -60,20 +71,20 @@ export default async function WorkShow({ params }: PageProps<"/work/[workSlug]">
 					}
 					{
 						work.solutions.length > 0 &&
-						<DetailTableRow label="Solutions">
+						<DetailTableRow label={details.solutions}>
 							{work.solutions.map(solution => (
 								<SolutionButton key={solution._key} solution={solution} />
 							))}
 						</DetailTableRow>
 					}
-					<DetailTableRow label="Published">
-						<span>{formatDate(work._createdAt)}</span>
+					<DetailTableRow label={details.published}>
+						<span>{formatDate(work._createdAt, lang)}</span>
 					</DetailTableRow>
 				</DetailTable>
 			</Section>
 			<Gallery images={work.gallery} title={work.title} />
 			{work.testimonial && <Testimonial testimonial={work.testimonial} />}
-			{moreWork.length > 0 && <LatestWork work={moreWork} heading="More Work" />}
+			{moreWork.length > 0 && <LatestWork work={moreWork} heading={dict.work.moreWork} />}
 		</main>
 	)
 }

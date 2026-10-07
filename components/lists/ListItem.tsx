@@ -1,6 +1,5 @@
 "use client"
-import { useContext, useRef, type ComponentProps } from "react"
-import { RevealOnMountContext } from "@/components/animation/RevealOnMountContext"
+import { useRef, type ComponentProps } from "react"
 import TextLineSplit from "@/components/animation/TextLineSplit"
 import ArrowRight from "@/components/icons/ArrowRight"
 import { gsap, ScrollTrigger, useGSAP } from "@/utils/gsap"
@@ -14,7 +13,6 @@ export default function ListItem(
 		onClick: () => void
 	}) {
 	const itemRef = useRef<HTMLLIElement>(null)
-	const onMount = useContext(RevealOnMountContext)
 
 	// The rule is an ::after, so GSAP draws it through the --line custom property
 	useGSAP(() => {
@@ -25,10 +23,10 @@ export default function ListItem(
 		mm.add("(min-width: 64rem)", () => {
 			const draw = gsap.fromTo(item,
 				{ "--line": 0 },
-				{ "--line": 1, duration: 1.2, ease: "expo.out", delay, paused: !onMount })
+				{ "--line": 1, duration: 1.2, ease: "expo.out", delay, paused: true })
 
 			// restart(true) keeps the delay, which a trigger's own play() would skip
-			if (!onMount) ScrollTrigger.create({
+			ScrollTrigger.create({
 				trigger: item,
 				start: "top bottom",
 				once: true,
@@ -37,7 +35,7 @@ export default function ListItem(
 		})
 
 		return () => { mm.revert() }
-	}, { dependencies: [delay, onMount], scope: itemRef })
+	}, { dependencies: [delay], scope: itemRef })
 
 	return (
 		<li

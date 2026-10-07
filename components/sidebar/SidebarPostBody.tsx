@@ -1,7 +1,9 @@
+"use client"
 import Image from "next/image"
 import Link from "next/link"
 import ScrollReveal from "@/components/animation/ScrollReveal"
 import TextLineSplit from "@/components/animation/TextLineSplit"
+import { useSite } from "@/components/layout/SiteProvider"
 import ImageDimmer from "@/components/media/ImageDimmer"
 import buildImageUrl, { CARD } from "@/utils/buildImageUrl"
 import formatDate from "@/utils/formatDate"
@@ -10,6 +12,7 @@ import { type Post } from "@/types/CommonTypes"
 // A post opened up: date, title and description, with its picture linking out to the post's url
 export default function SidebarPostBody({ post }: { post: Post }) {
 	const { title, description, _createdAt, img, url } = post
+	const { lang, dict } = useSite()
 
 	return (
 		<div className="grid grid-cols-6 px-size-24 gap-x-size-24 py-size-96">
@@ -18,11 +21,11 @@ export default function SidebarPostBody({ post }: { post: Post }) {
 				flex flex-col items-center gap-size-96 text-center
 			">
 				<div className="flex flex-col gap-size-48">
-					<p className="text-size-18 font-serif text-foreground/50">{formatDate(_createdAt)}</p>
-					<TextLineSplit as="h3" className="text-size-48">
+					<p className="text-size-18 font-serif text-foreground/50">{formatDate(_createdAt, lang)}</p>
+					<TextLineSplit onMount as="h3" className="text-size-48">
 						{title}
 					</TextLineSplit>
-					<TextLineSplit className="text-size-18">
+					<TextLineSplit onMount className="text-size-18">
 						{description}
 					</TextLineSplit>
 				</div>
@@ -30,7 +33,7 @@ export default function SidebarPostBody({ post }: { post: Post }) {
 					group w-full relative overflow-hidden aspect-3/4
 					bg-image-placeholder
 				">
-					<ScrollReveal delay={0.05} />
+					<ScrollReveal onMount delay={0.05} />
 					{
 						img &&
 						<>
@@ -58,7 +61,7 @@ export default function SidebarPostBody({ post }: { post: Post }) {
 							text-size-24 group-hover:underline
 							${img ? "text-background" : "text-foreground"}
 						`}>
-						View
+						{dict.common.view}
 					</Link>
 				</div>
 			</div>

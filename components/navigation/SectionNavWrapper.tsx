@@ -1,20 +1,22 @@
 import { Children, isValidElement } from "react"
 import SectionNav from "@/components/navigation/SectionNav"
 import SectionNavMobile from "@/components/navigation/SectionNavMobile"
-import slugify from "@/utils/slugify"
+import { getDictionary, type Dictionary } from "@/lib/dictionaries"
 
 export type SectionNavLink = { id: string, label: string }
+export type NavId = keyof Dictionary["sections"]
 
-// Builds the section nav from each child's static navLabel. Sections must be server components,
-// since a client component arrives as a module reference without the property.
-export default function SectionNavWrapper({ children }: { children: React.ReactNode }) {
+// Builds the section nav from each child's static navId, labelled from dict.sections. Sections must be
+// server components, since a client component arrives as a module reference without the property.
+export default async function SectionNavWrapper({ children }: { children: React.ReactNode }) {
+	const dict = await getDictionary()
 	const links: SectionNavLink[] = Children.toArray(children)
 		.filter(isValidElement)
 		.map(child => typeof child.type === "function"
-			? (child.type as { navLabel?: string }).navLabel
+			? (child.type as { navId?: NavId }).navId
 			: undefined)
-		.filter((label): label is string => Boolean(label))
-		.map(label => ({ id: slugify(label), label }))
+		.filter((id): id is NavId => Boolean(id))
+		.map(id => ({ id, label: dict.sections[id] }))
 
 	return (
 		<>

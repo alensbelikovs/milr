@@ -1,0 +1,191 @@
+{
+	"meta": {
+		"title": "Milr Studio",
+		"description": "Interjeru dizains ģimenēm un uzņēmumiem – Rinalds Miļicins."
+	},
+	"nav": {
+		"home": "Sākums",
+		"about": "Par mani",
+		"work": "Darbi",
+		"diary": "Žurnāls",
+		"contact": "Kontakti"
+	},
+	"sections": {
+		"intro": "Ievads",
+		"latest-work": "Pēdējie darbi",
+		"client-stories": "Klientu stāsti",
+		"process": "Process",
+		"latest-posts": "Pēdējie ieraksti",
+		"contact": "Kontakti",
+		"my-story": "Mans stāsts",
+		"solutions": "Risinājumi"
+	},
+	"common": {
+		"home": "Sākums",
+		"navigation": "Navigācija",
+		"sections": "Sadaļas",
+		"jumpTo": "Saturs",
+		"openMenu": "Atvērt izvēlni",
+		"closeMenu": "Aizvērt izvēlni",
+		"close": "Aizvērt",
+		"view": "Skatīt",
+		"paint": "Zīmēt",
+		"clear": "Notīrīt"
+	},
+	"details": {
+		"contacts": "Kontakti",
+		"socials": "Sociālie tīkli",
+		"address": "Adrese",
+		"hours": "Darba laiks"
+	},
+	"days": {
+		"monday": "P",
+		"tuesday": "O",
+		"wednesday": "T",
+		"thursday": "C",
+		"friday": "Pk",
+		"saturday": "S",
+		"sunday": "Sv"
+	},
+	"home": {
+		"subheading": "Interjeru dizains ģimenēm un uzņēmumiem",
+		"intro": {
+			"lead": "Esmu interjeru dizainers. Es veidoju praktiskas un paliekošas telpas, kuras papildina ikdienas ritmu un kalpo gadiem ilgi.",
+			"paragraphs": [
+				"Es ticu, ka labas telpas emocionāli savienojas ar cilvēkiem, kuri tajās uzturas. Katrs projekts tiek veidots ap taviem paradumiem un gaumi. Vai tā būtu dzīvojamā istaba sarunām vai birojs, kas rosina produktivitāti, rezultāts vienmēr ir viens – telpa, kas atbalsta ikdienu un rada pareizo sajūtu jau no pirmā brīža.",
+				"Katru ikdienas rituālu, no miegainā gājiena uz vannasistabu septiņos no rīta līdz ieslēgtai uzgaidāmās zonas gaismai, atbalsta detaļas, par kurām lielākā daļa cilvēku nedomā, bet vienmēr izjūt – gaismas tonis, paklāja siltums zem kājām vai slēdzis tieši tur, kur sniedzas roka. Tieši šīs izvēles liek telpai kalpot cilvēkiem, kas tajā dzīvo, satiekas vai strādā, dienu pēc dienas.",
+				"Dizaina tendences nāk un iet, bet tavām mājām vai darbavietai nevajadzētu būt derīguma termiņam. Materiālus un mēbeles izvēlos pēc tā, kā tie atbalsta tavu ikdienu un atspoguļo tavu gaumi. Dizains, kas radīts, lai iespaidotu šodien, reti ir tas, kuru joprojām mīli pēc pieciem gadiem. Tāpēc mani darbi iztur laika pārbaudi – ne tāpēc, ka sekoja īslaicīgam stilam, bet tāpēc, ka nekad tam nedzinās pakaļ."
+			],
+			"link": "Mans stāsts"
+		},
+		"latestWork": {
+			"text": "Katra telpa tiek veidota ap reālu ikdienu – lai tā būtu tikpat patīkama, cik funkcionāla.",
+			"link": "Visi darbi"
+		},
+		"featuredPosts": {
+			"text": "Praktiski padomi un radošas idejas no maniem sociālajiem tīkliem.",
+			"link": "Visi ieraksti"
+		},
+		"process": {
+			"heading": ["Mūsu laiks kopā", "Sākas ar sarunu."],
+			"paragraphs": [
+				"Es uzmanīgi ieklausos tavā gaumē, paradumos un tajā, ko vēlies just, un vadu to visu ar gadiem ilgu praktisku dizaina pieredzi, līdz katra ideja kļūst par telpu, kas ir nepārprotami tava.",
+				"Pēc tam idejas iegūst formu 3D vizualizācijās, lai tu varētu redzēt telpu, pirms kaut kas tiek būvēts vai iegādāts. Tad tiek izvēlētas mēbeles, apdare un krāsas – katra atbilstoši vēlamajai sajūtai, budžetam un gaumei.",
+				"Es piedalos arī uzstādīšanā, pārliecinoties, ka gatavā telpa atbilst plānam. Tas ir kopīgs process, un es turpinu darbu, līdz telpa dzīvē šķiet tikpat pareiza kā uz papīra."
+			]
+		},
+		"contactCta": {
+			"heading": ["Pastāsti man", "Par savām idejām."],
+			"link": "Sazināties"
+		}
+	},
+	"about": {
+		"heading": ["Es veidoju telpas", "Pielāgotas Tev."],
+		"story": {
+			"lead": "Esmu interjeru dizainers, kas veido mājas un darba telpas ar vienu mērķi – saprast, kā vēlies justies un kustēties savā telpā, un pārvērst to vietā, kurai tu piederi.",
+			"paragraphs": [
+				"Pirms tas kļuva par manu darbu, deviņus gadus studēju dizainu, no tiem trīs – tieši interjeru, vienlaikus strādājot parastu darbu no deviņiem līdz pieciem.",
+				"Tieši tad pamanīju, cik ļoti apkārtējās telpas ietekmēja manas dienas, man pašam to neapzinoties – galds nepareizā vietā, apgaismojums, kas apgrūtināja koncentrēšanos, vai dzīvojamā istaba, kas izskatījās mājīga, bet nekad īsti nešķita kā mājas. Šīs mazās ikdienas neērtības lielā mērā ir iemesls, kāpēc pievērsos interjera dizainam.",
+				"Tagad es projektēju mājas un darba telpas ļoti dažādos projektos, no ģimenes mājām līdz augošiem uzņēmumiem, un katram pieeju ar vienādu rūpību par cilvēkiem, kas tur pavadīs savas dienas.",
+				"Es sāku, izprotot tavus paradumus un to, ko vēlies just šajā telpā. Tad veidoju plānojumu ap tavu dienu. Kad tas ir kārtībā, strādāju pie atmosfēras: gaismas, materiāliem un noskaņas, kas palīdz koncentrēties vai atpūsties.",
+				"Es nedzenos pakaļ tendencēm, jo dizains, kas labi izskatās tikai šodien, nav tā vērts. Katrs materiāls un mēbele tiek izvēlēti, lai kalpotu ilgi – gan fiziski, gan stilistiski –, tāpēc telpa paliek tikpat noderīga un pievilcīga arī gadiem pēc pabeigšanas, ne tikai dienā, kad uzstādīta pēdējā detaļa.",
+				"Nākotnē vēlos turpināt uzņemties projektus, kas mani izaicina jaunos veidos. Savā darbā esmu apņēmies pierādīt, ka telpa var būt gan praktiska, gan paliekoša, nekad neizvēloties starp abiem."
+			]
+		}
+	},
+	"work": {
+		"moreWork": "Citi darbi",
+		"empty": "Šiem filtriem pagaidām nekas neatbilst.",
+		"resetFilters": "Notīrīt filtrus",
+		"filters": "Filtri",
+		"filterLabel": "Filtrēt darbus",
+		"sectors": "Kategorija",
+		"solutions": "Risinājumi",
+		"resetAll": "Notīrīt filtrus",
+		"viewProjects": {
+			"zero": "Skatīt {count} projektus",
+			"one": "Skatīt {count} projektu",
+			"other": "Skatīt {count} projektus"
+		},
+		"details": {
+			"location": "Atrašanās vieta",
+			"area": "Platība",
+			"sector": "Nozare",
+			"solutions": "Risinājumi",
+			"published": "Publicēts"
+		}
+	},
+	"diary": {
+		"empty": "Ierakstu pagaidām nav."
+	},
+	"pagination": {
+		"label": "Lapas",
+		"prev": "Iepr.",
+		"next": "Nāk."
+	},
+	"contact": {
+		"intro": {
+			"start": "Uzraksti īsu ziņu, lai sāktu sarunu",
+			"direct": ", vai sazinies ar mani tieši pa",
+			"email": "e-pastu",
+			"or": "vai",
+			"phone": "tālruni"
+		},
+		"form": {
+			"label": "Kontaktforma",
+			"name": "Vārds *",
+			"namePlaceholder": "Tavs vārds",
+			"email": "E-pasts *",
+			"emailPlaceholder": "Tavs e-pasts",
+			"message": "Ziņa *",
+			"messagePlaceholder": "Tava ziņa",
+			"subject": "Tēma *",
+			"subjectPlaceholder": "Izvēlies tēmu",
+			"subjects": {
+				"project": "Pirmā tēma",
+				"collaboration": "Otrā tēma",
+				"other": "Trešā tēma"
+			},
+			"submit": "Sūtīt ziņu",
+			"loading": ["Sūta", "Gandrīz gatavs", "Mirklīti"],
+			"recaptcha": {
+				"before": "Šī vietne izmanto reCAPTCHA surogātpasta novēršanai, tāpēc ir spēkā Google",
+				"privacy": "Privātuma politika",
+				"and": "un",
+				"terms": "Pakalpojumu noteikumi",
+				"after": "."
+			}
+		},
+		"success": {
+			"heading": "Paldies!",
+			"lead": "Uz drīzu sarunu:",
+			"date": "15. septembrī",
+			"time": "no 8:00 līdz 19:00",
+			"link": "Skatīt apstiprinājumu"
+		},
+		"error": {
+			"heading": "Ak nē!",
+			"lead": "Kaut kas nogāja greizi:",
+			"title": ["Lūdzu, sazinies", "ar mani tieši"]
+		}
+	},
+	"footer": {
+		"cookiesPrivacy": "Sīkdatnes un privātums",
+		"credit": "Izstrādāja AB",
+		"cookieSettings": "Sīkdatņu iestatījumi"
+	},
+	"cookiesPrivacy": {
+		"effective": "Spēkā no",
+		"updated": "Atjaunināts"
+	},
+	"consent": {
+		"text": "Es izmantoju analītikas sīkdatnes, lai redzētu, kā vietne tiek lietota.",
+		"link": "Sīkdatnes un privātums",
+		"accept": "Piekrītu",
+		"decline": "Noraidīt"
+	},
+	"notFound": {
+		"heading": "Lapa nav atrasta",
+		"text": "Šāda lapa neeksistē."
+	}
+}

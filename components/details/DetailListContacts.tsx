@@ -1,17 +1,17 @@
 "use client"
 import DetailList from "@/components/details/DetailList"
+import { useSite } from "@/components/layout/SiteProvider"
 import NavLink from "@/components/navigation/NavLink"
-import { useGeneralInformation } from "@/store/GeneralInformationStore"
 import telHref from "@/utils/telHref"
 
 export default function DetailListContacts({ className = "" }: { className?: string }) {
-	const information = useGeneralInformation(state => state.information)
+	const { information, dict } = useSite()
 	if (!information) return null
 
 	const { email, phone } = information
 
 	return (
-		<DetailList label="Contacts" className={className}>
+		<DetailList label={dict.details.contacts} className={className}>
 			<li className="my-2">
 				<NavLink href={`mailto:${email}`}>{email}</NavLink>
 			</li>

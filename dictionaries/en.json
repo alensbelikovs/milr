@@ -1,0 +1,191 @@
+{
+	"meta": {
+		"title": "Milr Studio",
+		"description": "Interior design for families and businesses by Rinalds Miļicins."
+	},
+	"nav": {
+		"home": "Home",
+		"about": "About",
+		"work": "Work",
+		"diary": "Diary",
+		"contact": "Contact"
+	},
+	"sections": {
+		"intro": "Intro",
+		"latest-work": "Latest Work",
+		"client-stories": "Client Stories",
+		"process": "Process",
+		"latest-posts": "Latest Posts",
+		"contact": "Contact",
+		"my-story": "My Story",
+		"solutions": "Solutions"
+	},
+	"common": {
+		"home": "Home",
+		"navigation": "Navigation",
+		"sections": "Sections",
+		"jumpTo": "Jump To",
+		"openMenu": "Open menu",
+		"closeMenu": "Close menu",
+		"close": "Close",
+		"view": "View",
+		"paint": "Paint",
+		"clear": "Clear"
+	},
+	"details": {
+		"contacts": "Contacts",
+		"socials": "Socials",
+		"address": "Address",
+		"hours": "Hours"
+	},
+	"days": {
+		"monday": "Mon",
+		"tuesday": "Tue",
+		"wednesday": "Wed",
+		"thursday": "Thu",
+		"friday": "Fri",
+		"saturday": "Sat",
+		"sunday": "Sun"
+	},
+	"home": {
+		"subheading": "Designing interiors for families and businesses",
+		"intro": {
+			"lead": "I am an interior designer creating practical and memorable spaces that compliment routines and stay useful for years to come.",
+			"paragraphs": [
+				"I believe that great spaces connect emotionally to the people who occupy them. Every project is designed around your habits and taste. Whether it's a living room made to foster conversations or an office space that fuels productivity, the outcome is always the same – a space that supports routines and feels right the moment you walk in.",
+				"Every routine, from the stumble to the bathroom at 7 in the morning to the glow of a reception light left on, is supported by details most people never think about, but always notice – the color of the light, the warmth of a carpet underfoot, or the placement of a switch exactly where your hand reaches. These are the choices that make a space work for the people who live, gather, or do business in it, day after day.",
+				"Design trends come and go, but your home or workplace shouldn't have an expiration date. I choose materials and furniture for how they support your routine and reflect your taste. A design built to impress today is rarely the one you still love five years from now. That is why my work holds up – not because it followed a passing style, but because it was never chasing one."
+			],
+			"link": "My Story"
+		},
+		"latestWork": {
+			"text": "Every space is shaped around a real routine, built to feel as good as it functions.",
+			"link": "All Work"
+		},
+		"featuredPosts": {
+			"text": "A mix of practical tips and creative ideas, taken from my social media feeds.",
+			"link": "All Posts"
+		},
+		"process": {
+			"heading": ["Our time together", "Starts with a conversation."],
+			"paragraphs": [
+				"I listen closely to your taste, your habits, and what you're hoping to feel, then guide it all with years of hands-on design thinking, until every idea lands in a space that feels unmistakably yours.",
+				"From there, ideas take shape as 3D renders, so you can see the space before anything is built or bought. Furniture, finishes, and colors get chosen next, each picked to fit the feeling you're after, your budget, and your taste.",
+				"I stay hands-on through installation, making sure the finished space matches the plan. It's a collaborative process, and I keep working until it feels every bit as right in person as it did on paper."
+			]
+		},
+		"contactCta": {
+			"heading": ["I would love to", "Hear Your ideas."],
+			"link": "Reach Out"
+		}
+	},
+	"about": {
+		"heading": ["I design spaces", "Shaped around You."],
+		"story": {
+			"lead": "I am an interior designer crafting homes and workspaces with one ambition in mind – to understand how you want to feel and move through your space, and shape it into somewhere you belong to.",
+			"paragraphs": [
+				"Before this became my work, I spent nine years studying design, three of them focused specifically on interiors, while working a regular 9-5 job.",
+				"It was during that time I noticed how much the spaces around me shaped my days without me realizing it – a desk in the wrong spot, lighting that made focusing harder than it should've been, or a living room that looked cozy but never quite felt like home. Those small daily frustrations are a big part of why I pursued interior design.",
+				"Now, I design homes and workspaces across widely different projects, from family residences to growing businesses, and I approach each one with the same care for the people who will spend their days there.",
+				"I start by understanding your habits and what you want to feel when you're in that space. Then I build the layout around your day. Once that's right, I work on the atmosphere: the light, the materials, the tone that helps you focus or helps you unwind.",
+				"I don't chase trends, because a design that only looks good today isn't a design worth having. Every material and piece of furniture is chosen to hold up, both physically and stylistically, so a space stays just as useful and just as compelling years after it's finished, not just on the day the last piece is installed.",
+				"Looking ahead, I want to keep taking on projects that challenge me in new ways. In my work I am determined to prove that a space can be both practical and memorable to you, without ever needing to choose between the two."
+			]
+		}
+	},
+	"work": {
+		"moreWork": "More Work",
+		"empty": "Nothing matches these filters yet.",
+		"resetFilters": "Reset filters",
+		"filters": "Filters",
+		"filterLabel": "Filter work",
+		"sectors": "Category",
+		"solutions": "Solutions",
+		"resetAll": "Reset Filters",
+		"viewProjects": {
+			"zero": "View {count} projects",
+			"one": "View {count} project",
+			"other": "View {count} projects"
+		},
+		"details": {
+			"location": "Location",
+			"area": "Area",
+			"sector": "Sector",
+			"solutions": "Solutions",
+			"published": "Published"
+		}
+	},
+	"diary": {
+		"empty": "No posts yet."
+	},
+	"pagination": {
+		"label": "Pagination",
+		"prev": "Prev",
+		"next": "Next"
+	},
+	"contact": {
+		"intro": {
+			"start": "Send a quick note to start the chat",
+			"direct": ", or reach me directly by",
+			"email": "E-mail",
+			"or": "or",
+			"phone": "Phone"
+		},
+		"form": {
+			"label": "Contact form",
+			"name": "Name *",
+			"namePlaceholder": "Your name",
+			"email": "Email *",
+			"emailPlaceholder": "Your email",
+			"message": "Message *",
+			"messagePlaceholder": "Your message",
+			"subject": "Subject *",
+			"subjectPlaceholder": "Select a subject",
+			"subjects": {
+				"project": "Subject one",
+				"collaboration": "Subject two",
+				"other": "Subject three"
+			},
+			"submit": "Send Message",
+			"loading": ["Sending", "Almost there", "One moment"],
+			"recaptcha": {
+				"before": "This site uses reCAPTCHA to prevent spam, so Google's",
+				"privacy": "Privacy Policy",
+				"and": "and",
+				"terms": "Terms of Service",
+				"after": " apply."
+			}
+		},
+		"success": {
+			"heading": "Thank You!",
+			"lead": "Chat Soon:",
+			"date": "September 15",
+			"time": "between 8:00 – 19:00",
+			"link": "View Confirmation"
+		},
+		"error": {
+			"heading": "Oops!",
+			"lead": "Something went wrong:",
+			"title": ["Please contact", "me directly"]
+		}
+	},
+	"footer": {
+		"cookiesPrivacy": "Cookies & Privacy",
+		"credit": "Designed by AB",
+		"cookieSettings": "Cookie settings"
+	},
+	"cookiesPrivacy": {
+		"effective": "Effective as of",
+		"updated": "Updated as of"
+	},
+	"consent": {
+		"text": "I use analytics cookies to see how the site is used.",
+		"link": "Cookies & Privacy",
+		"accept": "Accept",
+		"decline": "Decline"
+	},
+	"notFound": {
+		"heading": "Not found",
+		"text": "This page does not exist."
+	}
+}

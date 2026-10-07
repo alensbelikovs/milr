@@ -1,4 +1,4 @@
-import Link from "next/link"
+import Link from "@/components/navigation/LocaleLink"
 
 // Inactive links are dimmed; only SectionNav ever marks one inactive
 export default function NavLink(

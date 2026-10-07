@@ -6,6 +6,9 @@ export type ContactPayloadType = {
 	message: string
 }
 
+// The payload plus its reCAPTCHA token, as posted to the route
+export type ContactRequestType = ContactPayloadType & { token: string }
+
 export type ContactStatusType = "success" | "error"
 
 export type ContactResponseType = { status: ContactStatusType }

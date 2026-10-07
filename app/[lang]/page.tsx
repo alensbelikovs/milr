@@ -8,17 +8,22 @@ import LatestWork from "@/components/sections/LatestWork"
 import Process from "@/components/sections/Process"
 import Testimonial from "@/components/sections/Testimonial"
 import PageReadySignal from "@/components/transition/PageReadySignal"
+import { getDictionary } from "@/lib/dictionaries"
+import { alternates } from "@/lib/i18n"
 import { getGeneralInformation, getLatestWork, getPosts, getRandomTestimonial } from "@/utils/sanityGetters"
 
 const LATEST_WORK = 4
 const FEATURED_POSTS = 4
 
+export const metadata = { alternates: alternates("/") }
+
 export default async function HomePage() {
-	const [work, posts, testimonial, general] = await Promise.all([
+	const [work, posts, testimonial, general, dict] = await Promise.all([
 		getLatestWork({ limit: LATEST_WORK }),
 		getPosts(FEATURED_POSTS),
 		getRandomTestimonial(),
 		getGeneralInformation(),
+		getDictionary(),
 	])
 
 	// Empty sections are left out here, not inside them, so the section nav never links to a missing id
@@ -27,7 +32,7 @@ export default async function HomePage() {
 			<MainNav color="text-background" />
 			<HeroCommon
 				heading="Rinalds Miļicins"
-				subheading="Designing interiors for families and businesses"
+				subheading={dict.home.subheading}
 				img={general?.img} />
 			<SectionNavWrapper>
 				<Introduction />

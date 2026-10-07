@@ -81,8 +81,9 @@ export default function TransitionControl({ children }: { children: React.ReactN
 		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, [url])
 
+	// flow-root stops a first section's top margin collapsing through and pushing MainNav down
 	return (
-		<div className="relative">
+		<div className="relative flow-root">
 			<LayoutRouterContext.Provider value={committed.context}>
 				{committed.component}
 			</LayoutRouterContext.Provider>

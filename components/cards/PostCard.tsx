@@ -41,8 +41,6 @@ export default function PostCard({ post, delay }: { post: Post, delay?: number }
 					</div>
 				}
 			</div>
-			<p className="mt-size-16 text-size-14 text-foreground/50">{formatDate(_createdAt)}</p>
-			<h3 className="mt-1.5 text-size-16 group-hover:underline">{title}</h3>
 		</button>
 	)
 }

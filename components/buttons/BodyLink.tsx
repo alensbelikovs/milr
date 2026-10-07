@@ -1,4 +1,4 @@
-import Link from "next/link"
+import Link from "@/components/navigation/LocaleLink"
 import ClipReveal from "@/components/animation/ClipReveal"
 import ArrowRight from "@/components/icons/ArrowRight"
 

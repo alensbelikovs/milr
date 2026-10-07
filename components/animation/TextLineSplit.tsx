@@ -1,20 +1,20 @@
 "use client"
-import { useContext, useRef, type ReactNode } from "react"
-import { RevealOnMountContext } from "@/components/animation/RevealOnMountContext"
+import { useRef, type ReactNode } from "react"
 import { gsap, ScrollTrigger, useGSAP, SplitText } from "@/utils/gsap"
 
 // Splits text into masked lines that rise in one by one on scroll (from lg up).
 // linesClassName lands on each cut line, for anything drawn past the line box (e.g. an underline).
 export default function TextLineSplit(
-	{ children, className = "", linesClassName, as = "p", delay = 0 }: {
+	{ children, className = "", linesClassName, as = "p", delay = 0, onMount = false }: {
 		children: ReactNode,
 		className?: string,
 		linesClassName?: string,
 		as?: keyof React.JSX.IntrinsicElements,
-		delay?: number
+		delay?: number,
+		// Skips the scroll trigger and plays right away (used inside the sidebar)
+		onMount?: boolean
 	}) {
 	const elementRef = useRef<HTMLElement>(null)
-	const onMount = useContext(RevealOnMountContext)
 
 	useGSAP(() => {
 		const element = elementRef.current

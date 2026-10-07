@@ -1,10 +1,13 @@
 "use client"
 import { useEffect, useRef } from "react"
+import { useSite } from "@/components/layout/SiteProvider"
 import { usePointerOverlayStore } from "@/store/PointerOverlayStore"
 
-// Makes the parent show a pointer label on hover; a click swaps it to toggledLabel and back
+// Makes the parent show a pointer label on hover ("View" by default); a click swaps it to toggledLabel and back
 export default function PointerOverlayTrigger(
-	{ label = "View", toggledLabel }: { label?: string, toggledLabel?: string }) {
+	{ label: labelProp, toggledLabel }: { label?: string, toggledLabel?: string }) {
+	const { dict } = useSite()
+	const label = labelProp ?? dict.common.view
 	const anchorRef = useRef<HTMLSpanElement>(null)
 	const toggledRef = useRef(false)
 	const showOverlay = usePointerOverlayStore(state => state.showOverlay)

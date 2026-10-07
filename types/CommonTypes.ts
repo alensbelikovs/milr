@@ -1,4 +1,5 @@
 import { type SanityImageSource } from "@sanity/image-url"
+import { type PortableTextBlock } from "@portabletext/react"
 
 export type Image = {
 	src: SanityImageSource,
@@ -62,4 +63,11 @@ export type GeneralInformation = {
 	socials: SocialLink[],
 	hours: OpeningHours,
 	address: Address
+}
+
+// Dates are YYYY-MM-DD; body is paragraphs, h5 headings and links
+export type CookiesPrivacy = {
+	effectiveDate: string,
+	updatedDate: string | null,
+	body: PortableTextBlock[] | null
 }

@@ -1,4 +1,4 @@
-import Link from "next/link"
+import Link from "@/components/navigation/LocaleLink"
 
 // Shared with SolutionButton so the link and the button look the same
 export const BODY_SECONDARY = `

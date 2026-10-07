@@ -1,12 +1,12 @@
 "use client"
-import { useContext, useRef } from "react"
-import { RevealOnMountContext } from "@/components/animation/RevealOnMountContext"
+import { useRef } from "react"
 import { gsap, ScrollTrigger, useGSAP } from "@/utils/gsap"
 
 // Fades its parent in on scroll. delay only applies from md up.
-export default function FadeReveal({ delay = 0 }: { delay?: number }) {
+// onMount skips the scroll trigger and plays right away (used inside the sidebar).
+export default function FadeReveal(
+	{ delay = 0, onMount = false }: { delay?: number, onMount?: boolean }) {
 	const anchorRef = useRef<HTMLSpanElement>(null)
-	const onMount = useContext(RevealOnMountContext)
 
 	useGSAP(() => {
 		const target = anchorRef.current?.parentElement

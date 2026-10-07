@@ -1,7 +1,6 @@
 "use client"
 import { Fragment, useEffect, useRef, useState } from "react"
 import { useLenis } from "lenis/react"
-import { RevealOnMountContext } from "@/components/animation/RevealOnMountContext"
 import { useSidebarContentStore } from "@/store/SidebarContentStore"
 import { useTransitionStore } from "@/store/TransitionStore"
 import { gsap, useGSAP } from "@/utils/gsap"
@@ -106,10 +105,7 @@ export default function Sidebar() {
 					overflow-y-auto overscroll-contain scrollbar-background
 				">
 				<div ref={bodyRef} className="h-full">
-					{/* Reveals inside the sidebar play on mount rather than on scroll */}
-					<RevealOnMountContext value>
-						<Fragment key={contentKey}>{shownContent}</Fragment>
-					</RevealOnMountContext>
+					<Fragment key={contentKey}>{shownContent}</Fragment>
 				</div>
 			</div>
 		</div>

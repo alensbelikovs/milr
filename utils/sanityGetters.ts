@@ -1,6 +1,9 @@
 import { cache } from "react"
+import { getLocale } from "@/lib/dictionaries"
+import { DEFAULT_LOCALE } from "@/lib/i18n"
 import { sanityClient } from "@/utils/sanityClient"
 import {
+	type CookiesPrivacy,
 	type GeneralInformation,
 	type Post,
 	type Solution,
@@ -9,9 +12,17 @@ import {
 } from "@/types/CommonTypes"
 import { type WorkBroad, type WorkNarrow } from "@/types/WorkTypes"
 
-const IMG = `"img": img{ "src": @, alt }`
-const WORK_CARD = `title, "slug": slug.current, ${IMG}`
-const POST_CARD = `_id, _createdAt, title, description, url, ${IMG}`
+// A translated field in the request's language, falling back to the default one.
+// The last branch passes a plain string through, for documents not yet migrated to translated fields.
+const t = (field: string) => `coalesce(
+	${field}[language == $lang][0].value,
+	${field}[language == "${DEFAULT_LOCALE}"][0].value,
+	select(!defined(${field}[0]) => ${field})
+)`
+
+const IMG = `"img": img{ "src": @, "alt": ${t("alt")} }`
+const WORK_CARD = `"title": ${t("title")}, "slug": slug.current, ${IMG}`
+const POST_CARD = `_id, _createdAt, "title": ${t("title")}, "description": ${t("description")}, url, ${IMG}`
 
 // A work matches a filter when any of its slugs is in the list; an empty list means no filter
 export const WORK_FILTER = `_type == "work"
@@ -20,23 +31,43 @@ export const WORK_FILTER = `_type == "work"
 
 // cache() so the layout and the home page share one request per render
 export const getGeneralInformation = cache(async (): Promise<GeneralInformation | null> => {
-	return await sanityClient.fetch(`*[_id == "generalInformation"][0]{
-		${IMG},
-		email,
-		phone,
-		socials[]{ _key, title, url },
-		hours,
-		address
-	}`)
+	return await sanityClient.fetch(
+		`*[_id == "generalInformation"][0]{
+			${IMG},
+			email,
+			phone,
+			socials[]{ _key, title, url },
+			hours,
+			address{ ..., "city": ${t("city")}, "country": ${t("country")} }
+		}`,
+		{ lang: await getLocale() }
+	)
 })
 
+export async function getCookiesPrivacy(): Promise<CookiesPrivacy | null> {
+	return await sanityClient.fetch(
+		`*[_id == "cookiesPrivacy"][0]{ effectiveDate, updatedDate, "body": ${t("body")} }`,
+		{ lang: await getLocale() }
+	)
+}
+
+// Sorted after projecting, so titles sort in the request's language
 export async function getSectors(): Promise<WorkFilter[]> {
-	return await sanityClient.fetch(`*[_type == "sector"] | order(title asc){ title, "slug": slug.current }`)
+	return await sanityClient.fetch(
+		`*[_type == "sector"]{ "title": ${t("title")}, "slug": slug.current } | order(title asc)`,
+		{ lang: await getLocale() }
+	)
 }
 
 export async function getSolutions(): Promise<Solution[]> {
 	return await sanityClient.fetch(
-		`*[_type == "solution"] | order(title asc){ title, "slug": slug.current, description, ${IMG} }`
+		`*[_type == "solution"]{
+			"title": ${t("title")},
+			"slug": slug.current,
+			"description": ${t("description")},
+			${IMG}
+		} | order(title asc)`,
+		{ lang: await getLocale() }
 	)
 }
 
@@ -53,7 +84,7 @@ export async function getWork(
 			"work": *[${WORK_FILTER}] | order(_createdAt desc, _id desc)[$start...$end]{ ${WORK_CARD} },
 			"count": count(*[${WORK_FILTER}])
 		}`,
-		{ sectors, solutions, start, end }
+		{ sectors, solutions, start, end, lang: await getLocale() }
 	)
 }
 
@@ -61,42 +92,43 @@ export async function getLatestWork(
 	{ limit, except = "" }: { limit: number, except?: string }): Promise<WorkNarrow[]> {
 	return await sanityClient.fetch(
 		`*[_type == "work" && slug.current != $except] | order(_createdAt desc)[0...$limit]{ ${WORK_CARD} }`,
-		{ limit, except }
+		{ limit, except, lang: await getLocale() }
 	)
 }
 
-export async function getWorkBySlug(slug: string): Promise<WorkBroad | null> {
+// cache() so the page and its metadata share one request
+export const getWorkBySlug = cache(async (slug: string): Promise<WorkBroad | null> => {
 	return await sanityClient.fetch(
 		`*[_type == "work" && slug.current == $slug][0]{
 			${WORK_CARD},
 			_createdAt,
-			subtitle,
-			description,
-			"sector": coalesce(sector[]{ _key, "title": @->title, "slug": @->slug.current }, []),
-			"solutions": coalesce(solutions[]{
-				_key,
-				"title": @->title,
-				"slug": @->slug.current,
-				"description": @->description,
-				"img": @->img{ "src": @, alt }
-			}, []),
-			location,
+			"subtitle": ${t("subtitle")},
+			"description": ${t("description")},
+			"sector": coalesce(sector[]{ _key, ...@->{ "title": ${t("title")}, "slug": slug.current } }, []),
+			"solutions": coalesce(solutions[]{ _key, ...@->{
+				"title": ${t("title")},
+				"slug": slug.current,
+				"description": ${t("description")},
+				${IMG}
+			} }, []),
+			location{ "city": ${t("city")}, "country": ${t("country")} },
 			area,
-			testimonial->{ text, author, description },
+			testimonial->{ "text": ${t("text")}, author, "description": ${t("description")} },
 			"gallery": coalesce(gallery[]{
 				_key,
 				"src": @,
-				alt,
+				"alt": ${t("alt")},
 				"aspectRatio": asset->metadata.dimensions.aspectRatio
 			}, [])
 		}`,
-		{ slug }
+		{ slug, lang: await getLocale() }
 	)
-}
+})
 
 export async function getRandomTestimonial(): Promise<Testimonial | null> {
 	const testimonials = await sanityClient.fetch<Testimonial[]>(
-		`*[_type == "testimonial"]{ text, author, description }`
+		`*[_type == "testimonial"]{ "text": ${t("text")}, author, "description": ${t("description")} }`,
+		{ lang: await getLocale() }
 	)
 	return testimonials[Math.floor(Math.random() * testimonials.length)] ?? null
 }
@@ -104,7 +136,7 @@ export async function getRandomTestimonial(): Promise<Testimonial | null> {
 export async function getPosts(limit: number): Promise<Post[]> {
 	return await sanityClient.fetch(
 		`*[_type == "post"] | order(_createdAt desc)[0...$limit]{ ${POST_CARD} }`,
-		{ limit }
+		{ limit, lang: await getLocale() }
 	)
 }
 
@@ -115,6 +147,6 @@ export async function getPostsPage(
 			"posts": *[_type == "post"] | order(_createdAt desc, _id desc)[$start...$end]{ ${POST_CARD} },
 			"count": count(*[_type == "post"])
 		}`,
-		{ start, end }
+		{ start, end, lang: await getLocale() }
 	)
 }

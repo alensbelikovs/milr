@@ -1,7 +1,9 @@
-import Link, { type LinkProps } from "next/link"
+import { type LinkProps } from "next/link"
+import Link from "@/components/navigation/LocaleLink"
+import { getDictionary } from "@/lib/dictionaries"
 
 // Page links that keep the current search params, e.g. 1 … 3 (4) 5 … 7
-export default function Pagination(
+export default async function Pagination(
 	{ currentPage, totalPages, pathname, searchParams }: {
 		currentPage: number,
 		totalPages: number,
@@ -9,6 +11,7 @@ export default function Pagination(
 		searchParams: Record<string, string | string[] | undefined>
 	}) {
 	if (totalPages <= 1) return null
+	const { pagination } = await getDictionary()
 
 	const hrefTo = (page: number) => ({ pathname, query: { ...searchParams, page } })
 
@@ -26,7 +29,7 @@ export default function Pagination(
 
 	return (
 		<nav
-			aria-label="pagination"
+			aria-label={pagination.label}
 			className="col-start-5 col-span-4 flex flex-col justify-center gap-size-24 mt-size-96">
 			<div className="flex items-center w-full justify-center">
 				{steps.map((step, index) =>
@@ -54,8 +57,8 @@ export default function Pagination(
 				)}
 			</div>
 			<div className="w-full flex justify-between gap-size-48">
-				<FlipLink href={currentPage > 1 ? hrefTo(currentPage - 1) : null}>Prev</FlipLink>
-				<FlipLink href={currentPage < totalPages ? hrefTo(currentPage + 1) : null}>Next</FlipLink>
+				<FlipLink href={currentPage > 1 ? hrefTo(currentPage - 1) : null}>{pagination.prev}</FlipLink>
+				<FlipLink href={currentPage < totalPages ? hrefTo(currentPage + 1) : null}>{pagination.next}</FlipLink>
 			</div>
 		</nav>
 	)

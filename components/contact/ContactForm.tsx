@@ -1,25 +1,26 @@
 "use client"
 import { useState } from "react"
+import Script from "next/script"
+import { sendGAEvent } from "@next/third-parties/google"
 import BodyButton from "@/components/buttons/BodyButton"
 import InputSelect from "@/components/inputs/InputSelect"
 import InputString from "@/components/inputs/InputString"
-import { useGeneralInformation } from "@/store/GeneralInformationStore"
-import telHref from "@/utils/telHref"
-import { type ContactPayloadType, type ContactStatusType } from "@/types/ContactTypes"
-
-const SUBJECTS = {
-	project: "Subject one",
-	collaboration: "Subject two",
-	other: "Subject three",
-}
+import { useSite } from "@/components/layout/SiteProvider"
+import {
+	type ContactPayloadType,
+	type ContactRequestType,
+	type ContactStatusType,
+} from "@/types/ContactTypes"
 
 const EMPTY: ContactPayloadType = { name: "", email: "", subject: "", message: "" }
+
+const SITE_KEY = process.env.NEXT_PUBLIC_RECAPTCHA_SITE_KEY!
 
 // Temporary: keeps the loading state visible in development
 const LOADING_DELAY = 2000
 
 export default function ContactForm({ onResult }: { onResult: (status: ContactStatusType) => void }) {
-	const information = useGeneralInformation(state => state.information)
+	const { form: copy } = useSite().dict.contact
 	const [form, setForm] = useState<ContactPayloadType>(EMPTY)
 	const [loading, setLoading] = useState(false)
 
@@ -38,12 +39,17 @@ export default function ContactForm({ onResult }: { onResult: (status: ContactSt
 
 		try {
 			await new Promise(resolve => setTimeout(resolve, LOADING_DELAY))
+			// Requested on submit, since tokens expire after two minutes
+			const token = await new Promise<string>((resolve, reject) => grecaptcha.ready(() =>
+				grecaptcha.execute(SITE_KEY, { action: "contact" }).then(resolve, reject)))
 			const response = await fetch("/api/contact", {
 				method: "POST",
 				headers: { "Content-Type": "application/json" },
-				body: JSON.stringify(form),
+				body: JSON.stringify({ ...form, token } satisfies ContactRequestType),
 			})
 			const { status } = await response.json()
+			// The conversion, marked as a key event in GA
+			if (status === "success") sendGAEvent("event", "generate_lead", { form: "contact" })
 			onResult(status === "success" ? "success" : "error")
 		} catch {
 			onResult("error")
@@ -52,43 +58,22 @@ export default function ContactForm({ onResult }: { onResult: (status: ContactSt
 
 	return (
 		<div className="col-span-full grid grid-cols-12 gap-size-24">
-			<aside className="
-				col-start-2 col-span-10
-				sm:col-start-5 sm:col-span-4
-				lg:col-start-2 lg:col-span-2
-				text-center lg:text-left mb-size-96
-			">
-				<p className="text-size-24">
-					Send a quick note to start the chat
-					{
-						information &&
-						<>
-							, or reach me directly by{" "}
-							<a className="underline hover:no-underline" href={`mailto:${information.email}`}>
-								E-mail
-							</a>
-							{" or "}
-							<a className="underline hover:no-underline" href={telHref(information.phone)}>
-								Phone
-							</a>
-						</>
-					}
-					.
-				</p>
-			</aside>
+			<Script src={`https://www.google.com/recaptcha/api.js?render=${SITE_KEY}`} />
+			{/* Lines up with the intro paragraph in the hero above */}
 			<form
-				aria-label="Contact form"
+				aria-label={copy.label}
 				onSubmit={handleSubmit}
 				className="
 					col-start-1 col-span-full
-					lg:col-start-6 lg:col-span-6
+					md:col-start-2 md:col-span-10
+					lg:col-start-7 lg:col-span-5
 					grid grid-cols-6 gap-size-24
 				">
 				<InputString
 					id="contact-name"
 					name="name"
-					label="Name *"
-					placeholder="Your name"
+					label={copy.name}
+					placeholder={copy.namePlaceholder}
 					autoComplete="name"
 					required
 					value={form.name}
@@ -96,8 +81,8 @@ export default function ContactForm({ onResult }: { onResult: (status: ContactSt
 				<InputString
 					id="contact-email"
 					name="email"
-					label="Email *"
-					placeholder="Your email"
+					label={copy.email}
+					placeholder={copy.emailPlaceholder}
 					type="email"
 					autoComplete="email"
 					required
@@ -106,8 +91,8 @@ export default function ContactForm({ onResult }: { onResult: (status: ContactSt
 				<InputString
 					id="contact-message"
 					name="message"
-					label="Message *"
-					placeholder="Your message"
+					label={copy.message}
+					placeholder={copy.messagePlaceholder}
 					autoComplete="off"
 					required
 					textarea
@@ -122,15 +107,15 @@ export default function ContactForm({ onResult }: { onResult: (status: ContactSt
 				<InputSelect
 					id="contact-subject"
 					name="subject"
-					label="Subject *"
-					placeholder="Select a subject"
-					options={SUBJECTS}
+					label={copy.subject}
+					placeholder={copy.subjectPlaceholder}
+					options={copy.subjects}
 					required
 					value={form.subject}
 					onChange={handleChange} />
 				<div className="col-span-full lg:col-span-3 mt-size-16 self-start">
 					<BodyButton type="submit" disabled={loading} aria-busy={loading}>
-						Send Message
+						{copy.submit}
 					</BodyButton>
 				</div>
 				<div className="
@@ -140,23 +125,23 @@ export default function ContactForm({ onResult }: { onResult: (status: ContactSt
 					text-center lg:text-left mt-size-16
 				">
 					<p className="text-foreground/50 text-size-14">
-						This site uses reCAPTCHA to prevent spam, so Google&apos;s{" "}
+						{copy.recaptcha.before}{" "}
 						<a
 							className="underline hover:no-underline"
 							href="https://policies.google.com/privacy"
 							target="_blank"
 							rel="noreferrer">
-							Privacy Policy
+							{copy.recaptcha.privacy}
 						</a>
-						{" and "}
+						{` ${copy.recaptcha.and} `}
 						<a
 							className="underline hover:no-underline"
 							href="https://policies.google.com/terms"
 							target="_blank"
 							rel="noreferrer">
-							Terms of Service
+							{copy.recaptcha.terms}
 						</a>
-						{" apply."}
+						{copy.recaptcha.after}
 					</p>
 				</div>
 			</form>
