@@ -246,5 +246,5 @@ footer::selection {
 
 /* The contact form shows Google's required disclosure instead */
 .grecaptcha-badge {
-	visibility: hidden;
+	/*visibility: hidden;*/
 }
