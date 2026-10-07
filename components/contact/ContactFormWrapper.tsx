@@ -40,7 +40,7 @@ export default function ContactFormWrapper({ hero, navId }: { hero: React.ReactN
 	return (
 		<div ref={containerRef}>
 			{status === "idle" && hero}
-			<Section navId={navId} className={status === "idle" ? "" : "mt-size-96"}>
+			<Section noTopPadding navId={navId} className={status === "idle" ? "" : "mt-size-96"}>
 				<div className="col-span-full">
 					{
 						status === "idle"

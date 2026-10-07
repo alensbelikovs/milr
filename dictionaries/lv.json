@@ -8,7 +8,7 @@
 		"about": "Par mani",
 		"work": "Darbi",
 		"diary": "Žurnāls",
-		"contact": "Kontakti"
+		"contact": "Sazinies"
 	},
 	"sections": {
 		"intro": "Ievads",
@@ -16,7 +16,7 @@
 		"client-stories": "Klientu stāsti",
 		"process": "Process",
 		"latest-posts": "Pēdējie ieraksti",
-		"contact": "Kontakti",
+		"contact": "Sazinies",
 		"my-story": "Mans stāsts",
 		"solutions": "Risinājumi"
 	},

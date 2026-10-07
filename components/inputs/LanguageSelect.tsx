@@ -1,12 +1,12 @@
 "use client"
 import { Fragment } from "react"
-import Link from "next/link"
 import { usePathname, useSearchParams } from "next/navigation"
 import { useSite } from "@/components/layout/SiteProvider"
 import { LOCALE_COOKIE, LOCALES } from "@/lib/i18n"
 
 // EN / LV switch in the menu: one link to the same page and query in the other locale.
 // The choice goes in a cookie, so a bare URL later redirects back to it.
+// A plain <a> forces a full load, so the root layout (and its consent script) renders fresh.
 export default function LanguageSelect() {
 	const { lang } = useSite()
 	const pathname = usePathname()
@@ -15,7 +15,7 @@ export default function LanguageSelect() {
 	const other = LOCALES.find(locale => locale !== lang) ?? lang
 
 	return (
-		<Link
+		<a
 			href={`/${other}${rest}${query ? `?${query}` : ""}`}
 			hrefLang={other}
 			onClick={() => { document.cookie = `${LOCALE_COOKIE}=${other}; path=/; max-age=31536000` }}
@@ -28,6 +28,6 @@ export default function LanguageSelect() {
 					</span>
 				</Fragment>
 			))}
-		</Link>
+		</a>
 	)
 }
