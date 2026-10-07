@@ -17,7 +17,6 @@
 }
 
 @theme {
-	/* Spacing — py-size-24, mt-size-48, gap-size-96, ... */
 	--spacing-size-12: clamp(9px, calc(9px + (12 - 9) * ((100vw - 390px) / 1050)), 12px);
 	--spacing-size-16: clamp(12px, calc(12px + (16 - 12) * ((100vw - 390px) / 1050)), 16px);
 	--spacing-size-24: clamp(16px, calc(16px + (24 - 16) * ((100vw - 390px) / 1050)), 24px);
@@ -31,8 +30,6 @@
 
 	--font-serif--letter-spacing: -0.04em;
 
-	/* Text — text-size-24, text-size-96, ...
-	   Each size owns its line-height and letter-spacing. */
 	--text-size-128: clamp(44px, calc(44px + (128 - 44) * ((100vw - 390px) / 1050)), 128px);
 	--text-size-128--line-height: 1.06;
 	--text-size-128--letter-spacing: -0.04em;
@@ -66,16 +63,13 @@
 	--text-size-18--letter-spacing: -0.02em;
 
 	--text-size-16: clamp(14px, calc(14px + (16 - 14) * ((100vw - 390px) / 1050)), 16px);
-	--text-size-16--line-height: 1;
+	--text-size-16--line-height: 1.4;
 	--text-size-16--letter-spacing: -0.02em;
 
 	--text-size-14: clamp(13px, calc(13px + (14 - 13) * ((100vw - 390px) / 1050)), 14px);
 	--text-size-14--line-height: 1.4;
 	--text-size-14--letter-spacing: -0.02em;
 
-	/* Arrow — enters from the left on hover, then keeps travelling right on
-	   unhover. arrow-out deliberately has no forwards fill, so once it ends the
-	   element snaps back to its resting -120% while still clipped out of view. */
 	--animate-arrow-in: arrow-in 400ms ease forwards;
 	--animate-arrow-out: arrow-out 400ms ease;
 
@@ -89,19 +83,6 @@
 		to { translate: 120% 0; }
 	}
 
-	/* Arrow — the whole trip in one animation, for a control whose arrow is there
-	   to begin with: it leaves to the right, comes back around from the left and
-	   settles where it started. No fill, because it ends where it rests, at 0.
-
-	   The jump from one edge to the other is what step-end buys. Interpolating
-	   between +120% and -120% would carry the arrow back across the middle of its
-	   box — visibly, the wrong way — so the 50% keyframe holds its value instead of
-	   travelling, and the change lands as a cut at 51%. Both edges are outside the
-	   clipping box, so the cut happens out of sight.
-
-	   The eases are per segment: in, so it gathers speed on the way out; out, so it
-	   arrives gently. A single ease across the whole thing would slow to nothing at
-	   the halfway point, which is the moment the arrow is meant to be moving fastest. */
 	--animate-arrow-cycle: arrow-cycle 400ms;
 
 	@keyframes arrow-cycle {
@@ -111,48 +92,12 @@
 		100% { translate: 0 0; }
 	}
 
-	/* Loader — one turn, over and over, at a constant rate. Tailwind ships this
-	   animation already, and it is the duration alone that is wrong here: a full
-	   second a revolution is slow enough to read as stalled at the size the spinner
-	   is actually drawn, which is 12px inside a button. Written out rather than
-	   overridden at the call site, because animation-duration is not something the
-	   duration-* utilities reach — those set transition-duration — and an arbitrary
-	   property would leave the number somewhere no one thinks to look for timing.
-
-	   linear, because any ease puts a slow moment at the top of every turn, and a
-	   spinner that hesitates once a second reads as a page that has stopped working
-	   rather than one that is still going.
-
-	   Its own keyframe name rather than Tailwind's `spin`, so there is no second
-	   @keyframes spin in the output competing with the one the default theme emits.
-	   rotate rather than transform, the same way the arrows above use translate: it
-	   composes with whatever else has transformed the element instead of replacing
-	   it. */
 	--animate-spin-fast: spin-fast 400ms linear infinite;
 
 	@keyframes spin-fast {
 		to { rotate: 360deg; }
 	}
 
-	/* Loader — how the spinner arrives on the transition curtain. Held out of sight
-	   for two seconds first, so a navigation that resolves quickly never shows one:
-	   a spinner is an admission that this is taking a while, and one offered for a
-	   wait that is already over reads as a stumble.
-
-	   A CSS animation rather than a GSAP tween, which is the one thing that works
-	   here. utils/gsap pauses the global timeline for precisely the stretch this has
-	   to count through — TransitionControl shuts that gate the moment the curtain is
-	   opaque and does not open it until the incoming page has signalled ready — so a
-	   GSAP delay would freeze at nought and the spinner would turn up as the curtain
-	   LIFTED rather than while it was waiting. CSS timing is not GSAP's to hold.
-
-	   backwards is the fill that matters: it holds the from state through the delay.
-	   Without it the spinner sits at full size and opacity for those two seconds and
-	   only then animates in from nothing, which is the opposite of the point.
-
-	   scale rather than a transform, the same way the arrows use translate and the
-	   spin uses rotate — the spinner inside this box is turning on its own rotate,
-	   and individual properties compose where a transform shorthand would not. */
 	--animate-loader-in: loader-in 400ms ease-out 2s backwards;
 
 	@keyframes loader-in {
@@ -165,11 +110,6 @@
 	letter-spacing: var(--tw-tracking, var(--font-serif--letter-spacing));
 }
 
-/* Keeps an overflowing field's scrollbar on the page background instead of the browser's own
-   light grey, which reads as a seam against --background. The standard property takes thumb and
-   track as a pair — there is no way to set the track alone — so the thumb is pinned to a muted
-   foreground, in the same register as the foreground/10 border the fields already use. The
-   WebKit pseudo-elements cover Safari, which does not support scrollbar-color. */
 @utility scrollbar-background {
 	scrollbar-color: color-mix(in srgb, var(--foreground) 30%, transparent) var(--background);
 
@@ -186,14 +126,6 @@
 	}
 }
 
-/* Turns the page's selection colours around, for the bands that turn the page's colours around: dark
-   ground, light text. The default selection — foreground ground, background text, set on body below —
-   paints a dark block over text that is already light, and takes the words with it.
-
-   Both selectors, because the class lands on a band rather than on the text itself. A highlight
-   pseudo-element on an ancestor is meant to be inherited by everything inside it, but that inheritance
-   is recent enough that not every engine in use does it; the descendant rule says the same thing in
-   the way all of them understand. */
 @utility selection-invert {
 	&::selection {
 		background: var(--background);
@@ -212,17 +144,10 @@
 	}
 }
 
-/* Reserves the scrollbar's width whether or not a scrollbar is drawn, so nothing on the page
-   moves sideways when one comes or goes — between a short page and a tall one, and above all when
-   the sidebar locks scrolling and Lenis takes the document's scrollbar away underneath it. */
 html {
 	scrollbar-gutter: stable;
 }
 
-/* lenis.css parks a stopped Lenis on `overflow: clip`, which stops being a scroll container at all
-   and so drops the gutter reserved above — the very layout shift this is here to prevent. `hidden`
-   holds scrolling just as still while staying a scroll container, so the gutter survives the lock.
-   Matched selector plus `html` to outrank the original rather than relying on import order. */
 html.lenis:not(.lenis-autoToggle).lenis-stopped {
 	overflow: hidden;
 }
@@ -244,7 +169,6 @@ footer::selection {
 	color: var(--foreground);
 }
 
-/* The contact form shows Google's required disclosure instead */
 .grecaptcha-badge {
-	/*visibility: hidden;*/
+	visibility: hidden;
 }

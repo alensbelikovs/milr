@@ -17,10 +17,7 @@ export default async function ContactPage() {
 	return (
 		<div>
 			<MainNav color="text-foreground" />
-			<HeroList heading={dict.nav.contact}>
-				<ContactIntro />
-			</HeroList>
-			<Contact />
+			<Contact hero={<HeroList heading={dict.nav.contact}><ContactIntro /></HeroList>} />
 			<PageReadySignal />
 		</div>
 	)

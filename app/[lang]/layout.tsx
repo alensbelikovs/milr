@@ -62,7 +62,6 @@ export default async function RootLayout({ children }: LayoutProps<"/[lang]">) {
 			<body className="min-h-screen">
 				<Script id="consent-default" strategy="beforeInteractive">{CONSENT_DEFAULT}</Script>
 				<SiteProvider lang={lang} dict={dict} information={general}>
-					{/* Before TransitionControl, which uses Lenis to scroll each new page to the top */}
 					<ReactLenis root />
 					<TransitionControl>{children}</TransitionControl>
 					<Navbar />

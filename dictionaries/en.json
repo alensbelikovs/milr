@@ -179,10 +179,11 @@
 		"updated": "Updated as of"
 	},
 	"consent": {
-		"text": "I use analytics cookies to see how the site is used.",
-		"link": "Cookies & Privacy",
-		"accept": "Accept",
-		"decline": "Decline"
+		"heading": "Cookies",
+		"text": "I use some essential cookies to make this website work. With your consent, I would also like to use analytics cookies to understand how visitors use my site. You can change your choice at any time.",
+		"link": "Cookies and Privacy",
+		"accept": "Accept all",
+		"decline": "Accept necessary"
 	},
 	"notFound": {
 		"heading": "Not found",

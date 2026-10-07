@@ -179,10 +179,11 @@
 		"updated": "Atjaunināts"
 	},
 	"consent": {
-		"text": "Es izmantoju analītikas sīkdatnes, lai redzētu, kā vietne tiek lietota.",
-		"link": "Sīkdatnes un privātums",
-		"accept": "Piekrītu",
-		"decline": "Noraidīt"
+		"heading": "Sīkdatnes",
+		"text": "Es izmantoju dažas nepieciešamās sīkdatnes, lai šī vietne darbotos. Ar jūsu piekrišanu es vēlētos izmantot arī analītikas sīkdatnes, lai saprastu, kā apmeklētāji lieto manu vietni. Savu izvēli varat mainīt jebkurā laikā.",
+		"link": "Sīkdatņu un privātuma politika",
+		"accept": "Pieņemt visas",
+		"decline": "Tikai nepieciešamās"
 	},
 	"notFound": {
 		"heading": "Lapa nav atrasta",

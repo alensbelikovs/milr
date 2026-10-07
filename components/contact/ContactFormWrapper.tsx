@@ -3,15 +3,16 @@ import { useRef, useState } from "react"
 import { useLenis } from "lenis/react"
 import ContactForm from "@/components/contact/ContactForm"
 import ContactResult from "@/components/contact/ContactResult"
+import Section from "@/components/layout/Section"
 import { gsap, useGSAP } from "@/utils/gsap"
 import { playTween } from "@/utils/playTween"
 import { type ContactStatusType } from "@/types/ContactTypes"
 
 const FADE = { duration: 0.4, ease: "power2.out", paused: true, immediateRender: false }
 
-// Fades the form out, then the result in.
+// Fades the hero and form out, then the result in.
 // The client boundary, so Contact stays a server component.
-export default function ContactFormWrapper() {
+export default function ContactFormWrapper({ hero, navId }: { hero: React.ReactNode, navId: string }) {
 	const [status, setStatus] = useState<ContactStatusType | "idle">("idle")
 	const containerRef = useRef<HTMLDivElement>(null)
 	const fadeOutRef = useRef<gsap.core.Tween | null>(null)
@@ -35,13 +36,19 @@ export default function ContactFormWrapper() {
 		setStatus(next)
 	}
 
+	// Without the hero, the result keeps its offset below the nav
 	return (
-		<div ref={containerRef} className="col-span-full">
-			{
-				status === "idle"
-					? <ContactForm onResult={handleResult} />
-					: <ContactResult status={status} />
-			}
+		<div ref={containerRef}>
+			{status === "idle" && hero}
+			<Section navId={navId} className={status === "idle" ? "" : "mt-size-96"}>
+				<div className="col-span-full">
+					{
+						status === "idle"
+							? <ContactForm onResult={handleResult} />
+							: <ContactResult status={status} />
+					}
+				</div>
+			</Section>
 		</div>
 	)
 }

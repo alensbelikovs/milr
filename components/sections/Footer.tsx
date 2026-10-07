@@ -38,7 +38,7 @@ export default async function Footer() {
 						<p className="w-full">Milr Studio</p>
 					</div>
 					<div className="flex flex-col w-full md:flex-row justify-between gap-size-12">
-						<p className="w-full flex flex-col items-end">
+						<p className="w-full flex flex-col items-end gap-size-12">
 							<Link className="hover:underline" href="/cookies-privacy">{dict.footer.cookiesPrivacy}</Link>
 							<ConsentSettingsButton>{dict.footer.cookieSettings}</ConsentSettingsButton>
 						</p>
