@@ -60,7 +60,18 @@ export default async function RootLayout({ children }: LayoutProps<"/[lang]">) {
 	return (
 		<html lang={lang} className={`${sans.variable} ${serif.variable} h-full antialiased`}>
 			<body className="min-h-screen">
-				<Script id="consent-default" strategy="beforeInteractive">{CONSENT_DEFAULT}</Script>
+				<a
+					href="#main"
+					className="
+						sr-only focus:not-sr-only
+						focus:fixed focus:top-size-16 focus:left-size-16 focus:z-20
+						focus:p-size-12 focus:bg-background focus:text-size-16
+					">
+					{dict.common.skipToContent}
+				</a>
+				{/* afterInteractive, as a client-rendered 404 never runs beforeInteractive's inline tag.
+					Its effect still fires before GoogleAnalytics', which comes later in the tree. */}
+				<Script id="consent-default">{CONSENT_DEFAULT}</Script>
 				<SiteProvider lang={lang} dict={dict} information={general}>
 					<ReactLenis root />
 					<TransitionControl>{children}</TransitionControl>

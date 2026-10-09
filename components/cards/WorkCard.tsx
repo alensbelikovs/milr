@@ -13,7 +13,7 @@ export default function WorkCard({ work, delay }: { work: WorkNarrow, delay?: nu
 		<div className="col-span-1 relative group">
 			<PointerOverlayTrigger />
 			<ScrollReveal delay={delay} />
-			<Link className="absolute inset-0 z-1" href={`/work/${slug}`} />
+			<Link className="absolute inset-0 z-1" href={`/work/${slug}`} aria-label={title} />
 			<div className="bg-image-placeholder aspect-4/3 relative overflow-hidden">
 				<div className="
 					absolute inset-0 scale-105

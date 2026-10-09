@@ -16,6 +16,7 @@ export default function PostCard({ post, delay }: { post: Post, delay?: number }
 		<button
 			type="button"
 			onClick={() => openPost(post)}
+			aria-label={title}
 			className="
 				col-span-1 h-full relative group
 				flex flex-col items-stretch justify-start

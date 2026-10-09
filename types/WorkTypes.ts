@@ -3,6 +3,7 @@ import { type Image, type Solution, type Testimonial, type WorkFilter } from "@/
 export type WorkPageParams = {
 	sectors?: string | string[],
 	solutions?: string | string[],
+	featured?: string | string[],
 	page?: string | string[]
 }
 

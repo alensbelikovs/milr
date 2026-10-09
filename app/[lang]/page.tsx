@@ -28,10 +28,10 @@ export default async function HomePage() {
 
 	// Empty sections are left out here, not inside them, so the section nav never links to a missing id
 	return (
-		<main className="relative">
+		<main id="main" className="relative">
 			<MainNav color="text-background" />
 			<HeroCommon
-				heading="Rinalds Miļicins"
+				heading="Milr Studio"
 				subheading={dict.home.subheading}
 				img={general?.img} />
 			<SectionNavWrapper>

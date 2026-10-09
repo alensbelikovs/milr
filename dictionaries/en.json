@@ -30,7 +30,12 @@
 		"close": "Close",
 		"view": "View",
 		"paint": "Paint",
-		"clear": "Clear"
+		"clear": "Clear",
+		"readMore": "Read more",
+		"switchLanguage": "Switch to Latvian",
+		"panel": "Panel",
+		"newTab": "opens in a new tab",
+		"skipToContent": "Skip to content"
 	},
 	"details": {
 		"contacts": "Contacts",
@@ -99,7 +104,8 @@
 		"resetFilters": "Reset filters",
 		"filters": "Filters",
 		"filterLabel": "Filter work",
-		"sectors": "Category",
+		"sectors": "Sector",
+		"featured": "Featured",
 		"solutions": "Solutions",
 		"resetAll": "Reset Filters",
 		"viewProjects": {
@@ -187,6 +193,6 @@
 	},
 	"notFound": {
 		"heading": "Not found",
-		"text": "This page does not exist."
+		"link": "Back Home"
 	}
 }

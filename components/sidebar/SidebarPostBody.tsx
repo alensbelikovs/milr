@@ -56,6 +56,8 @@ export default function SidebarPostBody({ post }: { post: Post }) {
 					<Link
 						href={url}
 						target="_blank"
+						rel="noreferrer"
+						aria-label={`${dict.common.view} – ${title} (${dict.common.newTab})`}
 						className={`
 							absolute inset-0 flex items-center justify-center
 							text-size-24 group-hover:underline

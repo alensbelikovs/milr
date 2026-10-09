@@ -11,7 +11,10 @@ export default function DetailListSocials({ className = "" }: { className?: stri
 		<DetailList label={dict.details.socials} className={className}>
 			{information.socials.map(social => (
 				<li className="my-2" key={social._key}>
-					<NavLink target="_blank" href={social.url}>{social.title}</NavLink>
+					<NavLink target="_blank" href={social.url}>
+							{social.title}
+							<span className="sr-only"> ({dict.common.newTab})</span>
+						</NavLink>
 				</li>
 			))}
 		</DetailList>

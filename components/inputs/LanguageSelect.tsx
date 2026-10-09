@@ -8,7 +8,7 @@ import { LOCALE_COOKIE, LOCALES } from "@/lib/i18n"
 // The choice goes in a cookie, so a bare URL later redirects back to it.
 // A plain <a> forces a full load, so the root layout (and its consent script) renders fresh.
 export default function LanguageSelect() {
-	const { lang } = useSite()
+	const { lang, dict } = useSite()
 	const pathname = usePathname()
 	const query = useSearchParams().toString()
 	const rest = pathname.slice(`/${lang}`.length)
@@ -18,6 +18,7 @@ export default function LanguageSelect() {
 		<a
 			href={`/${other}${rest}${query ? `?${query}` : ""}`}
 			hrefLang={other}
+			aria-label={dict.common.switchLanguage}
 			onClick={() => { document.cookie = `${LOCALE_COOKIE}=${other}; path=/; max-age=31536000` }}
 			className="group text-size-16 flex items-center gap-size-12 uppercase">
 			{LOCALES.map((locale, index) => (

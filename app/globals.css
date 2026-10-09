@@ -4,7 +4,7 @@
 	--background: #F5F2F8;
 	--image-placeholder: rgba(0, 0, 0, 0.05);
 	--foreground: #000000;
-	--accent: #0015FF;
+	--accent: #001C70;
 }
 
 @theme inline {
@@ -28,7 +28,7 @@
 	--spacing-size-192: clamp(96px, calc(96px + (192 - 96) * ((100vw - 390px) / 1050)), 192px);
 	--spacing-size-288: clamp(128px, calc(128px + (288 - 128) * ((100vw - 390px) / 1050)), 288px);
 
-	--font-serif--letter-spacing: -0.04em;
+	--font-serif--letter-spacing: -0.02em;
 
 	--text-size-128: clamp(44px, calc(44px + (128 - 44) * ((100vw - 390px) / 1050)), 128px);
 	--text-size-128--line-height: 1.06;
@@ -157,6 +157,18 @@ body {
 	color: var(--foreground);
 	font-family: var(--font-sans);
 	font-weight: 500;
+}
+
+/* currentColor keeps the ring visible on the accent footer and the blended navbar */
+:focus-visible {
+	outline: 2px solid currentColor;
+	outline-offset: 2px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+	[class*="animate-"] {
+		animation: none !important;
+	}
 }
 
 body::selection {

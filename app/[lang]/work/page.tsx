@@ -32,18 +32,21 @@ export default async function WorkPage({ searchParams }: PageProps<"/[lang]/work
 		if (slugs.some(slug => !all.some(filter => filter.slug === slug))) notFound()
 		return slugs
 	})
+	// Only one sector can be picked
+	if (sectors.length > 1) notFound()
+	const featured = params.featured === "true"
 	const page = resolvePage(params.page)
 
 	const start = (page - 1) * WORK_PER_PAGE
-	const { work, count } = await getWork({ sectors, solutions, start, end: start + WORK_PER_PAGE })
+	const { work, count } = await getWork({ sectors, solutions, featured, start, end: start + WORK_PER_PAGE })
 
 	return (
-		<main>
+		<main id="main">
 			<MainNav color="text-foreground" />
 			<HeroList heading={dict.nav.work} count={count}>
 				<WorkFiltersButton
 					count={count}
-					active={{ sectors, solutions }}
+					active={{ sectors, solutions, featured }}
 					filters={{
 						sectors: allSectors,
 						solutions: allSolutions.map(({ title, slug }) => ({ title, slug }))

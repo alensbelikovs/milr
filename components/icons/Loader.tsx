@@ -2,6 +2,7 @@
 export default function Loader({ dimensions, fill }: { dimensions: number, fill: string }) {
 	return (
 		<svg
+			aria-hidden
 			width={dimensions}
 			height={dimensions}
 			viewBox="0 0 12 12"

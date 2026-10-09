@@ -15,10 +15,10 @@ export default async function ContactPage() {
 	const dict = await getDictionary()
 
 	return (
-		<div>
+		<main id="main">
 			<MainNav color="text-foreground" />
 			<Contact hero={<HeroList heading={dict.nav.contact}><ContactIntro /></HeroList>} />
 			<PageReadySignal />
-		</div>
+		</main>
 	)
 }

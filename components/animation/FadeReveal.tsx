@@ -2,10 +2,10 @@
 import { useRef } from "react"
 import { gsap, ScrollTrigger, useGSAP } from "@/utils/gsap"
 
-// Fades its parent in on scroll. delay only applies from md up.
+// Fades its parent in on scroll. delay only applies from md up; wideOnly skips the fade below md.
 // onMount skips the scroll trigger and plays right away (used inside the sidebar).
 export default function FadeReveal(
-	{ delay = 0, onMount = false }: { delay?: number, onMount?: boolean }) {
+	{ delay = 0, onMount = false, wideOnly = false }: { delay?: number, onMount?: boolean, wideOnly?: boolean }) {
 	const anchorRef = useRef<HTMLSpanElement>(null)
 
 	useGSAP(() => {
@@ -14,6 +14,8 @@ export default function FadeReveal(
 
 		const mm = gsap.matchMedia()
 		mm.add({ wide: "(min-width: 48rem)", narrow: "(max-width: 47.999rem)" }, context => {
+			if (wideOnly && !context.conditions?.wide) return
+
 			const reveal = gsap.fromTo(target,
 				{ opacity: 0 },
 				{
@@ -34,7 +36,7 @@ export default function FadeReveal(
 		})
 
 		return () => { mm.revert() }
-	}, { dependencies: [delay, onMount], scope: anchorRef })
+	}, { dependencies: [delay, onMount, wideOnly], scope: anchorRef })
 
 	return <span ref={anchorRef} className="hidden" />
 }

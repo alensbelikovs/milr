@@ -22,7 +22,7 @@ export default async function AboutPage() {
 	const [solutions, posts, dict] = await Promise.all([getSolutions(), getPosts(FEATURED_POSTS), getDictionary()])
 
 	return (
-		<main>
+		<main id="main">
 			<MainNav color="text-foreground" />
 			<HeroCommonAlt heading={<Lines lines={dict.about.heading} />} />
 			<SectionNavWrapper>

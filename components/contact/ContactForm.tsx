@@ -20,7 +20,8 @@ const SITE_KEY = process.env.NEXT_PUBLIC_RECAPTCHA_SITE_KEY!
 const LOADING_DELAY = 2000
 
 export default function ContactForm({ onResult }: { onResult: (status: ContactStatusType) => void }) {
-	const { form: copy } = useSite().dict.contact
+	const { dict } = useSite()
+	const copy = dict.contact.form
 	const [form, setForm] = useState<ContactPayloadType>(EMPTY)
 	const [loading, setLoading] = useState(false)
 
@@ -132,6 +133,7 @@ export default function ContactForm({ onResult }: { onResult: (status: ContactSt
 							target="_blank"
 							rel="noreferrer">
 							{copy.recaptcha.privacy}
+							<span className="sr-only"> ({dict.common.newTab})</span>
 						</a>
 						{` ${copy.recaptcha.and} `}
 						<a
@@ -140,6 +142,7 @@ export default function ContactForm({ onResult }: { onResult: (status: ContactSt
 							target="_blank"
 							rel="noreferrer">
 							{copy.recaptcha.terms}
+							<span className="sr-only"> ({dict.common.newTab})</span>
 						</a>
 						{copy.recaptcha.after}
 					</p>

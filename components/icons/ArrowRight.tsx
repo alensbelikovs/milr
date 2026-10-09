@@ -2,6 +2,7 @@ export default function ArrowRight(
 	{ dimensions, fill, className = "" }: { dimensions: number, fill: string, className?: string }) {
 	return (
 		<svg
+			aria-hidden
 			width={dimensions}
 			height={dimensions}
 			viewBox="0 0 12 12"

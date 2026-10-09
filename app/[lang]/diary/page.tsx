@@ -27,7 +27,7 @@ export default async function DiaryPage({ searchParams }: PageProps<"/[lang]/dia
 	])
 
 	return (
-		<main className="min-h-screen">
+		<main id="main" className="min-h-screen">
 			<HeroList heading={dict.nav.diary} count={count} />
 			<Section noTopPadding className="mb-size-96">
 				{count === 0 ? <ListEmpty>{dict.diary.empty}</ListEmpty> : <PostGrid posts={posts} />}

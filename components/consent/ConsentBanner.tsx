@@ -42,8 +42,8 @@ export default function ConsentBanner() {
 				{copy.link}
 			</LocaleLink>
 			<div className="flex gap-size-16">
-				<BodyButton className="flex-1" onClick={() => setConsent("granted")}>{copy.accept}</BodyButton>
-				<BodyButton className="flex-1" onClick={() => setConsent("denied")}>{copy.decline}</BodyButton>
+				<BodyButton className="flex-1" icon={null} onClick={() => setConsent("granted")}>{copy.accept}</BodyButton>
+				<BodyButton className="flex-1" icon={null} onClick={() => setConsent("denied")}>{copy.decline}</BodyButton>
 			</div>
 		</div>
 	)

@@ -2,6 +2,7 @@
 import { Children, useId, useRef, useState } from "react"
 import BodyButton from "@/components/buttons/BodyButton"
 import ArrowDown from "@/components/icons/ArrowDown"
+import { useSite } from "@/components/layout/SiteProvider"
 import { gsap, useGSAP } from "@/utils/gsap"
 
 // A column of body copy that starts collapsed below lg when it has more than one child.
@@ -12,6 +13,7 @@ export default function Body18Container(
 		className?: string,
 		collapse?: boolean
 	}) {
+	const { dict } = useSite()
 	const [expanded, setExpanded] = useState(false)
 	const rootRef = useRef<HTMLDivElement>(null)
 	const fadeRef = useRef<HTMLDivElement>(null)
@@ -60,7 +62,7 @@ export default function Body18Container(
 						onClick={expand}
 						aria-expanded={false}
 						aria-controls={id}>
-						Read more
+						{dict.common.readMore}
 					</BodyButton>
 				</div>
 			}

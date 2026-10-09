@@ -24,10 +24,11 @@ const IMG = `"img": img{ "src": @, "alt": ${t("alt")} }`
 const WORK_CARD = `"title": ${t("title")}, "slug": slug.current, ${IMG}`
 const POST_CARD = `_id, _createdAt, "title": ${t("title")}, "description": ${t("description")}, url, ${IMG}`
 
-// A work matches a filter when any of its slugs is in the list; an empty list means no filter
+// The work is in the chosen sector, has every chosen solution, and is featured if asked; empty means no filter
 export const WORK_FILTER = `_type == "work"
 	&& (count($sectors) == 0 || count((sector[]->slug.current)[@ in $sectors]) > 0)
-	&& (count($solutions) == 0 || count((solutions[]->slug.current)[@ in $solutions]) > 0)`
+	&& count(coalesce(solutions[]->slug.current, [])[@ in $solutions]) == count($solutions)
+	&& (!$featured || featured == true)`
 
 // cache() so the layout and the home page share one request per render
 export const getGeneralInformation = cache(async (): Promise<GeneralInformation | null> => {
@@ -73,9 +74,10 @@ export async function getSolutions(): Promise<Solution[]> {
 
 // _id breaks ties so a work never lands on two pages
 export async function getWork(
-	{ sectors, solutions, start, end }: {
+	{ sectors, solutions, featured, start, end }: {
 		sectors: string[],
 		solutions: string[],
+		featured: boolean,
 		start: number,
 		end: number
 	}): Promise<{ work: WorkNarrow[], count: number }> {
@@ -84,7 +86,7 @@ export async function getWork(
 			"work": *[${WORK_FILTER}] | order(_createdAt desc, _id desc)[$start...$end]{ ${WORK_CARD} },
 			"count": count(*[${WORK_FILTER}])
 		}`,
-		{ sectors, solutions, start, end, lang: await getLocale() }
+		{ sectors, solutions, featured, start, end, lang: await getLocale() }
 	)
 }
 
@@ -113,7 +115,7 @@ export const getWorkBySlug = cache(async (slug: string): Promise<WorkBroad | nul
 			} }, []),
 			location{ "city": ${t("city")}, "country": ${t("country")} },
 			area,
-			testimonial->{ "text": ${t("text")}, author, "description": ${t("description")} },
+			testimonial->{ "text": ${t("text")}, "author": ${t("author")}, "description": ${t("description")} },
 			"gallery": coalesce(gallery[]{
 				_key,
 				"src": @,
@@ -127,7 +129,7 @@ export const getWorkBySlug = cache(async (slug: string): Promise<WorkBroad | nul
 
 export async function getRandomTestimonial(): Promise<Testimonial | null> {
 	const testimonials = await sanityClient.fetch<Testimonial[]>(
-		`*[_type == "testimonial"]{ "text": ${t("text")}, author, "description": ${t("description")} }`,
+		`*[_type == "testimonial"]{ "text": ${t("text")}, "author": ${t("author")}, "description": ${t("description")} }`,
 		{ lang: await getLocale() }
 	)
 	return testimonials[Math.floor(Math.random() * testimonials.length)] ?? null

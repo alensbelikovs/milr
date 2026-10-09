@@ -1,6 +1,7 @@
 export default function Logo({ dimensions, fill }: { dimensions: number, fill: string }) {
 	return (
 		<svg
+			aria-hidden
 			width={dimensions}
 			height={dimensions}
 			viewBox="0 0 64 64"

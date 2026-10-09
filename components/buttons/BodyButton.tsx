@@ -2,7 +2,8 @@ import LoadingLabel from "@/components/buttons/LoadingLabel"
 import ArrowRight from "@/components/icons/ArrowRight"
 import Loader from "@/components/icons/Loader"
 
-// A button with an arrow (or a custom icon). Busy without an icon, it cycles a loading label instead.
+// A button with an arrow, a custom icon, or none with icon={null}.
+// Busy without an icon, it cycles a loading label instead.
 export default function BodyButton(
 	{ children, className = "", color, icon, type = "button", ...props }: {
 		children: React.ReactNode,
@@ -21,11 +22,9 @@ export default function BodyButton(
 					flex items-center justify-between
 					cursor-pointer capitalize
 					rounded-sm p-size-16 lg:p-size-12
+					enabled:hover:bg-accent enabled:hover:text-background
 					disabled:bg-foreground/10 disabled:text-foreground/40 disabled:cursor-not-allowed
-					${color ?? `
-						bg-foreground/10 backdrop-blur-2xl text-foreground
-						hover:bg-foreground hover:text-background
-					`}
+					${color ?? "bg-foreground/10 backdrop-blur-2xl text-foreground"}
 				`}
 				{...props}>
 				{
@@ -36,13 +35,16 @@ export default function BodyButton(
 						</>
 						: <span>{children}</span>
 				}
-				<span className="relative flex overflow-hidden">
-					{
-						loading
-							? <Loader dimensions={12} fill="currentColor" />
-							: icon ?? <ArrowRight dimensions={12} fill="currentColor" />
-					}
-				</span>
+				{
+					(loading || icon !== null) &&
+					<span className="relative flex overflow-hidden">
+						{
+							loading
+								? <Loader dimensions={12} fill="currentColor" />
+								: icon ?? <ArrowRight dimensions={12} fill="currentColor" />
+						}
+					</span>
+				}
 			</button>
 		</div>
 	)

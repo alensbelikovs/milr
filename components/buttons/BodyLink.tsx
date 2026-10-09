@@ -20,7 +20,7 @@ export default function BodyLink(
 					flex items-center justify-between
 					cursor-pointer capitalize
 					bg-foreground/10 backdrop-blur-2xl text-foreground
-					hover:bg-foreground hover:text-background
+					hover:bg-accent hover:text-background
 					rounded-sm p-size-16 lg:p-size-12
 				">
 				<span>{children}</span>

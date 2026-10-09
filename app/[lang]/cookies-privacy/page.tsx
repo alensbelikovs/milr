@@ -29,7 +29,7 @@ export default async function CookiesPrivacyPage() {
 	const blocks = page?.body ?? []
 
 	return (
-		<main>
+		<main id="main">
 			<MainNav color="foreground"/>
 			<HeroList heading={dict.footer.cookiesPrivacy} />
 			<Section noTopPadding>

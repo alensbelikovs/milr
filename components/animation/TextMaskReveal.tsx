@@ -4,13 +4,15 @@ import { gsap, ScrollTrigger, useGSAP } from "@/utils/gsap"
 
 // Rises single-line text out of its own mask as one piece, on scroll (from lg up)
 export default function TextMaskReveal(
-	{ children, className = "", as = "span", delay = 0, onMount = false }: {
+	{ children, className = "", as = "span", delay = 0, onMount = false, triggerOn }: {
 		children: ReactNode,
 		className?: string,
 		as?: keyof React.JSX.IntrinsicElements,
 		delay?: number,
 		// Skips the scroll trigger and plays right away (used inside the sidebar)
-		onMount?: boolean
+		onMount?: boolean,
+		// Selector for an ancestor to trigger on instead (e.g. "ul"), so a list's items stagger together
+		triggerOn?: string
 	}) {
 	const maskRef = useRef<HTMLElement>(null)
 	const riseRef = useRef<HTMLSpanElement>(null)
@@ -28,7 +30,7 @@ export default function TextMaskReveal(
 
 			// restart(true) keeps the delay, which a trigger's own play() would skip
 			if (!onMount) ScrollTrigger.create({
-				trigger: mask,
+				trigger: (triggerOn && mask.closest(triggerOn)) || mask,
 				start: "top bottom",
 				once: true,
 				onEnter: () => { reveal.restart(true) },
@@ -36,7 +38,7 @@ export default function TextMaskReveal(
 		})
 
 		return () => { mm.revert() }
-	}, { dependencies: [delay, onMount], scope: maskRef })
+	}, { dependencies: [delay, onMount, triggerOn], scope: maskRef })
 
 	const Tag = as as unknown as React.FC<{
 		ref?: React.Ref<HTMLElement>,

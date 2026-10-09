@@ -11,7 +11,7 @@ export default function WorkFiltersButton(props: ComponentProps<typeof SidebarFi
 	const { dict } = useSite()
 	const openWorkFilters = useSidebarContentStore(state => state.openWorkFilters)
 
-	const activeCount = props.active.sectors.length + props.active.solutions.length
+	const activeCount = props.active.sectors.length + props.active.solutions.length + Number(props.active.featured)
 
 	// Beside HeroList's heading from lg, under it (matching its columns) below that.
 	// Keyed so the split is redone when the count changes, rather than React editing split markup.

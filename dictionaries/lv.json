@@ -30,7 +30,12 @@
 		"close": "Aizvērt",
 		"view": "Skatīt",
 		"paint": "Zīmēt",
-		"clear": "Notīrīt"
+		"clear": "Notīrīt",
+		"readMore": "Lasīt vairāk",
+		"switchLanguage": "Pārslēgt uz angļu valodu",
+		"panel": "Panelis",
+		"newTab": "atveras jaunā cilnē",
+		"skipToContent": "Pāriet uz saturu"
 	},
 	"details": {
 		"contacts": "Kontakti",
@@ -99,7 +104,8 @@
 		"resetFilters": "Notīrīt filtrus",
 		"filters": "Filtri",
 		"filterLabel": "Filtrēt darbus",
-		"sectors": "Kategorija",
+		"sectors": "Nozare",
+		"featured": "Izceltie",
 		"solutions": "Risinājumi",
 		"resetAll": "Notīrīt filtrus",
 		"viewProjects": {
@@ -187,6 +193,6 @@
 	},
 	"notFound": {
 		"heading": "Lapa nav atrasta",
-		"text": "Šāda lapa neeksistē."
+		"link": "Atpakaļ uz sākumu"
 	}
 }

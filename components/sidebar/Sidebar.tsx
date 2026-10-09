@@ -1,6 +1,7 @@
 "use client"
 import { Fragment, useEffect, useRef, useState } from "react"
 import { useLenis } from "lenis/react"
+import { useSite } from "@/components/layout/SiteProvider"
 import { useSidebarContentStore } from "@/store/SidebarContentStore"
 import { useTransitionStore } from "@/store/TransitionStore"
 import { gsap, useGSAP } from "@/utils/gsap"
@@ -16,6 +17,7 @@ export default function Sidebar() {
 	const closeSidebar = useSidebarContentStore(state => state.closeSidebar)
 	const committedPathname = useTransitionStore(state => state.committedPathname)
 	const lenis = useLenis()
+	const { dict } = useSite()
 	const isOpen = sidebarContent !== null
 
 	// Keeps the last content on screen while the panel slides out; the key remounts every new content
@@ -61,6 +63,14 @@ export default function Sidebar() {
 		void playTween(tween?.invalidate() ?? null, { counterpart })
 	}, [isOpen])
 
+	// Focus moves into the panel on open and back to whatever opened it on close
+	useEffect(() => {
+		if (!isOpen) return
+		const opener = document.activeElement as HTMLElement | null
+		panelRef.current?.focus({ preventScroll: true })
+		return () => opener?.focus({ preventScroll: true })
+	}, [isOpen])
+
 	useEffect(() => {
 		if (!isOpen || !lenis) return
 		lenis.stop()
@@ -93,15 +103,20 @@ export default function Sidebar() {
 			`}>
 			<div
 				ref={backdropRef}
+				aria-hidden
 				className="absolute inset-0 bg-foreground/50 opacity-0 invisible"
 				onClick={closeSidebar} />
 			{/* data-lenis-prevent lets the wheel scroll the panel while Lenis is stopped */}
 			<div
 				ref={panelRef}
+				role="dialog"
+				aria-modal
+				aria-label={dict.common.panel}
+				tabIndex={-1}
 				data-lenis-prevent
 				className="
 					col-span-full md:col-span-6 md:col-start-7
-					h-screen bg-background z-5 translate-x-full
+					h-screen bg-background z-5 translate-x-full outline-none
 					overflow-y-auto overscroll-contain scrollbar-background
 				">
 				<div ref={bodyRef} className="h-full">

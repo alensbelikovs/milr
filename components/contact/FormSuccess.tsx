@@ -10,7 +10,7 @@ export default function FormSuccess() {
 
 	return (
 		<>
-			<Heading128 className="mb-size-192">{success.heading}</Heading128>
+			<Heading128 className="mb-size-192 mt-size-96">{success.heading}</Heading128>
 			<div className="col-span-full flex flex-col items-center text-center gap-size-96">
 				<div className="flex flex-col gap-size-48">
 					<TextLineSplit className="text-size-24 font-serif" delay={0.1}>

@@ -1,6 +1,5 @@
 import { notFound } from "next/navigation"
 import BodyLinkSecondary from "@/components/buttons/BodyLinkSecondary"
-import SolutionButton from "@/components/buttons/SolutionButton"
 import DetailTable from "@/components/details/DetailTable"
 import DetailTableRow from "@/components/details/DetailTableRow"
 import Section from "@/components/layout/Section"
@@ -40,7 +39,7 @@ export default async function WorkShow({ params }: PageProps<"/[lang]/work/[work
 	const place = [work.location?.city, work.location?.country].filter(Boolean).join(", ")
 
 	return (
-		<main>
+		<main id="main">
 			<MainNav color="text-background" />
 			<HeroCommon heading={work.title} subheading={work.subtitle} img={work.img} />
 			<PageReadySignal />
@@ -73,7 +72,11 @@ export default async function WorkShow({ params }: PageProps<"/[lang]/work/[work
 						work.solutions.length > 0 &&
 						<DetailTableRow label={details.solutions}>
 							{work.solutions.map(solution => (
-								<SolutionButton key={solution._key} solution={solution} />
+								<BodyLinkSecondary
+									key={solution._key}
+									href={`/work?solutions=${encodeURIComponent(solution.slug)}`}>
+									{solution.title}
+								</BodyLinkSecondary>
 							))}
 						</DetailTableRow>
 					}

@@ -16,7 +16,7 @@ import { type WorkFilter } from "@/types/CommonTypes"
 export default function SidebarFilterBody(
 	{ filters, active, count }: {
 		filters: { sectors: WorkFilter[], solutions: WorkFilter[] },
-		active: { sectors: string[], solutions: string[] },
+		active: { sectors: string[], solutions: string[], featured: boolean },
 		count: number
 	}) {
 	const { lang, dict } = useSite()
@@ -26,29 +26,33 @@ export default function SidebarFilterBody(
 
 	const [sectors, setSectors] = useState(active.sectors)
 	const [solutions, setSolutions] = useState(active.solutions)
+	const [featured, setFeatured] = useState(active.featured)
 	const [workCount, setWorkCount] = useState(count)
 	const [loading, setLoading] = useState(false)
 	// Latvian has its own rule for one (21, 31…) and zero (0, 10–20…)
 	const plural = new Intl.PluralRules(INTL_LOCALES[lang])
 	const viewProjects: Record<string, string> = dict.work.viewProjects
-	const hasActive = active.sectors.length + active.solutions.length > 0
-	const hasSelection = hasActive || sectors.length + solutions.length > 0
+	const hasActive = active.sectors.length + active.solutions.length > 0 || active.featured
+	const hasSelection = hasActive || sectors.length + solutions.length > 0 || featured
 
+	// Only one sector at a time; solutions add up, as a work must have them all.
+	// Offsets start the reveal after Featured, then after every sector.
 	const groups = [
 		{
 			label: dict.work.sectors,
 			options: filters.sectors,
 			selected: sectors,
 			setSelected: setSectors,
-			offset: 0
+			multiple: false,
+			offset: 1
 		},
 		{
 			label: dict.work.solutions,
 			options: filters.solutions,
 			selected: solutions,
 			setSelected: setSolutions,
-			// Solutions start once every category has revealed
-			offset: filters.sectors.length
+			multiple: true,
+			offset: 1 + filters.sectors.length
 		},
 	]
 
@@ -60,13 +64,13 @@ export default function SidebarFilterBody(
 		}
 		let ignore = false
 		setLoading(true)
-		countWork(sectors, solutions).then(result => {
+		countWork(sectors, solutions, featured).then(result => {
 			if (ignore) return
 			setWorkCount(result)
 			setLoading(false)
 		})
 		return () => { ignore = true }
-	}, [sectors, solutions])
+	}, [sectors, solutions, featured])
 
 	// Closed by hand: a query-only change keeps the pathname, so Sidebar won't close itself
 	function apply(event: FormEvent<HTMLFormElement>) {
@@ -74,6 +78,7 @@ export default function SidebarFilterBody(
 		const query = new URLSearchParams()
 		sectors.forEach(slug => query.append("sectors", slug))
 		solutions.forEach(slug => query.append("solutions", slug))
+		if (featured) query.append("featured", "true")
 		const href = query.size ? `/${lang}/work?${query}` : `/${lang}/work`
 		closeSidebar()
 		if (href !== window.location.pathname + window.location.search) router.push(href, { scroll: false })
@@ -88,24 +93,39 @@ export default function SidebarFilterBody(
 				px-size-24 gap-x-size-24 pt-size-96
 			">
 			<div className="col-start-2 col-span-4 flex flex-col gap-size-96">
-				<TextMaskReveal onMount>
-					<button
-						type="button"
-						disabled={!hasSelection}
-						onClick={() => {
-							closeSidebar()
-							if (hasActive) router.push(`/${lang}/work`, { scroll: false })
-						}}
-						className={`
-							text-size-36 text-left
-							${hasSelection
-								? "hover:underline cursor-pointer"
-								: "text-foreground/50 cursor-not-allowed"}
-						`}>
-						{dict.work.resetAll}
-					</button>
-				</TextMaskReveal>
-				{groups.map(({ label, options, selected, setSelected, offset }) => (
+				<div className="flex flex-col gap-size-16">
+					<TextMaskReveal onMount>
+						<button
+							type="button"
+							disabled={!hasSelection}
+							onClick={() => {
+								closeSidebar()
+								if (hasActive) router.push(`/${lang}/work`, { scroll: false })
+							}}
+							className={`
+								text-size-36 text-left
+								${hasSelection
+									? "hover:underline cursor-pointer"
+									: "text-foreground/50 cursor-not-allowed"}
+							`}>
+							{dict.work.resetAll}
+						</button>
+					</TextMaskReveal>
+					<TextMaskReveal onMount delay={0.05}>
+						<button
+							type="button"
+							aria-pressed={featured}
+							onClick={() => setFeatured(!featured)}
+							className={`
+								text-size-36 text-left
+								hover:underline cursor-pointer transition-colors
+								${featured ? "text-foreground" : "text-foreground/50"}
+							`}>
+							{dict.work.featured}
+						</button>
+					</TextMaskReveal>
+				</div>
+				{groups.map(({ label, options, selected, setSelected, multiple, offset }) => (
 					<DetailList key={label} label={label}>
 						{options.map(({ title, slug }, index) => (
 							<li className="my-2" key={slug}>
@@ -115,7 +135,7 @@ export default function SidebarFilterBody(
 										aria-pressed={selected.includes(slug)}
 										onClick={() => setSelected(selected.includes(slug)
 											? selected.filter(item => item !== slug)
-											: [...selected, slug])}
+											: multiple ? [...selected, slug] : [slug])}
 										className={`
 											text-size-36 text-left
 											hover:underline cursor-pointer transition-colors
