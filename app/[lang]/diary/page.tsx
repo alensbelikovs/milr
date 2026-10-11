@@ -8,6 +8,7 @@ import { getPostsPage } from "@/utils/sanityGetters"
 import resolvePage from "@/utils/resolvePage"
 import { getDictionary } from "@/lib/dictionaries"
 import { alternates } from "@/lib/i18n"
+import MainNav from "@/components/navigation/MainNav"
 
 const POSTS_PER_PAGE = 12
 
@@ -28,6 +29,7 @@ export default async function DiaryPage({ searchParams }: PageProps<"/[lang]/dia
 
 	return (
 		<main id="main" className="min-h-screen">
+			<MainNav color="foreground"/>
 			<HeroList heading={dict.nav.diary} count={count} />
 			<Section noTopPadding className="mb-size-96">
 				{count === 0 ? <ListEmpty>{dict.diary.empty}</ListEmpty> : <PostGrid posts={posts} />}

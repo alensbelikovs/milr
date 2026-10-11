@@ -1,5 +1,6 @@
 import Link from "@/components/navigation/LocaleLink"
 import FadeReveal from "@/components/animation/FadeReveal"
+import ScrollFadeOverlay from "@/components/animation/ScrollFadeOverlay"
 import TextMaskReveal from "@/components/animation/TextMaskReveal"
 import ConsentSettingsButton from "@/components/consent/ConsentSettingsButton"
 import DetailList from "@/components/details/DetailList"
@@ -15,7 +16,7 @@ export default async function Footer() {
 
 	return (
 		<footer className="
-			grid-standard gap-y-size-96 py-size-96 min-h-screen
+			relative grid-standard gap-y-size-96 py-size-96 min-h-screen
 			bg-accent text-background
 		">
 			<div className="col-start-2 col-span-10 flex flex-col gap-size-96">
@@ -60,6 +61,7 @@ export default async function Footer() {
 					</div>
 				</div>
 			</div>
+			<ScrollFadeOverlay className="bg-accent" />
 		</footer>
 	)
 }
